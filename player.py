@@ -10,8 +10,6 @@ class Player(pygame.sprite.Sprite):
         # === Sprites ===
         self.walkSprites = self.load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
         self.attackSprites = self.load_sprites("assets/images/Warrior_Attack2.png", 4)
-        self.inviSprites = self.load_sprites("assets/images/Warrior_Invisible.png", 1)
-
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -129,9 +127,4 @@ class Player(pygame.sprite.Sprite):
         else:
             # Idle = première frame du walk
             self.image = self.walkSprites[0]
-
-    def take_damage(self, amount):
-        self.hp -= amount
-        if self.hp <= 0:
-            print("Game Over")
 
