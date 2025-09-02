@@ -42,5 +42,8 @@ class Game:
         """Affichage"""
         self.screen.fill(WHITE)
         self.all_sprites.draw(self.screen)
+
+        for sprite in self.all_sprites:
+            pygame.draw.rect(self.screen, (0, 255, 0), sprite.rect, 2)  
         pygame.display.flip()
 
