@@ -7,7 +7,7 @@ Alain project description
 ## 📂 Arborescence du projet
 
 ```
-mon_jeu/
+projectalain/
 │── main.py        # Point d'entrée du jeu
 │── settings.py    # Paramètres globaux (résolution, FPS, couleurs…)
 │── game.py        # Classe principale du jeu
@@ -27,8 +27,8 @@ mon_jeu/
 1. **Cloner le repo :**
 
    ```bash
-   git clone https://github.com/ton-utilisateur/mon_jeu.git
-   cd mon_jeu
+   git clone https://github.com/Nereoll/ProjectAlain.git
+   cd ProjectAlain
    ```
 
 2. **Donner les droits d’exécution au script d’installation :**

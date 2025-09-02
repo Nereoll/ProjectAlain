@@ -2,7 +2,7 @@
 
 # Résolution de la fenêtre
 WIDTH = 1024
-HEIGHT = 700
+HEIGHT = 768
 
 # Paramètres du jeu
 FPS = 60
