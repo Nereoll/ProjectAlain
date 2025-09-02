@@ -1,5 +1,6 @@
 # player.py
 import pygame
+import time
 from settings import WIDTH, HEIGHT, RED
 
 class Player(pygame.sprite.Sprite):
@@ -9,6 +10,7 @@ class Player(pygame.sprite.Sprite):
         # === Sprites ===
         self.walkSprites = self.load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
         self.attackSprites = self.load_sprites("assets/images/Warrior_Attack2.png", 4)
+        self.inviSprites = self.load_sprites("assets/images/Warrior_Invisible.png", 1)
 
 
         # Animation courante
@@ -23,9 +25,12 @@ class Player(pygame.sprite.Sprite):
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
         self.frame_timer = 0 #Compte le temps pour passer à la frame suivante.
 
-        # États possibles : "idle", "walk", "attack"
-        self.state = "idle" #État actuel du joueur (idle, walk, attack).
+        # États possibles : "idle", "walk", "attack", "invisible"
+        self.state = "idle" #État actuel du joueur (idle, walk, attack, invisible).
         self.attacking = False
+        self.invisible = False
+        self.invisible_start_time = 0
+        self.invisible_duration = 2  # secondes
 
     def load_sprites(self, path, num_frames):
         """Découpe le spritesheet en images"""
@@ -70,17 +75,24 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y += self.speed
                 moving = True
 
+            # === Déclenchement invisibilité ===
+            if keys[pygame.K_i] and not self.invisible:
+                self.state = "invisible"
+                self.invisible = True
+                self.invisible_start_time = time.time()
+
             # === Déclenchement attaque ===
-            if keys[pygame.K_SPACE] and not self.attacking and not moving:
+            if keys[pygame.K_SPACE] and not self.attacking and not moving and not self.invisible:
                 self.state = "attack"
                 self.attacking = True
                 self.current_frame = 0
                 self.frame_timer = 0
 
-            if not moving and not self.attacking:
+            if not moving and not self.attacking and not self.invisible:
                 self.state = "idle"
-            elif moving and not self.attacking:
+            elif moving and not self.attacking and not self.invisible:
                 self.state = "walk"
+
 
     def update(self):
         """Mets à jour le joueur
@@ -91,19 +103,29 @@ class Player(pygame.sprite.Sprite):
         - Walk : animation en boucle.
         - Attack : animation non bouclée. Quand l'attaque finit, on revient à idle.
         - Idle : on prend juste la première frame de marche.
+        - Invisible : on prend la frame d'invisibilité.
         """
         self.handle_keys()
+
+        # Vérifie si l’invisibilité est terminée
+        if self.invisible and (time.time() - self.invisible_start_time >= self.invisible_duration):
+            self.invisible = False
+            self.state = "idle"
 
         # Animation selon l’état
         if self.state == "walk":
             self.animate(self.walkSprites, loop=True)
+            self.image.set_alpha(255)  # normal
         elif self.state == "attack":
             self.animate(self.attackSprites, loop=False)
+            self.image.set_alpha(255)  # normal
             # Quand on arrive à la fin de l'animation d'attaque (len()-1), retour à l'état idle
             if self.current_frame == len(self.attackSprites) - 1 and self.frame_timer == 0:
                 self.state = "idle"
                 self.attacking = False
                 self.current_frame = 0
+        elif self.state == "invisible":
+            self.image.set_alpha(0)  # invisible
         else:
             # Idle = première frame du walk
             self.image = self.walkSprites[0]
