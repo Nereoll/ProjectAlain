@@ -16,6 +16,9 @@ class Player(pygame.sprite.Sprite):
         self.image = self.walkSprites[self.current_frame] #Image actuelle du sprite affichée à l’écran.
         self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT // 2)) #Rectangle qui définit la position et la taille du sprite.
 
+        # Pixel perfect collision
+        self.mask = pygame.mask.from_surface(self.image)
+
         # Variables de déplacement
         self.speed = 5
 
@@ -34,15 +37,20 @@ class Player(pygame.sprite.Sprite):
         self.hp = 100
 
     def load_sprites(self, path, num_frames):
-        """Découpe le spritesheet en images"""
         sheet = pygame.image.load(path).convert_alpha()
         sheet_width, sheet_height = sheet.get_size()
         frame_width = sheet_width // num_frames
         sprites = []
         for i in range(num_frames):
             frame = sheet.subsurface((i * frame_width, 0, frame_width, sheet_height))
-            sprites.append(frame)
+
+            # === Recadrage automatique sur la zone utile ===
+            # Garder la zone non transparente
+            rect = frame.get_bounding_rect()
+            cropped = frame.subsurface(rect).copy()
+            sprites.append(cropped)
         return sprites
+
 
     def animate(self, sprites, loop=True):
             """Anime un spritesheet"""
@@ -59,7 +67,6 @@ class Player(pygame.sprite.Sprite):
 
     def handle_keys(self):
             keys = pygame.key.get_pressed()
-            # === Mouvement ===
             moving = False
 
             if keys[pygame.K_LEFT]:
@@ -74,6 +81,16 @@ class Player(pygame.sprite.Sprite):
             if keys[pygame.K_DOWN]:
                 self.rect.y += self.speed
                 moving = True
+
+                # Empêche le joueur de sortir de la fenêtre
+            if self.rect.left < 0:
+                self.rect.left = 0
+            if self.rect.right > WIDTH:
+                self.rect.right = WIDTH
+            if self.rect.top < 0:
+                self.rect.top = 0
+            if self.rect.bottom > HEIGHT:
+                self.rect.bottom = HEIGHT
 
             # === Déclenchement invisibilité ===
             if keys[pygame.K_i] and not self.invisible:

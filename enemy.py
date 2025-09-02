@@ -71,14 +71,18 @@ class Enemy(pygame.sprite.Sprite):
         self.stop_distance = 35
 
     def load_sprites(self, path, num_frames):
-        """Découpe le spritesheet en images"""
         sheet = pygame.image.load(path).convert_alpha()
         sheet_width, sheet_height = sheet.get_size()
         frame_width = sheet_width // num_frames
         sprites = []
         for i in range(num_frames):
             frame = sheet.subsurface((i * frame_width, 0, frame_width, sheet_height))
-            sprites.append(frame)
+
+            # === Recadrage automatique sur la zone utile ===
+            # Garder la zone non transparente
+            rect = frame.get_bounding_rect()
+            cropped = frame.subsurface(rect).copy()
+            sprites.append(cropped)
         return sprites
 
     def animate(self, sprites, loop=True):
