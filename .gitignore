@@ -1,0 +1,26 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# --- Virtualenv ---
+venv/
+ENV/
+env/
+.venv/
+
+# --- Config/IDE ---
+*.swp
+*.swo
+*.idea/
+.vscode/
+
+# --- OS spécifiques ---
+.DS_Store
+Thumbs.db
