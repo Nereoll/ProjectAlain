@@ -30,6 +30,9 @@ class Player(pygame.sprite.Sprite):
         self.invisible_start_time = 0
         self.invisible_duration = 2  # secondes
 
+        # Stats
+        self.hp = 100
+
     def load_sprites(self, path, num_frames):
         """Découpe le spritesheet en images"""
         sheet = pygame.image.load(path).convert_alpha()
@@ -128,3 +131,7 @@ class Player(pygame.sprite.Sprite):
             # Idle = première frame du walk
             self.image = self.walkSprites[0]
 
+    def take_damage(self, amount):
+        self.hp -= amount
+        if self.hp <= 0:
+            print("Game Over")

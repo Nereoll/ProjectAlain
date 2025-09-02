@@ -30,10 +30,13 @@ class Enemy(pygame.sprite.Sprite):
         else:
             raise ValueError("Type d’ennemi inconnu")
 
-        # Sprite A REMPLACER PAR LES VRAIS SPRITES
+        # Sprite (à remplacer par les vrais sprites)
         self.image = pygame.Surface((40, 40))
         self.image.fill(color)
         self.rect = self.image.get_rect(center=pos)
+
+        # Distance minimale entre joueur et ennemi
+        self.stop_distance = 35
 
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
@@ -45,13 +48,14 @@ class Enemy(pygame.sprite.Sprite):
         dx, dy = player_x - enemy_x, player_y - enemy_y
         distance = math.hypot(dx, dy)
 
-        if distance > 0:
+        # Déplacement seulement si trop loin
+        if distance > self.stop_distance:
             dx, dy = dx / distance, dy / distance  # normalisation
             self.rect.x += dx * self.speed
             self.rect.y += dy * self.speed
 
         # Vérifie si assez proche pour attaquer
-        if distance < 50:  # rayon d’attaque
+        if distance <= 50:  # rayon d’attaque
             current_time = time.time()
             if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
                 self.attack()
