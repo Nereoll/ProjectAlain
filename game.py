@@ -56,13 +56,13 @@ class Game:
             self.last_spawn = current_time
             # Exemple : réduire le délai de spawn petit à petit (jusqu’à un minimum)
             if self.spawn_delay > 0.8:
-                self.spawn_delay -= 0.1  
+                self.spawn_delay -= 0.1
 
         self.all_sprites.update()
 
     def spawn_enemy(self):
-        """Crée un ennemi aléatoire et l’ajoute au jeu"""
-        enemy_type = random.choice(["squelette", "goblin", "lancier"])
+        """Crée un ennemi aléatoire et l'ajoute au jeu"""
+        enemy_type = random.choice(["pawn", "goblin", "lancier"])
 
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])
@@ -86,7 +86,7 @@ class Game:
 
         # Debug : affichage des hitbox
         for sprite in self.all_sprites:
-            pygame.draw.rect(self.screen, (0, 255, 0), sprite.rect, 2)  
+            pygame.draw.rect(self.screen, (0, 255, 0), sprite.rect, 2)
 
         pygame.display.flip()
 

@@ -1,7 +1,7 @@
 # player.py
 import pygame
 import time
-from settings import WIDTH, HEIGHT, RED
+from settings import WIDTH, HEIGHT
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -43,7 +43,6 @@ class Player(pygame.sprite.Sprite):
             frame = sheet.subsurface((i * frame_width, 0, frame_width, sheet_height))
             sprites.append(frame)
         return sprites
-
 
     def animate(self, sprites, loop=True):
             """Anime un spritesheet"""
