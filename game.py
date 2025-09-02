@@ -1,5 +1,5 @@
 # game.py
-import pygame # type: ignore
+import pygame 
 from settings import WIDTH, HEIGHT, FPS, TITLE, WHITE
 from player import Player
 

@@ -1,5 +1,5 @@
 # player.py
-import pygame # type: ignore
+import pygame
 from settings import WIDTH, HEIGHT, RED
 
 class Player(pygame.sprite.Sprite):
@@ -21,4 +21,10 @@ class Player(pygame.sprite.Sprite):
             self.rect.y -= self.speed
         if keys[pygame.K_DOWN]:
             self.rect.y += self.speed
+
+    def take_damage(self, amount):
+        self.hp -= amount
+        if self.hp <= 0:
+            print("Game Over")
+
 
