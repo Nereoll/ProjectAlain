@@ -1,5 +1,5 @@
 # player.py
-import pygame
+import pygame # type: ignore
 from settings import WIDTH, HEIGHT, RED
 
 class Player(pygame.sprite.Sprite):
