@@ -1,6 +1,7 @@
 import pygame
 import os
 from settings import WIDTH, ATH_HEIGHT, BLACK, WHITE
+from utilitaire import load_sprites, load_sprites_from_folder, animate
 
 class Ath(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -18,20 +19,20 @@ class Ath(pygame.sprite.Sprite):
 
         # === Sprites ===
         # Life
-        self.fullLife = self.load_sprites("assets/images/ath/fulllife")
-        self.almostHalfLife = self.load_sprites("assets/images/ath/almosthalflife")
-        self.halflife = self.load_sprites("assets/images/ath/halflife")
-        self.onelife = self.load_sprites("assets/images/ath/onelife")
-        self.death = self.load_sprites("assets/images/ath/death")
-        
-        # Mana (une seule image par état)
-        self.noMana = self.load_sprites_from_one_image("assets/images/ath/noMana.png", 1)
-        self.oneMana = self.load_sprites_from_one_image("assets/images/ath/oneMana.png", 1)
-        self.halfMana = self.load_sprites_from_one_image("assets/images/ath/halfMana.png", 1)
-        self.almostHalfMana = self.load_sprites_from_one_image("assets/images/ath/almostHalfMana.png", 1)
-        self.fullMana = self.load_sprites_from_one_image("assets/images/ath/fullMana.png", 1)
+        self.fullLife = load_sprites_from_folder("assets/images/ath/fulllife")
+        self.almostHalfLife = load_sprites_from_folder("assets/images/ath/almosthalflife")
+        self.halflife = load_sprites_from_folder("assets/images/ath/halflife")
+        self.onelife = load_sprites_from_folder("assets/images/ath/onelife")
+        self.death = load_sprites_from_folder("assets/images/ath/death")
 
-        # augmenter les tailles des spirites
+        # Mana
+        self.noMana = load_sprites("assets/images/ath/noMana.png", 1)
+        self.oneMana = load_sprites("assets/images/ath/oneMana.png", 1)
+        self.halfMana = load_sprites("assets/images/ath/halfMana.png", 1)
+        self.almostHalfMana = load_sprites("assets/images/ath/almostHalfMana.png", 1)
+        self.fullMana = load_sprites("assets/images/ath/fullMana.png", 1)
+
+        # Augmenter les tailles des sprites
         self.fullLife = [pygame.transform.scale(img, (img.get_width() * 2, img.get_height() * 2)) for img in self.fullLife]
         self.almostHalfLife = [pygame.transform.scale(img, (img.get_width() * 2, img.get_height() * 2)) for img in self.almostHalfLife]
         self.halflife = [pygame.transform.scale(img, (img.get_width() * 2, img.get_height() * 2)) for img in self.halflife]
@@ -50,55 +51,20 @@ class Ath(pygame.sprite.Sprite):
         self.frame_timer = 0
         self.current_sprite = None  # frame courante
 
-    def load_sprites(self, folder):
-        """Charge une animation depuis un dossier contenant plusieurs PNG."""
-        sprites = []
-        for filename in sorted(os.listdir(folder)):
-            if filename.endswith(".png"):
-                img = pygame.image.load(os.path.join(folder, filename)).convert_alpha()
-                sprites.append(img)
-        return sprites
-
-    def load_sprites_from_one_image(self, path, num_frames):
-        """Découpe une spritesheet simple (ou juste un PNG unique)."""
-        sheet = pygame.image.load(path).convert_alpha()
-        sheet_width, sheet_height = sheet.get_size()
-        frame_width = sheet_width // num_frames
-        sprites = []
-        for i in range(num_frames):
-            frame = sheet.subsurface((i * frame_width, 0, frame_width, sheet_height))
-            rect = frame.get_bounding_rect()
-            cropped = frame.subsurface(rect).copy()
-            sprites.append(cropped)
-        return sprites
-    
-    def animate(self, sprites, loop=True):
-        """Fait défiler une animation."""
-        self.frame_timer += self.animation_speed
-        if self.frame_timer >= 1:
-            self.frame_timer = 0
-            self.current_frame += 1
-            if self.current_frame >= len(sprites):
-                if loop:
-                    self.current_frame = 0
-                else:
-                    self.current_frame = len(sprites) - 1
-            self.current_sprite = sprites[self.current_frame]
-
     def update(self):
         # === Gestion des HP ===
         player_hp = self.player.hp
         if player_hp == 4:
-            self.animate(self.fullLife)
+            animate(self, self.fullLife, loop=True, assign_to_image=False)
         elif player_hp == 3:
-            self.animate(self.almostHalfLife)
+            animate(self, self.almostHalfLife, loop=True, assign_to_image=False)
         elif player_hp == 2:
-            self.animate(self.halflife)
+            animate(self, self.halflife, loop=True, assign_to_image=False)
         elif player_hp == 1:
-            self.animate(self.onelife)
+            animate(self, self.onelife, loop=True, assign_to_image=False)
         elif player_hp <= 0:
-            self.animate(self.death, loop=False)
-        
+            animate(self, self.death, loop=True, assign_to_image=False)
+
         # === Gestion du Mana ===
         player_mana = self.player.mana 
         if player_mana == 0:
@@ -111,9 +77,7 @@ class Ath(pygame.sprite.Sprite):
             mana_sprite = self.almostHalfMana[0]
         else:
             mana_sprite = self.fullMana[0]
-
         
-
         # === Redessiner l'ATH ===
         self.image.fill(BLACK)
 
@@ -131,3 +95,6 @@ class Ath(pygame.sprite.Sprite):
         if mana_sprite:
             rect_mana = mana_sprite.get_rect(midright=(self.rect.width - 40, self.rect.centery))
             self.image.blit(mana_sprite, rect_mana)
+            
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)

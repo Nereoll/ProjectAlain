@@ -1,8 +1,9 @@
 # player.py
 import pygame
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
+from settings import WIDTH, HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
 from PIL import Image , ImageOps
+from utilitaire import load_sprites, animate
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -13,11 +14,11 @@ class Player(pygame.sprite.Sprite):
         imageLattack = ImageOps.mirror(Image.open("assets/images/Warrior_Attack2.png"))
 
         # === Sprites ===
-        self.walkRSprites = self.load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
-        self.walkLSprites = self.load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
-        self.attackRSprites = self.load_sprites("assets/images/Warrior_Attack2.png", 4)
-        self.attackLSprites = self.load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
-        self.invisibleSprite = self.load_sprites("assets/images/Foam.png", 8)
+        self.walkRSprites = load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
+        self.walkLSprites = load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
+        self.attackRSprites = load_sprites("assets/images/Warrior_Attack2.png", 4)
+        self.attackLSprites = load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
+        self.invisibleSprite = load_sprites("assets/images/Foam.png", 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -54,42 +55,6 @@ class Player(pygame.sprite.Sprite):
 
         # Direction face
         self.faceRorL = "R"
-
-    def load_sprites(self, path = "", num_frames = 1 , nopath = False , imagestring = None):
-        if nopath :
-            mode = imagestring.mode
-            size = imagestring.size
-            data = imagestring.tobytes()
-
-            sheet = pygame.image.fromstring(data, size, mode).convert_alpha()
-            sheet_width, sheet_height = sheet.get_size()
-        else :
-            sheet = pygame.image.load(path).convert_alpha()
-            sheet_width, sheet_height = sheet.get_size()
-        frame_width = sheet_width // num_frames
-        sprites = []
-        for i in range(num_frames):
-            frame = sheet.subsurface((i * frame_width, 0, frame_width, sheet_height))
-
-            # === Recadrage automatique sur la zone utile ===
-            # Garder la zone non transparente
-            rect = frame.get_bounding_rect()
-            cropped = frame.subsurface(rect).copy()
-            sprites.append(cropped)
-        return sprites
-    
-    def animate(self, sprites, loop=True):
-            """Anime un spritesheet"""
-            self.frame_timer += self.animation_speed
-            if self.frame_timer >= 1:
-                self.frame_timer = 0
-                self.current_frame += 1
-                if self.current_frame >= len(sprites):
-                    if loop:
-                        self.current_frame = 0
-                    else:
-                        self.current_frame = len(sprites) - 1  # rester sur la dernière frame
-                self.image = sprites[self.current_frame]
 
     def handle_keys(self):
             keys = pygame.key.get_pressed()
@@ -136,7 +101,7 @@ class Player(pygame.sprite.Sprite):
                     self.current_frame = 0
                     self.frame_timer = 0
                     self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
-            elif keys[pygame.K_SPACE] and not self.attacking and not self.invisible and self.faceRorL == "R":
+            elif (keys[pygame.K_SPACE] or pygame.mouse.get_pressed()[0]) and not self.attacking and not self.invisible and self.faceRorL == "R":
                 current_time = time.time()
                 if current_time - self.last_attack_time >= self.attack_cooldown:  # Vérifie le cooldown
                     self.state = "attackR"
@@ -175,18 +140,14 @@ class Player(pygame.sprite.Sprite):
 
         # Animation selon l’état
         if self.state == "walkR":
-            self.animate(self.walkRSprites, loop=True)
+            animate(self, self.walkRSprites, loop=True)
             self.image.set_alpha(255)  # normal
         elif self.state == "walkL" :
-            self.animate(self.walkLSprites, loop=True)
+            animate(self, self.walkLSprites, loop=True)
             self.image.set_alpha(255)  # normal
         elif self.state == "attackR":
 
-            # Étend temporairement le rectangle autour du joueur
-            # A faire/corriger
-            #self.rect = self.original_rect.inflate_ip(40, 40)  # Augmente toutes les directions
-
-            self.animate(self.attackRSprites, loop=False)
+            animate(self, self.attackRSprites, loop=False)
             self.image.set_alpha(255)  # normal
             # Quand l'animation d'attaque est terminée
             if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
@@ -195,11 +156,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_frame = 0
         elif self.state == "attackL":
 
-            # Étend temporairement le rectangle autour du joueur
-            # A faire/corriger
-            #self.rect = self.original_rect.inflate_ip(40, 40)  # Augmente toutes les directions
-
-            self.animate(self.attackLSprites, loop=False)
+            animate(self, self.attackLSprites, loop=False)
             self.image.set_alpha(255)  # normal
             # Quand l'animation d'attaque est terminée
             if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
@@ -207,7 +164,7 @@ class Player(pygame.sprite.Sprite):
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "invisible":
-            self.animate(self.invisibleSprite, loop=True)
+            animate(self, self.invisibleSprite, loop=True)
             # Rendre translucide
             self.image.set_alpha(50)
 
