@@ -60,7 +60,6 @@ class Player(pygame.sprite.Sprite):
         # Stats
         self.hp = 4
         self.mana = 0
-        
         self.score = 0
 
         # Direction face
