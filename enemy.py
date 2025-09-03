@@ -18,19 +18,24 @@ class Enemy(pygame.sprite.Sprite):
             self.hp = 60
             self.speed = 2
             self.attack_points = 8
+            self.stagger_timer = 0.5
             color = (200, 200, 200)
         elif enemy_type == "goblin":
             self.hp = 40
             self.speed = 3
             self.attack_points = 5
+            self.stagger_timer = 0.7
             color = (0, 200, 0)
         elif enemy_type == "lancier":
             self.hp = 80
             self.speed = 1.5
             self.attack_points = 12
+            self.stagger_timer = 0.3
             color = (150, 150, 255)
         else:
             raise ValueError("Type d'ennemi inconnu")
+        
+        self.default_speed = self.speed  # Sauvegarde de la vitesse initiale
 
         # === Sprites ===
         if self.enemy_type == "pawn":
@@ -55,6 +60,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # Animation
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
+        self.default_animation_speed = self.animation_speed  # Sauvegarde de la vitesse d'animation initiale (pour le stagger)
         self.frame_timer = 0 #Compte le temps pour passer à la frame suivante.
 
         # États possibles : "idle", "walk", "attack"
@@ -114,6 +120,17 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
+
+        if self.state == "staggered":
+            current_time = time.time()  # Obtenir le temps actuel
+            # Vérifie si le temps de stagger est écoulé
+            if current_time - self.stagger_start_time >= self.stagger_timer:
+                # Fin du stagger, réinitialise les vitesses et retourne à l'état "idle"
+                self.state = "idle"
+                self.speed = self.default_speed
+                self.animation_speed = self.default_animation_speed
+                self.current_frame = 0  # Redémarre l'animation
+                
         # Position du joueur
         player_x, player_y = self.player.rect.center
         enemy_x, enemy_y = self.rect.center
@@ -158,6 +175,12 @@ class Enemy(pygame.sprite.Sprite):
 
     def take_damage(self, amount):
         """Le joueur ou d'autres entités peuvent attaquer l'ennemi"""
+
+        self.state = "staggered"
+        self.speed = 0
+        self.animation_speed = 0
+        self.stagger_start_time = time.time() # Enregistre le début du stagger
+
         self.hp -= amount
         if self.hp <= 0:
             self.kill()  # supprime l'ennemi du groupe
