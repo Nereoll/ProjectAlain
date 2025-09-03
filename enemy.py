@@ -90,6 +90,8 @@ class Enemy(pygame.sprite.Sprite):
 
         self.last_damage_time = 0
 
+        self.faceRorL= "R"
+
         # Distance minimale entre joueur et ennemi
         self.stop_distance = 35
 
@@ -156,7 +158,6 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
-
         if self.state == "staggered":
             if self.is_knockback:
                 dx, dy = self.knockback_direction
@@ -170,7 +171,10 @@ class Enemy(pygame.sprite.Sprite):
             # Vérifie si le temps de stagger est écoulé
             if current_time - self.stagger_start_time >= self.stagger_timer:
                 # Fin du stagger, réinitialise les vitesses
-                self.state = "idle"  # Par défaut, retourne à l'état "idle"
+                if self.faceRorL == "L":
+                    self.state = "idleL" 
+                else:
+                    self.state = "idleL" 
                 self.speed = self.default_speed
                 self.animation_speed = self.default_animation_speed
 
@@ -179,9 +183,12 @@ class Enemy(pygame.sprite.Sprite):
                 enemy_x, enemy_y = self.rect.center
                 distance = math.hypot(player_x - enemy_x, player_y - enemy_y)
 
-                if distance > self.stop_distance:
-                    self.state = "walk"  # Passe à l'état "walk" si trop loin
-        elif self.player.state == "attack" and self.player.rect.colliderect(self.rect):
+                if distance > self.stop_distance and self.faceRorL =="L":
+                    self.state = "walkL"  # Passe à l'état "walk" si trop loin
+                if distance > self.stop_distance and self.faceRorL =="R":
+                    self.state = "walkR"  # Passe à l'état "walk" si trop loin
+
+        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect):
             current_time = time.time()
             # Vérifie si l'ennemi peut prendre des dégâts (délai entre deux dégâts)
             if current_time - self.last_damage_time >= 0.5:  # Délai de 0.5 seconde
@@ -193,17 +200,14 @@ class Enemy(pygame.sprite.Sprite):
             player_x, player_y = self.player.rect.center
             enemy_x, enemy_y = self.rect.center
             moving = False
-
-        # Face direction
-        if player_x < enemy_x :
-            faceRorL = "L" 
-        else : 
-            faceRorL = "R"
-
-
             # Calcul du vecteur direction
             dx, dy = player_x - enemy_x, player_y - enemy_y
             distance = math.hypot(dx, dy)
+            # Face direction
+            if player_x < enemy_x :
+                self.faceRorL = "L" 
+            else : 
+                self.faceRorL = "R"
 
             # Déplacement seulement si trop loin
             if distance > self.stop_distance:
@@ -212,33 +216,33 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect.x += dx * self.speed
                 self.rect.y += dy * self.speed
 
-        # Vérifie si assez proche pour attaquer
-        if distance <= 50 and not self.attacking:  # rayon d'attaque
-            current_time = time.time()
-            if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
-                self.attacking = True
-                if faceRorL == "R":
-                    self.state = "attackR"
-                else :
-                    self.state = "attackL"
-                self.current_frame = 0
-                self.frame_timer = 0
-                self.attack()
-                self.last_attack_time = current_time
+            # Vérifie si assez proche pour attaquer
+            if distance <= 50 and not self.attacking:  # rayon d'attaque
+                current_time = time.time()
+                if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
+                    self.attacking = True
+                    if self.faceRorL == "R":
+                        self.state = "attackR"
+                    else :
+                        self.state = "attackL"
+                    self.current_frame = 0
+                    self.frame_timer = 0
+                    self.attack()
+                    self.last_attack_time = current_time
 
-        # Si pas en attaque, choisir l'état
-        if not self.attacking:
-            if moving and faceRorL == "R":
-                self.state = "walkR"
-            elif moving and faceRorL == "L":
-                self.state = "walkL"
-            elif faceRorL == "R":
-                self.state = "idleR"
-            elif faceRorL == "L":
-                self.state = "idleL"
+            # Si pas en attaque, choisir l'état
+            if not self.attacking:
+                if moving and self.faceRorL == "R":
+                    self.state = "walkR"
+                elif moving and self.faceRorL == "L":
+                    self.state = "walkL"
+                elif self.faceRorL == "R":
+                    self.state = "idleR"
+                elif self.faceRorL == "L":
+                    self.state = "idleL"
 
-            # Toujours gérer l'animation selon l'état
-            self.handle_state()
+        # Toujours gérer l'animation selon l'état
+        self.handle_state()
 
     def attack(self):
         """Inflige des dégâts au joueur"""
