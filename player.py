@@ -24,6 +24,12 @@ class Player(pygame.sprite.Sprite):
         self.last_attack_time = 0  # Temps de la dernière attaque
         self.attack_cooldown = 1  # Cooldown en secondes
 
+        # Frame d'invulnérabilité
+        self.iframe_duration = 1 # temps en secondes
+        self.iframe_start_time = 0
+        self.is_invulnerable = False  # Indique si le joueur est invulnérable
+        self.blink_timer = 0
+
         # Variables de déplacement
         self.speed = 10
 
@@ -140,6 +146,23 @@ class Player(pygame.sprite.Sprite):
             self.invisible = False
             self.state = "idle"
 
+        # Gérer les iframes
+        if self.is_invulnerable:
+            current_time = time.time()
+            # Clignotement visuel
+            self.blink_timer += self.animation_speed
+            if self.blink_timer >= 0.25:  # Change de visibilité toutes les 0.1 secondes
+                self.blink_timer = 0
+                if self.image.get_alpha() == 255:
+                    self.image.set_alpha(100)  # Rend le joueur semi-transparent
+                else:
+                    self.image.set_alpha(255)  # Rétablit l'opacité normale
+
+            # Vérifie si les iframes sont terminées
+            if current_time - self.iframe_start_time >= self.iframe_duration:
+                self.is_invulnerable = False
+                self.image.set_alpha(255)  # Rétablit l'opacité normale
+
         # Animation selon l’état
         if self.state == "walk":
             self.animate(self.walkSprites, loop=True)
@@ -164,9 +187,14 @@ class Player(pygame.sprite.Sprite):
             self.image = self.walkSprites[0]
 
     def take_damage(self, amount):
-        self.hp -= amount
-        if self.hp <= 0:
-            print("Game Over")
+        if not self.is_invulnerable:  # Vérifie si le joueur est invulnérable
+            self.hp -= amount
+            if self.hp <= 0:
+                print("Game Over")
+            else:
+                # Active les iframes
+                self.is_invulnerable = True
+                self.iframe_start_time = time.time()  # Enregistre le début des iframes
 
     def enemy_killed(self, points):
         self.score += points

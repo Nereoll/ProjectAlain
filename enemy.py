@@ -16,7 +16,7 @@ class Enemy(pygame.sprite.Sprite):
         if enemy_type == "pawn":
             self.hp = 3
             self.speed = 2
-            self.attack_points = 8
+            self.attack_points = 1
             self.stagger_timer = 0.3
             self.knockback_distance = 50  # Distance du knockback
             self.knockback_speed = 5
@@ -24,7 +24,7 @@ class Enemy(pygame.sprite.Sprite):
         elif enemy_type == "goblin":
             self.hp = 2
             self.speed = 4
-            self.attack_points = 5
+            self.attack_points = 1
             self.stagger_timer = 0.5
             self.knockback_distance = 100  # Distance du knockback
             self.knockback_speed = 5
@@ -32,7 +32,7 @@ class Enemy(pygame.sprite.Sprite):
         elif enemy_type == "lancier":
             self.hp = 4
             self.speed = 1.5
-            self.attack_points = 12
+            self.attack_points = 1
             self.stagger_timer = 0.2
             self.knockback_distance = 10  # Distance du knockback
             self.knockback_speed = 5
