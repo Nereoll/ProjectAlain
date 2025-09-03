@@ -1,9 +1,8 @@
 # enemie.py
 import pygame
-import random
 import math
 import time
-from settings import WIDTH, HEIGHT
+from settings import WIDTH, HEIGHT, ATH_HEIGHT
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -16,19 +15,16 @@ class Enemy(pygame.sprite.Sprite):
         # Stats selon le type
         if enemy_type == "pawn":
             self.hp = 60
-            self.speed = 2
-            self.attack_points = 8
-            color = (200, 200, 200)
+            self.speed = 0.5
+            self.attack_points = 1
         elif enemy_type == "goblin":
             self.hp = 40
             self.speed = 3
-            self.attack_points = 5
-            color = (0, 200, 0)
+            self.attack_points = 1
         elif enemy_type == "lancier":
             self.hp = 80
-            self.speed = 1.5
-            self.attack_points = 12
-            color = (150, 150, 255)
+            self.speed = 1
+            self.attack_points = 1
         else:
             raise ValueError("Type d'ennemi inconnu")
 
@@ -117,11 +113,11 @@ class Enemy(pygame.sprite.Sprite):
         # Calcul du vecteur direction
         dx, dy = player_x - enemy_x, player_y - enemy_y
         distance = math.hypot(dx, dy)
-
+            
         # Déplacement seulement si trop loin
         if distance > self.stop_distance:
             dx, dy = dx / distance, dy / distance  # normalisation
-            moving=True
+            moving = True
             self.rect.x += dx * self.speed
             self.rect.y += dy * self.speed
 

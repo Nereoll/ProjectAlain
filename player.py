@@ -1,7 +1,7 @@
 # player.py
 import pygame
 import time
-from settings import WIDTH, HEIGHT
+from settings import WIDTH, HEIGHT, ATH_HEIGHT
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -34,7 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.invisible_duration = 2  # secondes
 
         # Stats
-        self.hp = 100
+        self.hp = 4
 
     def load_sprites(self, path, num_frames):
         sheet = pygame.image.load(path).convert_alpha()
@@ -87,8 +87,8 @@ class Player(pygame.sprite.Sprite):
                 self.rect.left = 0
             if self.rect.right > WIDTH:
                 self.rect.right = WIDTH
-            if self.rect.top < 0:
-                self.rect.top = 0
+            if self.rect.top < ATH_HEIGHT:
+                self.rect.top = ATH_HEIGHT
             if self.rect.bottom > HEIGHT:
                 self.rect.bottom = HEIGHT
 
