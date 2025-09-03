@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
 
         # Cooldown d'attaque
         self.last_attack_time = 0  # Temps de la dernière attaque
-        self.attack_cooldown = 0.5 # Cooldown en secondes
+        self.attack_cooldown = 0.65 # Cooldown en secondes
 
         # Frame d'invulnérabilité
         self.iframe_duration = 1 # temps en secondes
