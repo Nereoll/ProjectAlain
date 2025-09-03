@@ -2,7 +2,7 @@
 import pygame
 import random
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE
 from player import Player
 from enemy import Enemy
 from ath import Ath

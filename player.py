@@ -1,7 +1,7 @@
 # player.py
 import pygame
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
 from PIL import Image , ImageOps
 
 class Player(pygame.sprite.Sprite):
@@ -17,6 +17,7 @@ class Player(pygame.sprite.Sprite):
         self.walkLSprites = self.load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
         self.attackRSprites = self.load_sprites("assets/images/Warrior_Attack2.png", 4)
         self.attackLSprites = self.load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
+        self.invisibleSprite = self.load_sprites("assets/images/Foam.png", 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -29,10 +30,16 @@ class Player(pygame.sprite.Sprite):
 
         # Cooldown d'attaque
         self.last_attack_time = 0  # Temps de la dernière attaque
-        self.attack_cooldown = 1  # Cooldown en secondes
+        self.attack_cooldown = 0.5 # Cooldown en secondes
+
+        # Frame d'invulnérabilité
+        self.iframe_duration = 1 # temps en secondes
+        self.iframe_start_time = 0
+        self.is_invulnerable = False  # Indique si le joueur est invulnérable
+        self.blink_timer = 0
 
         # Variables de déplacement
-        self.speed = 10
+        self.speed = 5
 
         # Animation
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
@@ -76,8 +83,7 @@ class Player(pygame.sprite.Sprite):
             cropped = frame.subsurface(rect).copy()
             sprites.append(cropped)
         return sprites
-
-
+    
     def animate(self, sprites, loop=True):
             """Anime un spritesheet"""
             self.frame_timer += self.animation_speed
@@ -111,24 +117,24 @@ class Player(pygame.sprite.Sprite):
                 moving = True
 
             # Empêche le joueur de sortir de la fenêtre
-            if self.rect.left < 0:
-                self.rect.left = 0
-            if self.rect.right > WIDTH:
-                self.rect.right = WIDTH
-            if self.rect.top < ATH_HEIGHT:
-                self.rect.top = ATH_HEIGHT
-            if self.rect.bottom > HEIGHT:
-                self.rect.bottom = HEIGHT
+            if self.rect.left < GAME_ZONE_LEFT:
+                self.rect.left = GAME_ZONE_LEFT
+            if self.rect.right > GAME_ZONE_RIGHT:
+                self.rect.right = GAME_ZONE_RIGHT
+            if self.rect.top < GAME_ZONE_TOP:
+                self.rect.top = GAME_ZONE_TOP
+            if self.rect.bottom > GAME_ZONE_BOTTOM:
+                self.rect.bottom = GAME_ZONE_BOTTOM
 
             # === Déclenchement invisibilité ===
-            if keys[pygame.K_i] and not self.invisible and self.mana == 5:
+            if keys[pygame.K_LSHIFT] and not self.invisible and self.mana >= 4:
                 self.state = "invisible"
                 self.invisible = True
                 self.invisible_start_time = time.time()
                 self.mana = 0
 
             # === Déclenchement attaque ===
-            if keys[pygame.K_SPACE] and not self.attacking and not self.invisible and self.faceRorL == "L":
+            if (keys[pygame.K_SPACE] or pygame.mouse.get_pressed()[0]) and not self.attacking and not self.invisible and self.faceRorL == "L":
                 current_time = time.time()
                 if current_time - self.last_attack_time >= self.attack_cooldown:  # Vérifie le cooldown
                     self.state = "attackL"
@@ -173,6 +179,23 @@ class Player(pygame.sprite.Sprite):
             self.invisible = False
             self.state = "idleR"
 
+        # Gérer les iframes
+        if self.is_invulnerable:
+            current_time = time.time()
+            # Clignotement visuel
+            self.blink_timer += self.animation_speed
+            if self.blink_timer >= 0.25:  # Change de visibilité toutes les 0.1 secondes
+                self.blink_timer = 0
+                if self.image.get_alpha() == 255:
+                    self.image.set_alpha(100)  # Rend le joueur semi-transparent
+                else:
+                    self.image.set_alpha(255)  # Rétablit l'opacité normale
+
+            # Vérifie si les iframes sont terminées
+            if current_time - self.iframe_start_time >= self.iframe_duration:
+                self.is_invulnerable = False
+                self.image.set_alpha(255)  # Rétablit l'opacité normale
+
         # Animation selon l’état
         if self.state == "walkR":
             self.animate(self.walkRSprites, loop=True)
@@ -207,16 +230,24 @@ class Player(pygame.sprite.Sprite):
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "invisible":
-            self.image.set_alpha(0)  # invisible
+            self.animate(self.invisibleSprite, loop=True)
+            # Rendre translucide
+            self.image.set_alpha(50)
+
         elif self.state == "idleR" :
             self.image = self.walkRSprites[0]
         elif self.state == "idleL" :
             self.image = self.walkLSprites[0]
 
     def take_damage(self, amount):
-        self.hp -= amount
-        if self.hp <= 0:
-            print("Game Over")
+        if not self.is_invulnerable:  # Vérifie si le joueur est invulnérable
+            self.hp -= amount
+            if self.hp <= 0:
+                print("Game Over")
+            else:
+                # Active les iframes
+                self.is_invulnerable = True
+                self.iframe_start_time = time.time()  # Enregistre le début des iframes
 
     def enemy_killed(self, points):
         self.score += points
