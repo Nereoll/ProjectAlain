@@ -89,7 +89,7 @@ class Game:
         else:  # right
             pos = (WIDTH + 20, random.randint(ATH_HEIGHT, HEIGHT))
 
-        enemy = Enemy(enemy_type, self.player, pos)
+        enemy = Enemy(enemy_type, self.player, self.screen, pos)
         self.all_sprites.add(enemy)
         self.enemies.add(enemy)
 
@@ -97,9 +97,13 @@ class Game:
         """Affichage"""
 
         #DEBUG fps dans la console
-        print(int(self.clock.get_fps()))
+        #print(int(self.clock.get_fps()))
 
         self.screen.blit(self.background, (0, 0))
+
+        if self.player.state == "invisible":
+            for enemy in self.enemies:
+                self.screen.blit(enemy.question_mark, enemy.question_mark_rect)
 
         self.all_sprites.draw(self.screen)
 

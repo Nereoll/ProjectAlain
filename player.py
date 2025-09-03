@@ -54,7 +54,7 @@ class Player(pygame.sprite.Sprite):
 
         # Stats
         self.hp = 4
-        self.mana = 0
+        self.mana = 4
         
         self.score = 0
 
@@ -232,7 +232,7 @@ class Player(pygame.sprite.Sprite):
         elif self.state == "invisible":
             self.animate(self.invisibleSprite, loop=True)
             # Rendre translucide
-            self.image.set_alpha(50)
+            self.image.set_alpha(10)
 
         elif self.state == "idleR" :
             self.image = self.walkRSprites[0]

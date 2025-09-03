@@ -7,10 +7,11 @@ from PIL import Image , ImageOps
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, enemy_type, player, pos=(0, 0)):
+    def __init__(self, enemy_type, player, screen, pos=(0, 0)):
         super().__init__()
         self.enemy_type = enemy_type
         self.player = player
+        self.screen = screen
         self.last_attack_time = 0
         
 
@@ -44,6 +45,10 @@ class Enemy(pygame.sprite.Sprite):
         
         self.currentKB = self.knockback_distance
         self.default_speed = self.speed  # Sauvegarde de la vitesse initiale
+
+        self.question_mark = pygame.image.load("assets/images/question_mark.png").convert_alpha()
+        self.question_mark = pygame.transform.scale(self.question_mark, (30, 30))  # Redimensionne à 20x20 pixels
+        self.question_mark_rect = self.question_mark.get_rect()
 
         # === Sprites ===
         # Miror srite pawn
@@ -158,6 +163,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
+        self.handle_state()
         if self.state == "staggered":
             if self.is_knockback:
                 dx, dy = self.knockback_direction
@@ -174,7 +180,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.faceRorL == "L":
                     self.state = "idleL" 
                 else:
-                    self.state = "idleL" 
+                    self.state = "idleR" 
                 self.speed = self.default_speed
                 self.animation_speed = self.default_animation_speed
 
@@ -196,50 +202,58 @@ class Enemy(pygame.sprite.Sprite):
                     self.take_damage(1)
                     self.last_damage_time = current_time  # Met à jour le temps du dernier dégât
         else :
-            # Position du joueur
-            player_x, player_y = self.player.rect.center
-            enemy_x, enemy_y = self.rect.center
-            moving = False
-            # Calcul du vecteur direction
-            dx, dy = player_x - enemy_x, player_y - enemy_y
-            distance = math.hypot(dx, dy)
-            # Face direction
-            if player_x < enemy_x :
-                self.faceRorL = "L" 
-            else : 
-                self.faceRorL = "R"
-
-            # Déplacement seulement si trop loin
-            if distance > self.stop_distance:
-                dx, dy = dx / distance, dy / distance  # normalisation
-                moving=True
-                self.rect.x += dx * self.speed
-                self.rect.y += dy * self.speed
-
-            # Vérifie si assez proche pour attaquer
-            if distance <= 50 and not self.attacking:  # rayon d'attaque
-                current_time = time.time()
-                if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
-                    self.attacking = True
-                    if self.faceRorL == "R":
-                        self.state = "attackR"
-                    else :
-                        self.state = "attackL"
-                    self.current_frame = 0
-                    self.frame_timer = 0
-                    self.attack()
-                    self.last_attack_time = current_time
-
-            # Si pas en attaque, choisir l'état
-            if not self.attacking:
-                if moving and self.faceRorL == "R":
-                    self.state = "walkR"
-                elif moving and self.faceRorL == "L":
-                    self.state = "walkL"
-                elif self.faceRorL == "R":
-                    self.state = "idleR"
-                elif self.faceRorL == "L":
+            if self.player.state == "invisible":
+                if self.faceRorL == "L":
                     self.state = "idleL"
+                else:
+                    self.state = "idleR"
+                self.question_mark_rect.center = (self.rect.centerx, self.rect.top -20)  # Position au-dessus de l'ennemi
+                self.screen.blit(self.question_mark, self.question_mark_rect)
+            else :
+                # Position du joueur
+                player_x, player_y = self.player.rect.center
+                enemy_x, enemy_y = self.rect.center
+                moving = False
+                # Calcul du vecteur direction
+                dx, dy = player_x - enemy_x, player_y - enemy_y
+                distance = math.hypot(dx, dy)
+                # Face direction
+                if player_x < enemy_x :
+                    self.faceRorL = "L" 
+                else : 
+                    self.faceRorL = "R"
+
+                # Déplacement seulement si trop loin
+                if distance > self.stop_distance:
+                    dx, dy = dx / distance, dy / distance  # normalisation
+                    moving=True
+                    self.rect.x += dx * self.speed
+                    self.rect.y += dy * self.speed
+
+                # Vérifie si assez proche pour attaquer
+                if distance <= 50 and not self.attacking:  # rayon d'attaque
+                    current_time = time.time()
+                    if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
+                        self.attacking = True
+                        if self.faceRorL == "R":
+                            self.state = "attackR"
+                        else :
+                            self.state = "attackL"
+                        self.current_frame = 0
+                        self.frame_timer = 0
+                        self.attack()
+                        self.last_attack_time = current_time
+
+                # Si pas en attaque, choisir l'état
+                if not self.attacking:
+                    if moving and self.faceRorL == "R":
+                        self.state = "walkR"
+                    elif moving and self.faceRorL == "L":
+                        self.state = "walkL"
+                    elif self.faceRorL == "R":
+                        self.state = "idleR"
+                    elif self.faceRorL == "L":
+                        self.state = "idleL"
 
         # Toujours gérer l'animation selon l'état
         self.handle_state()
