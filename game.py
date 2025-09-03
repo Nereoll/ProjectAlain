@@ -23,7 +23,7 @@ class Game:
         # Joueur
         self.player = Player()
         self.all_sprites.add(self.player)
-        
+
         # Ath
         self.ath = Ath(self.player)
         self.all_sprites.add(self.ath)
