@@ -99,7 +99,7 @@ class Player(pygame.sprite.Sprite):
                 self.invisible_start_time = time.time()
 
             # === Déclenchement attaque ===
-            if keys[pygame.K_SPACE] and not self.attacking and not moving and not self.invisible:
+            if keys[pygame.K_SPACE] and not self.attacking and not self.invisible:
                 self.state = "attack"
                 self.attacking = True
                 self.current_frame = 0

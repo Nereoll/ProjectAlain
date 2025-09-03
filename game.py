@@ -86,12 +86,9 @@ class Game:
 
     def draw(self):
         """Affichage"""
-        self.screen.fill(WHITE)
+        background = pygame.image.load("assets/images/Base_Stage.png").convert()
+        self.screen.blit(background, (0, 0))
         self.all_sprites.draw(self.screen)
-
-        # Debug : affichage des hitbox
-        # for sprite in self.all_sprites:
-        #     pygame.draw.rect(self.screen, (0, 255, 0), sprite.rect, 2)
 
         pygame.display.flip()
 
