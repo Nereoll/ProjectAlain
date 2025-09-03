@@ -101,10 +101,11 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = HEIGHT
 
             # === Déclenchement invisibilité ===
-            if keys[pygame.K_i] and not self.invisible:
+            if keys[pygame.K_i] and not self.invisible and self.mana == 5:
                 self.state = "invisible"
                 self.invisible = True
                 self.invisible_start_time = time.time()
+                self.mana = 0
 
             # === Déclenchement attaque ===
             if keys[pygame.K_SPACE] and not self.attacking and not self.invisible:
