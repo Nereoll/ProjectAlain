@@ -32,6 +32,9 @@ class Game:
         self.start_time = time.time()
         self.last_spawn = 0
         self.spawn_delay = 3  # premier ennemi toutes les 3 sec
+        
+        # Score
+        self.score = 0
 
     def new(self):
         """Nouvelle partie"""
@@ -59,11 +62,12 @@ class Game:
         if current_time - self.last_spawn >= self.spawn_delay:
             self.spawn_enemy()
             self.last_spawn = current_time
-            # Exemple : réduire le délai de spawn petit à petit (jusqu’à un minimum)
             if self.spawn_delay > 0.8:
                 self.spawn_delay -= 0.1
-
+        oldLength = self.enemies.__len__()
         self.all_sprites.update()
+        if oldLength > self.enemies.__len__():
+            self.score += 100
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
