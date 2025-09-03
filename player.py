@@ -12,13 +12,17 @@ class Player(pygame.sprite.Sprite):
         # Miror srite
         imageLwalk = ImageOps.mirror(Image.open("assets/images/Warrior_Run.png"))
         imageLattack = ImageOps.mirror(Image.open("assets/images/Warrior_Attack2.png"))
+        imageLidle = ImageOps.mirror(Image.open("assets/images/Warrior_Idle.png"))
+
 
         # === Sprites ===
-        self.walkRSprites = load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
-        self.walkLSprites = load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
-        self.attackRSprites = load_sprites("assets/images/Warrior_Attack2.png", 4)
-        self.attackLSprites = load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
-        self.invisibleSprite = load_sprites("assets/images/Foam.png", 8)
+        self.walkRSprites = self.load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
+        self.idleRSprites = self.load_sprites("assets/images/Warrior_Idle.png",8)
+        self.walkLSprites = self.load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
+        self.attackRSprites = self.load_sprites("assets/images/Warrior_Attack2.png", 4)
+        self.attackLSprites = self.load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
+        self.idleLSprites = self.load_sprites(imagestring= imageLidle, num_frames= 8, nopath =True)
+        self.invisibleSprite = self.load_sprites("assets/images/Foam.png", 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -189,12 +193,12 @@ class Player(pygame.sprite.Sprite):
         elif self.state == "invisible":
             animate(self, self.invisibleSprite, loop=True)
             # Rendre translucide
-            self.image.set_alpha(50)
+            self.image.set_alpha(10)
 
         elif self.state == "idleR" :
-            self.image = self.walkRSprites[0]
+            self.animate(self.idleRSprites, loop=True)
         elif self.state == "idleL" :
-            self.image = self.walkLSprites[0]
+            self.animate(self.idleLSprites, loop=True)
 
     def take_damage(self, amount):
         if not self.is_invulnerable:  # Vérifie si le joueur est invulnérable

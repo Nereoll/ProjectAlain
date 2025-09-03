@@ -129,7 +129,7 @@ class Game:
         else:  # right
             pos = (WIDTH + 20, random.randint(ATH_HEIGHT, HEIGHT))
 
-        enemy = Enemy(enemy_type, self.player, pos)
+        enemy = Enemy(enemy_type, self.player, self.screen, pos)
         self.all_sprites.add(enemy, layer=1)
         self.enemies.add(enemy)
 
@@ -166,6 +166,10 @@ class Game:
         self.screen.blit(self.stage_backgrounds[self.stage], (0, 0))
 
         # Sprites
+        if self.player.state == "invisible":
+            for enemy in self.enemies:
+                self.screen.blit(enemy.question_mark, enemy.question_mark_rect)
+
         self.all_sprites.draw(self.screen)
 
         # Ombres selon HP
@@ -175,6 +179,9 @@ class Game:
             self.shadow_sprite.image = self.shadow2
         elif self.player.hp <= 1:
             self.shadow_sprite.image = self.shadow3
+        else:
+            self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
+            self.shadow_sprite.image.fill((0, 0, 0, 0))
 
         # Dessiner le sprite shadow
         self.shadow_sprites.draw(self.screen)
