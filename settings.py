@@ -15,7 +15,7 @@ GAME_ZONE_BOTTOM = HEIGHT - 70
 
 # Paramètres du jeu
 FPS = 60
-TITLE = "Mon Jeu 2D"
+TITLE = "Mediév'Alain"
 
 # Couleurs (R, G, B)
 WHITE = (255, 255, 255)

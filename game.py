@@ -44,7 +44,7 @@ class Game:
         self.shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
         self.shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
         self.background = pygame.image.load("assets/images/Base_Stage.png").convert()
-        
+
         # On garde un seul sprite shadow et on change son image selon le HP
         self.shadow_sprite = Shadow(self.shadow1, (0, 80))
         self.shadow_sprites = pygame.sprite.LayeredUpdates()
@@ -155,6 +155,8 @@ class Game:
         # Nettoyer les ennemis restants
         self.spawn_delay=3
         self.last_spawn=0
+        if self.player.hp <4:
+            self.player.hp=4
         self.enemies.empty()
 
 
