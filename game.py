@@ -177,6 +177,9 @@ class Game:
             self.shadow_sprite.image = self.shadow2
         elif self.player.hp <= 1:
             self.shadow_sprite.image = self.shadow3
+        else:
+            self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
+            self.shadow_sprite.image.fill((0, 0, 0, 0))
 
         # Dessiner le sprite shadow
         self.shadow_sprites.draw(self.screen)
