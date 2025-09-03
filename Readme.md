@@ -6,7 +6,7 @@ Alain project description
 
 ## 📂 Arborescence du projet
 
-```
+```bash
 projectalain/
 │── main.py        # Point d'entrée du jeu
 │── settings.py    # Paramètres globaux (résolution, FPS, couleurs…)

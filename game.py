@@ -1,10 +1,11 @@
 # game.py
-import pygame 
+import pygame
 import random
 import time
-from settings import WIDTH, HEIGHT, FPS, TITLE, WHITE
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
 from player import Player
 from enemy import Enemy
+from ath import Ath
 
 
 class Game:
@@ -23,10 +24,22 @@ class Game:
         self.player = Player()
         self.all_sprites.add(self.player)
 
+        # Ath
+        self.ath = Ath(self.player)
+        self.all_sprites.add(self.ath)
+
         # Timer de spawn
         self.start_time = time.time()
         self.last_spawn = 0
         self.spawn_delay = 3  # premier ennemi toutes les 3 sec
+        # Score
+        self.score = 0
+
+        # Load images once during initialization
+        self.shadow1 = pygame.image.load("assets/images/Shadow1.png").convert_alpha()
+        self.shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
+        self.shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
+        self.background = pygame.image.load("assets/images/Base_Stage.png").convert()
 
     def new(self):
         """Nouvelle partie"""
@@ -54,11 +67,12 @@ class Game:
         if current_time - self.last_spawn >= self.spawn_delay:
             self.spawn_enemy()
             self.last_spawn = current_time
-            # Exemple : réduire le délai de spawn petit à petit (jusqu’à un minimum)
             if self.spawn_delay > 0.8:
                 self.spawn_delay -= 0.1
-
+        oldLength = self.enemies.__len__()
         self.all_sprites.update()
+        if oldLength > self.enemies.__len__():
+            self.score += 100
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
@@ -67,13 +81,13 @@ class Game:
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])
         if side == "top":
-            pos = (random.randint(0, WIDTH), -20)
+            pos = (random.randint(0, WIDTH), ATH_HEIGHT)
         elif side == "bottom":
             pos = (random.randint(0, WIDTH), HEIGHT + 20)
         elif side == "left":
-            pos = (-20, random.randint(0, HEIGHT))
+            pos = (-20, random.randint(ATH_HEIGHT, HEIGHT))
         else:  # right
-            pos = (WIDTH + 20, random.randint(0, HEIGHT))
+            pos = (WIDTH + 20, random.randint(ATH_HEIGHT, HEIGHT))
 
         enemy = Enemy(enemy_type, self.player, pos)
         self.all_sprites.add(enemy)
@@ -81,12 +95,19 @@ class Game:
 
     def draw(self):
         """Affichage"""
-        self.screen.fill(WHITE)
+
+        #DEBUG fps dans la console
+        print(int(self.clock.get_fps()))
+
+        self.screen.blit(self.background, (0, 0))
+
         self.all_sprites.draw(self.screen)
 
-        # Debug : affichage des hitbox
-        for sprite in self.all_sprites:
-            pygame.draw.rect(self.screen, (0, 255, 0), sprite.rect, 2)
+        if self.player.hp == 3:
+            self.screen.blit(self.shadow1, (0, 80))
+        elif self.player.hp == 2:
+            self.screen.blit(self.shadow2, (0, 80))
+        elif self.player.hp <= 1:
+            self.screen.blit(self.shadow3, (0, 80))
 
         pygame.display.flip()
-
