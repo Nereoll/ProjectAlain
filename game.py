@@ -86,9 +86,24 @@ class Game:
 
     def draw(self):
         """Affichage"""
+        shadow1 = pygame.image.load("assets/images/Shadow1.png").convert_alpha()
+        shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
+        shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
+
+        #DEBUG fps dans la console
+        #print(int(self.clock.get_fps()))
+
         background = pygame.image.load("assets/images/Base_Stage.png").convert()
         self.screen.blit(background, (0, 0))
+
         self.all_sprites.draw(self.screen)
 
-        pygame.display.flip()
+        if self.player.hp == 3:
+            self.screen.blit(shadow1, (0, 80))
+        elif self.player.hp == 2:
+            self.screen.blit(shadow2, (0, 80))
+        elif self.player.hp <= 1:
+            self.screen.blit(shadow3, (0, 80))
 
+
+        pygame.display.flip()

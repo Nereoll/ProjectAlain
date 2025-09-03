@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         # Variables de déplacement
-        self.speed = 5
+        self.speed = 10
 
         # Animation
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
