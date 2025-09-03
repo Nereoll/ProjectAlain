@@ -15,26 +15,33 @@ class Enemy(pygame.sprite.Sprite):
 
         # Stats selon le type
         if enemy_type == "pawn":
-            self.hp = 60
+            self.hp = 3
             self.speed = 2
             self.attack_points = 8
-            self.stagger_timer = 0.5
+            self.stagger_timer = 0.3
+            self.knockback_distance = 50  # Distance du knockback
+            self.knockback_speed = 5
             color = (200, 200, 200)
         elif enemy_type == "goblin":
-            self.hp = 40
-            self.speed = 3
+            self.hp = 2
+            self.speed = 4
             self.attack_points = 5
-            self.stagger_timer = 0.7
+            self.stagger_timer = 0.5
+            self.knockback_distance = 100  # Distance du knockback
+            self.knockback_speed = 5
             color = (0, 200, 0)
         elif enemy_type == "lancier":
-            self.hp = 80
+            self.hp = 4
             self.speed = 1.5
             self.attack_points = 12
-            self.stagger_timer = 0.3
+            self.stagger_timer = 0.2
+            self.knockback_distance = 10  # Distance du knockback
+            self.knockback_speed = 5
             color = (150, 150, 255)
         else:
             raise ValueError("Type d'ennemi inconnu")
         
+        self.currentKB = self.knockback_distance
         self.default_speed = self.speed  # Sauvegarde de la vitesse initiale
 
         # === Sprites ===
@@ -66,6 +73,8 @@ class Enemy(pygame.sprite.Sprite):
         # États possibles : "idle", "walk", "attack"
         self.state = "idle" #État actuel de l'ennemi (idle, walk, attack).
         self.attacking = False
+
+        self.last_damage_time = 0
 
         """
         # Sprite (à remplacer par les vrais sprites)
@@ -122,52 +131,74 @@ class Enemy(pygame.sprite.Sprite):
         """Déplacement vers le joueur + attaque si proche"""
 
         if self.state == "staggered":
+            if self.is_knockback:
+                dx, dy = self.knockback_direction
+                self.rect.x += dx * self.knockback_speed
+                self.rect.y += dy * self.knockback_speed
+                self.currentKB -= self.knockback_speed
+                if self.currentKB <= 0:  # Fin du knockback
+                    self.is_knockback = False
+                    self.currentKB = self.knockback_distance
             current_time = time.time()  # Obtenir le temps actuel
             # Vérifie si le temps de stagger est écoulé
             if current_time - self.stagger_start_time >= self.stagger_timer:
-                # Fin du stagger, réinitialise les vitesses et retourne à l'état "idle"
-                self.state = "idle"
+                # Fin du stagger, réinitialise les vitesses
+                self.state = "idle"  # Par défaut, retourne à l'état "idle"
                 self.speed = self.default_speed
                 self.animation_speed = self.default_animation_speed
-                self.current_frame = 0  # Redémarre l'animation
-                
-        # Position du joueur
-        player_x, player_y = self.player.rect.center
-        enemy_x, enemy_y = self.rect.center
-        moving = False
 
+                # Vérifie si l'ennemi doit marcher ou rester idle
+                player_x, player_y = self.player.rect.center
+                enemy_x, enemy_y = self.rect.center
+                distance = math.hypot(player_x - enemy_x, player_y - enemy_y)
 
-        # Calcul du vecteur direction
-        dx, dy = player_x - enemy_x, player_y - enemy_y
-        distance = math.hypot(dx, dy)
-
-        # Déplacement seulement si trop loin
-        if distance > self.stop_distance:
-            dx, dy = dx / distance, dy / distance  # normalisation
-            moving=True
-            self.rect.x += dx * self.speed
-            self.rect.y += dy * self.speed
-
-        # Vérifie si assez proche pour attaquer
-        if distance <= 50 and not self.attacking:  # rayon d'attaque
+                if distance > self.stop_distance:
+                    self.state = "walk"  # Passe à l'état "walk" si trop loin
+        elif self.player.state == "attack" and self.player.rect.colliderect(self.rect):
             current_time = time.time()
-            if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
-                self.attacking = True
-                self.state = "attack"
-                self.current_frame = 0
-                self.frame_timer = 0
-                self.attack()
-                self.last_attack_time = current_time
+            # Vérifie si l'ennemi peut prendre des dégâts (délai entre deux dégâts)
+            if current_time - self.last_damage_time >= 0.5:  # Délai de 0.5 seconde
+                if self.state != "staggered":
+                    self.take_damage(1)
+                    self.last_damage_time = current_time  # Met à jour le temps du dernier dégât
+        else :
+            # Position du joueur
+            player_x, player_y = self.player.rect.center
+            enemy_x, enemy_y = self.rect.center
+            moving = False
 
-        # Si pas en attaque, choisir l'état
-        if not self.attacking:
-            if moving:
-                self.state = "walk"
-            else:
-                self.state = "idle"
 
-        # Toujours gérer l'animation selon l'état
-        self.handle_state()
+            # Calcul du vecteur direction
+            dx, dy = player_x - enemy_x, player_y - enemy_y
+            distance = math.hypot(dx, dy)
+
+            # Déplacement seulement si trop loin
+            if distance > self.stop_distance:
+                dx, dy = dx / distance, dy / distance  # normalisation
+                moving=True
+                self.rect.x += dx * self.speed
+                self.rect.y += dy * self.speed
+
+            # Vérifie si assez proche pour attaquer
+            if distance <= 50 and not self.attacking:  # rayon d'attaque
+                current_time = time.time()
+                if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
+                    self.attacking = True
+                    self.state = "attack"
+                    self.current_frame = 0
+                    self.frame_timer = 0
+                    self.attack()
+                    self.last_attack_time = current_time
+
+            # Si pas en attaque, choisir l'état
+            if not self.attacking:
+                if moving:
+                    self.state = "walk"
+                else:
+                    self.state = "idle"
+
+            # Toujours gérer l'animation selon l'état
+            self.handle_state()
 
     def attack(self):
         """Inflige des dégâts au joueur"""
@@ -180,6 +211,15 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = 0
         self.animation_speed = 0
         self.stagger_start_time = time.time() # Enregistre le début du stagger
+
+        player_x, player_y = self.player.rect.center
+        enemy_x, enemy_y = self.rect.center
+        dx, dy = enemy_x - player_x, enemy_y - player_y  # Direction opposée au joueur
+        distance = math.hypot(dx, dy)
+        if distance != 0:  # Normalisation
+            dx, dy = dx / distance, dy / distance
+        self.knockback_direction = (dx, dy)
+        self.is_knockback = True
 
         self.hp -= amount
         if self.hp <= 0:

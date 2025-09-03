@@ -1,5 +1,5 @@
 # game.py
-import pygame 
+import pygame
 import random
 import time
 from settings import WIDTH, HEIGHT, FPS, TITLE, WHITE

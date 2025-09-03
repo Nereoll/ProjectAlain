@@ -15,9 +15,14 @@ class Player(pygame.sprite.Sprite):
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
         self.image = self.walkSprites[self.current_frame] #Image actuelle du sprite affichée à l’écran.
         self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT // 2)) #Rectangle qui définit la position et la taille du sprite.
+        self.original_rect = self.rect.copy()
 
         # Pixel perfect collision
         self.mask = pygame.mask.from_surface(self.image)
+
+        # Cooldown d'attaque
+        self.last_attack_time = 0  # Temps de la dernière attaque
+        self.attack_cooldown = 1  # Cooldown en secondes
 
         # Variables de déplacement
         self.speed = 5
@@ -82,7 +87,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y += self.speed
                 moving = True
 
-                # Empêche le joueur de sortir de la fenêtre
+            # Empêche le joueur de sortir de la fenêtre
             if self.rect.left < 0:
                 self.rect.left = 0
             if self.rect.right > WIDTH:
@@ -99,11 +104,14 @@ class Player(pygame.sprite.Sprite):
                 self.invisible_start_time = time.time()
 
             # === Déclenchement attaque ===
-            if keys[pygame.K_SPACE] and not self.attacking and not moving and not self.invisible:
-                self.state = "attack"
-                self.attacking = True
-                self.current_frame = 0
-                self.frame_timer = 0
+            if keys[pygame.K_SPACE] and not self.attacking and not self.invisible:
+                current_time = time.time()
+                if current_time - self.last_attack_time >= self.attack_cooldown:  # Vérifie le cooldown
+                    self.state = "attack"
+                    self.attacking = True
+                    self.current_frame = 0
+                    self.frame_timer = 0
+                    self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
 
             if not moving and not self.attacking and not self.invisible:
                 self.state = "idle"
@@ -134,9 +142,14 @@ class Player(pygame.sprite.Sprite):
             self.animate(self.walkSprites, loop=True)
             self.image.set_alpha(255)  # normal
         elif self.state == "attack":
+
+            # Étend temporairement le rectangle autour du joueur
+            # A faire/corriger
+            #self.rect = self.original_rect.inflate_ip(40, 40)  # Augmente toutes les directions
+
             self.animate(self.attackSprites, loop=False)
             self.image.set_alpha(255)  # normal
-            # Quand on arrive à la fin de l'animation d'attaque (len()-1), retour à l'état idle
+            # Quand l'animation d'attaque est terminée
             if self.current_frame == len(self.attackSprites) - 1 and self.frame_timer == 0:
                 self.state = "idle"
                 self.attacking = False
