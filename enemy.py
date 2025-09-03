@@ -4,6 +4,7 @@ import random
 import math
 import time
 from settings import WIDTH, HEIGHT
+from PIL import Image , ImageOps
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -12,6 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_type = enemy_type
         self.player = player
         self.last_attack_time = 0
+        
 
         # Stats selon le type
         if enemy_type == "pawn":
@@ -33,15 +35,28 @@ class Enemy(pygame.sprite.Sprite):
             raise ValueError("Type d'ennemi inconnu")
 
         # === Sprites ===
+        # Miror srite pawn
+        imageLwalkpawn = ImageOps.mirror(Image.open("assets/images/Pawn_Run.png"))
+        # Miror srite goblin
+        imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/Goblin_Run.png"))
+        # Miror srite lancier
+        imageLwalklancier = ImageOps.mirror(Image.open("assets/images/Lancier_Run.png"))
+
         if self.enemy_type == "pawn":
-            self.walkSprites = self.load_sprites("assets/images/Pawn_Run.png", 6)
-            self.attackSprites = self.load_sprites("assets/images/Pawn_Attack.png", 6)
+            self.walkRSprites = self.load_sprites("assets/images/Pawn_Run.png", 6)
+            self.attackRSprites = self.load_sprites("assets/images/Pawn_Attack.png", 6)
+            self.walkLSprites = self.load_sprites(imagestring= imageLwalkpawn, num_frames=6, nopath =True)
+            self.attackLSprites = self.load_sprites("assets/images/Pawn_Attack_reversed.png", 6)
         elif self.enemy_type == "goblin":
-            self.walkSprites = self.load_sprites("assets/images/Goblin_Run.png", 6)
-            self.attackSprites = self.load_sprites("assets/images/Goblin_Attack.png", 6)
+            self.walkRSprites = self.load_sprites("assets/images/Goblin_Run.png", 6)
+            self.attackRSprites = self.load_sprites("assets/images/Goblin_Attack.png", 6)
+            self.walkLSprites = self.load_sprites(imagestring= imageLwalkgoblin, num_frames=6, nopath =True)
+            self.attackLSprites = self.load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
         elif self.enemy_type == "lancier":
-            self.walkSprites = self.load_sprites("assets/images/Lancier_Run.png", 6)
-            self.attackSprites = self.load_sprites("assets/images/Lancier_Attack.png", 3)
+            self.walkRSprites = self.load_sprites("assets/images/Lancier_Run.png", 6)
+            self.attackRSprites = self.load_sprites("assets/images/Lancier_Attack.png", 3)
+            self.walkLSprites = self.load_sprites(imagestring= imageLwalklancier, num_frames=6, nopath =True)
+            self.attackLSprites = self.load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -50,15 +65,15 @@ class Enemy(pygame.sprite.Sprite):
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
-        self.image = self.walkSprites[self.current_frame] #Image actuelle du sprite affichée à l’écran.
+        self.image = self.walkRSprites[self.current_frame] #Image actuelle du sprite affichée à l’écran.
         self.rect = self.image.get_rect(center=pos)
 
         # Animation
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
         self.frame_timer = 0 #Compte le temps pour passer à la frame suivante.
 
-        # États possibles : "idle", "walk", "attack"
-        self.state = "idle" #État actuel de l'ennemi (idle, walk, attack).
+        # États possibles : "idleR", "idleL", "walkR", "walkL", "attackR", "attackL"
+        self.state = "idleR" #État actuel de l'ennemi (idleR, walk, attack).
         self.attacking = False
 
         """
@@ -70,9 +85,17 @@ class Enemy(pygame.sprite.Sprite):
         # Distance minimale entre joueur et ennemi
         self.stop_distance = 35
 
-    def load_sprites(self, path, num_frames):
-        sheet = pygame.image.load(path).convert_alpha()
-        sheet_width, sheet_height = sheet.get_size()
+    def load_sprites(self, path = "", num_frames = 1 , nopath = False , imagestring = None):
+        if nopath :
+            mode = imagestring.mode
+            size = imagestring.size
+            data = imagestring.tobytes()
+
+            sheet = pygame.image.fromstring(data, size, mode).convert_alpha()
+            sheet_width, sheet_height = sheet.get_size()
+        else :
+            sheet = pygame.image.load(path).convert_alpha()
+            sheet_width, sheet_height = sheet.get_size()
         frame_width = sheet_width // num_frames
         sprites = []
         for i in range(num_frames):
@@ -101,16 +124,27 @@ class Enemy(pygame.sprite.Sprite):
 
     def handle_state(self):
         """Gère l'état actuel de l'ennemi"""
-        if self.state == "walk":
-            self.animate(self.walkSprites, loop=True)
-        elif self.state == "attack":
-            self.animate(self.attackSprites, loop=False)
-            if self.current_frame == len(self.attackSprites) - 1 and self.frame_timer == 0:
-                self.state = "idle"
+        if self.state == "walkR":
+            self.animate(self.walkRSprites, loop=True)
+        elif self.state == "walkL":
+            self.animate(self.walkLSprites, loop=True)
+        elif self.state == "attackR":
+            self.animate(self.attackRSprites, loop=False)
+            if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
+                self.state = "idleR"
                 self.attacking = False
                 self.current_frame = 0
-        else:
-            self.image = self.walkSprites[0]
+        elif self.state == "attackL":
+            self.animate(self.attackLSprites, loop=False)
+            if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
+                self.state = "idleL"
+                self.attacking = False
+                self.current_frame = 0
+        elif self.state == "idleR":
+            self.image = self.walkRSprites[0]
+        elif self.state == "idleL":
+            self.image = self.walkLSprites[0]
+
 
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
@@ -118,6 +152,12 @@ class Enemy(pygame.sprite.Sprite):
         player_x, player_y = self.player.rect.center
         enemy_x, enemy_y = self.rect.center
         moving = False
+
+        # Face direction
+        if player_x < enemy_x :
+            faceRorL = "L" 
+        else : 
+            faceRorL = "R"
 
 
         # Calcul du vecteur direction
@@ -136,7 +176,10 @@ class Enemy(pygame.sprite.Sprite):
             current_time = time.time()
             if current_time - self.last_attack_time >= 1:  # attaque toutes les secondes
                 self.attacking = True
-                self.state = "attack"
+                if faceRorL == "R":
+                    self.state = "attackR"
+                else :
+                    self.state = "attackL"
                 self.current_frame = 0
                 self.frame_timer = 0
                 self.attack()
@@ -144,10 +187,14 @@ class Enemy(pygame.sprite.Sprite):
 
         # Si pas en attaque, choisir l'état
         if not self.attacking:
-            if moving:
-                self.state = "walk"
-            else:
-                self.state = "idle"
+            if moving and faceRorL == "R":
+                self.state = "walkR"
+            elif moving and faceRorL == "L":
+                self.state = "walkL"
+            elif faceRorL == "R":
+                self.state = "idleR"
+            elif faceRorL == "L":
+                self.state = "idleL"
 
         # Toujours gérer l'animation selon l'état
         self.handle_state()
