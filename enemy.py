@@ -61,12 +61,6 @@ class Enemy(pygame.sprite.Sprite):
         self.state = "idle" #État actuel de l'ennemi (idle, walk, attack).
         self.attacking = False
 
-        """
-        # Sprite (à remplacer par les vrais sprites)
-        self.image = pygame.Surface((40, 40))
-        self.image.fill(color)
-        self.rect = self.image.get_rect(center=pos)
-        """
         # Distance minimale entre joueur et ennemi
         self.stop_distance = 35
 
