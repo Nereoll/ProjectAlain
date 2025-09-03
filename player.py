@@ -35,6 +35,9 @@ class Player(pygame.sprite.Sprite):
 
         # Stats
         self.hp = 4
+        self.mana = 0
+        
+        self.score = 0
 
     def load_sprites(self, path, num_frames):
         sheet = pygame.image.load(path).convert_alpha()
@@ -69,16 +72,16 @@ class Player(pygame.sprite.Sprite):
             keys = pygame.key.get_pressed()
             moving = False
 
-            if keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT] or keys[pygame.K_q]:
                 self.rect.x -= self.speed
                 moving = True
-            if keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 self.rect.x += self.speed
                 moving = True
-            if keys[pygame.K_UP]:
+            if keys[pygame.K_UP] or keys[pygame.K_z]:
                 self.rect.y -= self.speed
                 moving = True
-            if keys[pygame.K_DOWN]:
+            if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 self.rect.y += self.speed
                 moving = True
 
@@ -151,3 +154,8 @@ class Player(pygame.sprite.Sprite):
         self.hp -= amount
         if self.hp <= 0:
             print("Game Over")
+
+    def enemy_killed(self, points):
+        self.score += points
+        if self.mana < 5:
+            self.mana += 1

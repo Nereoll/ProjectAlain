@@ -150,4 +150,10 @@ class Enemy(pygame.sprite.Sprite):
         """Le joueur ou d'autres entités peuvent attaquer l'ennemi"""
         self.hp -= amount
         if self.hp <= 0:
-            self.kill()  # supprime l'ennemi du groupe
+            if self.enemy_type == "pawn":
+                self.player.enemy_killed(100)
+            if self.enemy_type == "goblin":
+                self.player.enemy_killed(150)
+            if self.enemy_type == "lancier":
+                self.player.enemy_killed(200)
+            self.kill()
