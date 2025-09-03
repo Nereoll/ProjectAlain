@@ -6,6 +6,7 @@ from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
 from player import Player
 from enemy import Enemy
 from ath import Ath
+from shadow import Shadow
 
 
 class Game:
@@ -17,16 +18,16 @@ class Game:
         self.running = True
 
         # Groupes de sprites
-        self.all_sprites = pygame.sprite.Group()
+        # Groupes de sprites avec gestion de layers
+        self.all_sprites = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.Group()
 
         # Joueur
         self.player = Player()
-        self.all_sprites.add(self.player)
+        self.all_sprites.add(self.player, layer=2)
 
         # Ath
         self.ath = Ath(self.player)
-        self.all_sprites.add(self.ath)
 
         # Timer de spawn
         self.start_time = time.time()
@@ -43,6 +44,13 @@ class Game:
         self.shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
         self.shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
         self.background = pygame.image.load("assets/images/Base_Stage.png").convert()
+        
+        # On garde un seul sprite shadow et on change son image selon le HP
+        self.shadow_sprite = Shadow(self.shadow1, (0, 80))
+        self.shadow_sprites = pygame.sprite.LayeredUpdates()
+        self.shadow_sprites.add(self.shadow_sprite, layer=4)
+
+
         self.secondStage = pygame.image.load("assets/images/Second_Stage.png").convert()
         self.thirdStage = pygame.image.load("assets/images/Third_Stage.png").convert()
         self.betweenSTage = pygame.image.load("assets/images/Between_Stage.png").convert()
@@ -103,6 +111,9 @@ class Game:
                 break
 
 
+        # Mise à jour explicite de l'ATH
+        self.ath.update()
+
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
         enemy_type = random.choice(["pawn", "goblin", "lancier"])
@@ -118,8 +129,8 @@ class Game:
         else:  # right
             pos = (WIDTH + 20, random.randint(ATH_HEIGHT, HEIGHT))
 
-        enemy = Enemy(enemy_type, self.player, pos)
-        self.all_sprites.add(enemy)
+        enemy = Enemy(enemy_type, self.player, self.screen, pos)
+        self.all_sprites.add(enemy, layer=1)
         self.enemies.add(enemy)
 
     def clear_stage(self, stage_name):
@@ -142,6 +153,8 @@ class Game:
                 showing = False
 
         # Nettoyer les ennemis restants
+        self.spawn_delay=3
+        self.last_spawn=0
         self.enemies.empty()
 
 
@@ -151,15 +164,27 @@ class Game:
         self.screen.blit(self.stage_backgrounds[self.stage], (0, 0))
 
         # Sprites
+        if self.player.state == "invisible":
+            for enemy in self.enemies:
+                self.screen.blit(enemy.question_mark, enemy.question_mark_rect)
+
         self.all_sprites.draw(self.screen)
 
         # Ombres selon HP
         if self.player.hp == 3:
-            self.screen.blit(self.shadow1, (0, 80))
+            self.shadow_sprite.image = self.shadow1
         elif self.player.hp == 2:
-            self.screen.blit(self.shadow2, (0, 80))
+            self.shadow_sprite.image = self.shadow2
         elif self.player.hp <= 1:
-            self.screen.blit(self.shadow3, (0, 80))
+            self.shadow_sprite.image = self.shadow3
+        else:
+            self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
+            self.shadow_sprite.image.fill((0, 0, 0, 0))
+
+        # Dessiner le sprite shadow
+        self.shadow_sprites.draw(self.screen)
+
+        self.ath.draw(self.screen)
 
         pygame.display.flip()
 
