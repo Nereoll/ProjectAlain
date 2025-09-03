@@ -189,7 +189,7 @@ class Player(pygame.sprite.Sprite):
             self.animate(self.attackRSprites, loop=False)
             self.image.set_alpha(255)  # normal
             # Quand l'animation d'attaque est terminée
-            if self.current_frame == len(self.attackSprites) - 1 and self.frame_timer == 0:
+            if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
                 self.state = "idleR"
                 self.attacking = False
                 self.current_frame = 0
@@ -202,7 +202,7 @@ class Player(pygame.sprite.Sprite):
             self.animate(self.attackLSprites, loop=False)
             self.image.set_alpha(255)  # normal
             # Quand l'animation d'attaque est terminée
-            if self.current_frame == len(self.attackSprites) - 1 and self.frame_timer == 0:
+            if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
                 self.state = "idleL"
                 self.attacking = False
                 self.current_frame = 0
