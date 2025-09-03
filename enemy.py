@@ -14,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # Stats selon le type
         if enemy_type == "pawn":
-            self.hp = 3
+            self.hp = 1
             self.speed = 2
             self.attack_points = 8
             self.stagger_timer = 0.3
@@ -30,7 +30,7 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_speed = 5
             color = (0, 200, 0)
         elif enemy_type == "lancier":
-            self.hp = 4
+            self.hp = 3
             self.speed = 1.5
             self.attack_points = 12
             self.stagger_timer = 0.2
