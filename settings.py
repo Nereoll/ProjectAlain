@@ -4,6 +4,12 @@
 WIDTH = 1024
 HEIGHT = 768
 
+# ATH
+ATH_HEIGHT = 80
+
+# GAME ZONE
+GAME_HEIGHT = HEIGHT - ATH_HEIGHT
+
 # Paramètres du jeu
 FPS = 60
 TITLE = "Mon Jeu 2D"

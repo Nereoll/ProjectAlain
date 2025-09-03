@@ -2,9 +2,10 @@
 import pygame
 import random
 import time
-from settings import WIDTH, HEIGHT, FPS, TITLE, WHITE
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
 from player import Player
 from enemy import Enemy
+from ath import Ath
 
 
 class Game:
@@ -22,6 +23,10 @@ class Game:
         # Joueur
         self.player = Player()
         self.all_sprites.add(self.player)
+
+        # Ath
+        self.ath = Ath(self.player)
+        self.all_sprites.add(self.ath)
 
         # Timer de spawn
         self.start_time = time.time()
@@ -67,13 +72,13 @@ class Game:
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])
         if side == "top":
-            pos = (random.randint(0, WIDTH), -20)
+            pos = (random.randint(0, WIDTH), ATH_HEIGHT)
         elif side == "bottom":
             pos = (random.randint(0, WIDTH), HEIGHT + 20)
         elif side == "left":
-            pos = (-20, random.randint(0, HEIGHT))
+            pos = (-20, random.randint(ATH_HEIGHT, HEIGHT))
         else:  # right
-            pos = (WIDTH + 20, random.randint(0, HEIGHT))
+            pos = (WIDTH + 20, random.randint(ATH_HEIGHT, HEIGHT))
 
         enemy = Enemy(enemy_type, self.player, pos)
         self.all_sprites.add(enemy)
@@ -81,12 +86,24 @@ class Game:
 
     def draw(self):
         """Affichage"""
-        self.screen.fill(WHITE)
+        shadow1 = pygame.image.load("assets/images/Shadow1.png").convert_alpha()
+        shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
+        shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
+
+        #DEBUG fps dans la console
+        #print(int(self.clock.get_fps()))
+
+        background = pygame.image.load("assets/images/Base_Stage.png").convert()
+        self.screen.blit(background, (0, 0))
+
         self.all_sprites.draw(self.screen)
 
-        # Debug : affichage des hitbox
-        for sprite in self.all_sprites:
-            pygame.draw.rect(self.screen, (0, 255, 0), sprite.rect, 2)
+        if self.player.hp == 3:
+            self.screen.blit(shadow1, (0, 80))
+        elif self.player.hp == 2:
+            self.screen.blit(shadow2, (0, 80))
+        elif self.player.hp <= 1:
+            self.screen.blit(shadow3, (0, 80))
+
 
         pygame.display.flip()
-

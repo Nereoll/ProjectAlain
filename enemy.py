@@ -1,9 +1,8 @@
 # enemie.py
 import pygame
-import random
 import math
 import time
-from settings import WIDTH, HEIGHT
+from settings import WIDTH, HEIGHT, ATH_HEIGHT
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -76,12 +75,6 @@ class Enemy(pygame.sprite.Sprite):
 
         self.last_damage_time = 0
 
-        """
-        # Sprite (à remplacer par les vrais sprites)
-        self.image = pygame.Surface((40, 40))
-        self.image.fill(color)
-        self.rect = self.image.get_rect(center=pos)
-        """
         # Distance minimale entre joueur et ennemi
         self.stop_distance = 35
 
