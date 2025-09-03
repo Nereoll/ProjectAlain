@@ -153,6 +153,8 @@ class Game:
                 showing = False
 
         # Nettoyer les ennemis restants
+        self.spawn_delay=3
+        self.last_spawn=0
         self.enemies.empty()
 
 
