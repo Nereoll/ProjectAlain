@@ -2,8 +2,8 @@
 import pygame
 import math
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT
 from PIL import Image , ImageOps
+from utilitaire import load_sprites, animate
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -59,20 +59,20 @@ class Enemy(pygame.sprite.Sprite):
         imageLwalklancier = ImageOps.mirror(Image.open("assets/images/Lancier_Run.png"))
 
         if self.enemy_type == "pawn":
-            self.walkRSprites = self.load_sprites("assets/images/Pawn_Run.png", 6)
-            self.attackRSprites = self.load_sprites("assets/images/Pawn_Attack.png", 6)
-            self.walkLSprites = self.load_sprites(imagestring= imageLwalkpawn, num_frames=6, nopath =True)
-            self.attackLSprites = self.load_sprites("assets/images/Pawn_Attack_reversed.png", 6)
+            self.walkRSprites = load_sprites("assets/images/Pawn_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/Pawn_Attack.png", 6)
+            self.walkLSprites = load_sprites(imagestring= imageLwalkpawn, num_frames=6, nopath =True)
+            self.attackLSprites = load_sprites("assets/images/Pawn_Attack_reversed.png", 6)
         elif self.enemy_type == "goblin":
-            self.walkRSprites = self.load_sprites("assets/images/Goblin_Run.png", 6)
-            self.attackRSprites = self.load_sprites("assets/images/Goblin_Attack.png", 6)
-            self.walkLSprites = self.load_sprites(imagestring= imageLwalkgoblin, num_frames=6, nopath =True)
-            self.attackLSprites = self.load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
+            self.walkRSprites = load_sprites("assets/images/Goblin_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/Goblin_Attack.png", 6)
+            self.walkLSprites = load_sprites(imagestring= imageLwalkgoblin, num_frames=6, nopath =True)
+            self.attackLSprites = load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
         elif self.enemy_type == "lancier":
-            self.walkRSprites = self.load_sprites("assets/images/Lancier_Run.png", 6)
-            self.attackRSprites = self.load_sprites("assets/images/Lancier_Attack.png", 3)
-            self.walkLSprites = self.load_sprites(imagestring= imageLwalklancier, num_frames=6, nopath =True)
-            self.attackLSprites = self.load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
+            self.walkRSprites = load_sprites("assets/images/Lancier_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/Lancier_Attack.png", 3)
+            self.walkLSprites = load_sprites(imagestring= imageLwalklancier, num_frames=6, nopath =True)
+            self.attackLSprites = load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -100,57 +100,20 @@ class Enemy(pygame.sprite.Sprite):
         # Distance minimale entre joueur et ennemi
         self.stop_distance = 35
 
-    def load_sprites(self, path = "", num_frames = 1 , nopath = False , imagestring = None):
-        if nopath :
-            mode = imagestring.mode
-            size = imagestring.size
-            data = imagestring.tobytes()
-
-            sheet = pygame.image.fromstring(data, size, mode).convert_alpha()
-            sheet_width, sheet_height = sheet.get_size()
-        else :
-            sheet = pygame.image.load(path).convert_alpha()
-            sheet_width, sheet_height = sheet.get_size()
-        frame_width = sheet_width // num_frames
-        sprites = []
-        for i in range(num_frames):
-            frame = sheet.subsurface((i * frame_width, 0, frame_width, sheet_height))
-
-            # === Recadrage automatique sur la zone utile ===
-            # Garder la zone non transparente
-            rect = frame.get_bounding_rect()
-            cropped = frame.subsurface(rect).copy()
-            sprites.append(cropped)
-        return sprites
-
-    def animate(self, sprites, loop=True):
-        """Anime un spritesheet"""
-        self.frame_timer += self.animation_speed
-        if self.frame_timer >= 1:
-            self.frame_timer = 0
-            self.current_frame += 1
-            if self.current_frame >= len(sprites):
-                if loop:
-                    self.current_frame = 0
-                else:
-                    self.current_frame = len(sprites) - 1  # rester sur la dernière frame
-            self.image = sprites[self.current_frame]
-
-
     def handle_state(self):
         """Gère l'état actuel de l'ennemi"""
         if self.state == "walkR":
-            self.animate(self.walkRSprites, loop=True)
+            animate(self, self.walkRSprites, loop=True)
         elif self.state == "walkL":
-            self.animate(self.walkLSprites, loop=True)
+            animate(self, self.walkLSprites, loop=True)
         elif self.state == "attackR":
-            self.animate(self.attackRSprites, loop=False)
+            animate(self, self.attackRSprites, loop=False)
             if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
                 self.state = "idleR"
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "attackL":
-            self.animate(self.attackLSprites, loop=False)
+            animate(self, self.attackLSprites, loop=False)
             if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
                 self.state = "idleL"
                 self.attacking = False

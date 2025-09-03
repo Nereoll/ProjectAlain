@@ -65,6 +65,7 @@ python main.py
 
 - [Python 3.x](https://www.python.org/)
 - [Pygame](https://www.pygame.org/)
+- [Pillow](https://pypi.org/project/pillow/)
 
 ---
 

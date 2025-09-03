@@ -6,7 +6,7 @@ from settings import WIDTH, HEIGHT
 
 if __name__ == "__main__":
     pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT)) 
 
 
     # Lancer le menu  
@@ -17,5 +17,5 @@ if __name__ == "__main__":
     if menu.start_game:
         g = Game()
         g.new()
-
+        
     pygame.quit()
