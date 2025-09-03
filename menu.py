@@ -11,7 +11,7 @@ class Menu:
 
         self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
-        self.font_button = pygame.font.SysFont("gentiumalt", 40)
+        self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
 
         # Bouton start
         self.start_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
