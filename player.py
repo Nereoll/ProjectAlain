@@ -211,9 +211,10 @@ class Player(pygame.sprite.Sprite):
             # Rendre translucide
             self.image.set_alpha(50)
 
-        else:
-            # Idle = première frame du walk
-            self.image = self.walkSprites[0]
+        elif self.state == "idleR" :
+            self.image = self.walkRSprites[0]
+        elif self.state == "idleL" :
+            self.image = self.walkLSprites[0]
 
     def take_damage(self, amount):
         self.hp -= amount
