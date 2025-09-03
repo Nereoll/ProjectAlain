@@ -2,7 +2,7 @@
 import pygame
 import random
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
 from player import Player
 from enemy import Enemy
 from ath import Ath
@@ -36,7 +36,10 @@ class Game:
         # Score
         self.score = 0
 
-        # Load images once during initialization
+
+
+        # Ressources à charger à l'initialisation
+        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
         self.shadow1 = pygame.image.load("assets/images/Shadow1.png").convert_alpha()
         self.shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
         self.shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
@@ -46,6 +49,24 @@ class Game:
         self.shadow_sprite = Shadow(self.shadow1, (0, 80))
         self.shadow_sprites = pygame.sprite.LayeredUpdates()
         self.shadow_sprites.add(self.shadow_sprite, layer=4)
+
+
+        self.secondStage = pygame.image.load("assets/images/Second_Stage.png").convert()
+        self.thirdStage = pygame.image.load("assets/images/Third_Stage.png").convert()
+        self.betweenSTage = pygame.image.load("assets/images/Between_Stage.png").convert()
+
+        # Gestion des stages
+        self.stage = 1
+        self.stage_backgrounds = {
+            1: self.background,
+            2: self.secondStage,
+            3: self.thirdStage,
+        }
+        self.stage_thresholds = {
+            2: 2000,   # score requis pour passer au stage 2
+            3: 4000,   # score requis pour passer au stage 3
+        }
+        self.stage_changed = False  # évite de répéter clear_stage
 
 
 
@@ -82,6 +103,14 @@ class Game:
         if oldLength > self.enemies.__len__():
             self.score += 100
 
+        # Vérifie si on doit changer de stage
+        for next_stage, threshold in self.stage_thresholds.items():
+            if self.score >= threshold and self.stage < next_stage:
+                self.clear_stage(f"Stage {next_stage}")
+                self.stage = next_stage
+                break
+
+
         # Mise à jour explicite de l'ATH
         self.ath.update()
 
@@ -104,18 +133,38 @@ class Game:
         self.all_sprites.add(enemy, layer=1)
         self.enemies.add(enemy)
 
+    def clear_stage(self, stage_name):
+        """Affiche l'écran de transition entre les stages"""
+        transition_start = time.time()
+        showing = True
+        while showing:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    return
+
+            self.screen.blit(self.betweenSTage, (0, 0))
+            title_text = self.font_title.render(stage_name, True, WHITE)
+            self.screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2,
+                                          HEIGHT // 2 - title_text.get_height() // 2))
+            pygame.display.flip()
+
+            if time.time() - transition_start > 2:  # 2 secondes
+                showing = False
+
+        # Nettoyer les ennemis restants
+        self.enemies.empty()
+
+
     def draw(self):
         """Affichage"""
+        # Fond du stage courant
+        self.screen.blit(self.stage_backgrounds[self.stage], (0, 0))
 
-        #DEBUG fps dans la console
-        print(int(self.clock.get_fps()))
-
-        self.screen.blit(self.background, (0, 0))
-
-        # Dessiner tous les sprites (ennemis + joueur + ATH)
+        # Sprites
         self.all_sprites.draw(self.screen)
 
-        # Choisir l'image selon l' HP
+        # Ombres selon HP
         if self.player.hp == 3:
             self.shadow_sprite.image = self.shadow1
         elif self.player.hp == 2:
@@ -129,3 +178,5 @@ class Game:
         self.ath.draw(self.screen)
 
         pygame.display.flip()
+
+
