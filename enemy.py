@@ -78,6 +78,13 @@ class Enemy(pygame.sprite.Sprite):
             self.image = pygame.Surface((40, 40))
             self.image.fill((255, 0, 0))
 
+        self.explosionFrames = load_sprites("assets/images/explosion.png", 11)
+        self.explosion_frame_index = 0  # Index de la frame actuelle
+        self.is_dead = False
+        self.explosionFrames = [
+            pygame.transform.scale(frame, (100, 100))  # Redimensionne chaque frame à 128x128
+            for frame in load_sprites("assets/images/explosion.png", 11)
+        ]
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -127,6 +134,16 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
         self.handle_state()
+
+        if self.is_dead:
+            # Affiche l'animation d'explosion
+            if self.explosion_frame_index < len(self.explosionFrames):
+                self.image = self.explosionFrames[self.explosion_frame_index]
+                self.explosion_frame_index += 1
+                self.rect = self.image.get_rect(center=self.rect.center)
+            else:
+                self.kill()
+    
         if self.state == "staggered":
             if self.is_knockback:
                 dx, dy = self.knockback_direction
@@ -250,4 +267,5 @@ class Enemy(pygame.sprite.Sprite):
                 self.player.enemy_killed(150)
             if self.enemy_type == "lancier":
                 self.player.enemy_killed(200)
-            self.kill()
+            self.is_dead = True
+            self.explosion_frame_index = 0
