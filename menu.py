@@ -25,17 +25,16 @@ class Menu:
 
         # Bouton crédit
         self.credit_text = self.font_credits.render("Crédits", True, WHITE)
-        self.credit_x = 50
-        self.credit_y = 50
+        self.credit_x = WIDTH - 415
+        self.credit_y = HEIGHT - 297
         self.credit_rect = self.credit_text.get_rect(topleft=(self.credit_x, self.credit_y))
         self.padding = 10
         self.box_rect = pygame.Rect(
             self.credit_rect.left - self.padding,
             self.credit_rect.top - self.padding,
-            self.credit_rect.width + 3.5 * self.padding,
-            self.credit_rect.height + 15 * self.padding
+            self.credit_rect.width + 5 * self.padding,
+            self.credit_rect.height + 7 * self.padding
         )
-        pygame.draw.rect(self.screen, BLUE, self.box_rect, 2)
 
         self.running = True
         self.start_game = False
@@ -113,7 +112,9 @@ class Menu:
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
             
             # Bouton Crédit
-            self.screen.blit(self.credit_text, (self.credit_x + 10, self.credit_y + 30))
+            self.screen.blit(self.credit_text, (self.credit_x + 20, self.credit_y + 80))
+            # pygame.draw.rect(self.screen, BLUE, self.box_rect, 4)
+
             
             
             # === Chevalier animé ===

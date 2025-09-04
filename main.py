@@ -14,11 +14,19 @@ if __name__ == "__main__":
         # Lancer le menu
         menu = Menu(screen)
         menu.run()
-        
+
         # Lancer les crédits
         if menu.show_credits:
             c = Credits(screen)
-            c.run()
+            c.run()  # d'abord on exécute les crédits
+
+            if c.retour:  
+                # retour au menu sans quitter la boucle principale
+                continue  
+            else:
+                # si on a quitté autrement -> fermer le programme
+                running = False
+                break
 
         if not menu.start_game:  # si le joueur a fermé la fenêtre
             running = False
@@ -27,8 +35,7 @@ if __name__ == "__main__":
         # Lancer le jeu
         g = Game()
         g.new()
-        
-        
+
         # Si le joueur est mort -> retour menu
         if g.game_over:
             continue  # reboucle sur Menu
