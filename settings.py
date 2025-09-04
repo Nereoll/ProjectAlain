@@ -15,7 +15,10 @@ GAME_ZONE_BOTTOM = HEIGHT - 70
 
 # Paramètres du jeu
 FPS = 60
-TITLE = "Mediév'Alain"
+TITLE = "The InvisiBlade Knight 2"
+SUBTITLE = """Ultimate Legendary
+Game of the Year 
+Edition"""
 
 # Couleurs (R, G, B)
 WHITE = (255, 255, 255)
