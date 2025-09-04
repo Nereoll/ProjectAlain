@@ -56,8 +56,15 @@ class Player(pygame.sprite.Sprite):
         self.invisible = False
         self.invisible_start_time = 0
         self.invisible_duration = 2  # secondes
+        # Ne pas équilibrer les power ups ici
+        self.damageAmpStart = 0
+        self.damageAmpValue = 0
+        self.damageAmpDuration = 0
+
+        self.invisibilityDurationLeft = 0
 
         # Stats
+        self.str = 1 #dégats
         self.hp = 4
         self.mana = 0
         self.score = 0
@@ -143,9 +150,13 @@ class Player(pygame.sprite.Sprite):
         self.handle_keys()
 
         # Vérifie si l’invisibilité est terminée
+        self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
         if self.invisible and (time.time() - self.invisible_start_time >= self.invisible_duration):
             self.invisible = False
             self.state = "idleR"
+
+        if time.time() - self.damageAmpStart >= 2 :
+            self.str = 1
 
         # Gérer les iframes
         if self.is_invulnerable:
@@ -162,6 +173,7 @@ class Player(pygame.sprite.Sprite):
             # Vérifie si les iframes sont terminées
             if current_time - self.iframe_start_time >= self.iframe_duration:
                 self.is_invulnerable = False
+                self.iframe_duration = 1
                 self.image.set_alpha(255)  # Rétablit l'opacité normale
         else :
             self.image.set_alpha(255)

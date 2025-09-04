@@ -7,6 +7,7 @@ from player import Player
 from enemy import Enemy
 from ath import Ath
 from shadow import Shadow
+from powerup import PowerUp
 
 
 class Game:
@@ -21,6 +22,7 @@ class Game:
         # Groupes de sprites avec gestion de layers
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.Group()
+        self.power_ups = pygame.sprite.Group()
 
         # Joueur
         self.player = Player()
@@ -37,6 +39,8 @@ class Game:
         self.spawnable = True
         # Score
         self.score = 0
+
+        self.lastPowerUp = 0
 
 
         # Ressources à charger à l'initialisation
@@ -123,8 +127,19 @@ class Game:
                 self.spawn_delay -= 0.1
         oldLength = self.enemies.__len__()
         self.all_sprites.update()
-        if oldLength > self.enemies.__len__():
-            self.score += 100
+
+        if self.player.state == "invisible" and len(self.power_ups) == 0 and (time.time() - self.lastPowerUp >= 2) :
+            self.lastPowerUp = time.time()
+            # Génère une position aléatoire dans la zone de jeu
+            x = random.randint(50, WIDTH - 50)
+            y = random.randint(50, HEIGHT - 50)
+            if self.player.hp < 4 : # Le joueur ne peut pas avoir plus de 4 coeurs
+                bonus_type = random.choice(["damageAmp", "invulnerability", "heart"])  # Type de bonus aléatoire
+            else :
+                bonus_type = random.choice(["damageAmp", "invulnerability"])
+            power_up = PowerUp((x, y), bonus_type, self.player)
+            self.power_ups.add(power_up)
+            self.all_sprites.add(power_up, layer=3)
 
         #change la porte en fonction du stage
         if self.stage == 1:

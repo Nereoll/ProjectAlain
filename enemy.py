@@ -37,7 +37,7 @@ class Enemy(pygame.sprite.Sprite):
             self.speed = 1.5
             self.attack_points = 1
             self.stagger_timer = 0.2
-            self.knockback_distance = 10  # Distance du knockback
+            self.knockback_distance = 40  # Distance du knockback
             self.knockback_speed = 5
             color = (150, 150, 255)
         else:
@@ -179,7 +179,7 @@ class Enemy(pygame.sprite.Sprite):
             # Vérifie si l'ennemi peut prendre des dégâts (délai entre deux dégâts)
             if current_time - self.last_damage_time >= 0.5:  # Délai de 0.5 seconde
                 if self.state != "staggered":
-                    self.take_damage(1)
+                    self.take_damage(self.player.str)
                     self.last_damage_time = current_time  # Met à jour le temps du dernier dégât
         else :
             if self.player.state == "invisible":
