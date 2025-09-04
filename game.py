@@ -202,8 +202,6 @@ class Game:
 
         #Actions spécifiques à la fin du jeu
         if self.stage > 3:
-            self.spawnable = False #empeche le spawn de nouceaux ennemis
-            self.enemies.empty()
             self.playerSpawn = (WIDTH // 2, 80) #deplaces le joueur au bon endroit
         if self.stage == 5 and not self.boss:
             self.start_boss_cutscene()
@@ -218,7 +216,8 @@ class Game:
                 if self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
                     self.door = False
-                    self.spawnable = True
+                    if not self.stage > 3:
+                        self.spawnable = True
                     self.stage_cleared = False
                     for enemy in self.enemies:
                         enemy.kill()
@@ -265,7 +264,8 @@ class Game:
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
-        enemy_type = random.choice(["pawn", "goblin", "lancier"])
+        enemy_type = random.choice(["pawn", "goblin", "lancier", "scout"])
+        #enemy_type = random.choice(["scout"])
 
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])
@@ -288,7 +288,7 @@ class Game:
         self.last_spawn = 0
         self.door=True
         if self.player.hp <4:
-            self.player.hp=4
+            self.player.hp+=2
 
     def draw(self):
         """Affichage"""

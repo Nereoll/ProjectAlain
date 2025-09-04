@@ -25,8 +25,8 @@ class Menu:
 
         # Bouton crédit
         self.credit_text = self.font_credits.render("Crédits", True, WHITE)
-        self.credit_x = WIDTH - 415
-        self.credit_y = HEIGHT - 297
+        self.credit_x = WIDTH - 270
+        self.credit_y = HEIGHT - 296
         self.credit_rect = self.credit_text.get_rect(topleft=(self.credit_x, self.credit_y))
         self.padding = 10
         self.box_rect = pygame.Rect(
