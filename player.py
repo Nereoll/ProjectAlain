@@ -56,8 +56,15 @@ class Player(pygame.sprite.Sprite):
         self.invisible = False
         self.invisible_start_time = 0
         self.invisible_duration = 2  # secondes
+        # Ne pas équilibrer les power ups ici
+        self.damageAmpStart = 0
+        self.damageAmpValue = 0
+        self.damageAmpDuration = 0
+
+        self.invisibilityDurationLeft = 0
 
         # Stats
+        self.str = 1 #dégats
         self.hp = 4
         self.mana = 40000
         self.score = 0
@@ -148,28 +155,33 @@ class Player(pygame.sprite.Sprite):
         else:
             self.handle_keys()
 
-            # Vérifie si l’invisibilité est terminée
-            if self.invisible and (time.time() - self.invisible_start_time >= self.invisible_duration):
-                self.invisible = False
-                self.state = "idleR"
+        # Vérifie si l’invisibilité est terminée
+        self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
+        if self.invisible and (time.time() - self.invisible_start_time >= self.invisible_duration):
+            self.invisible = False
 
-            # Gérer les iframes
-            if self.is_invulnerable:
-                current_time = time.time()
-                # Clignotement visuel
-                self.blink_timer += self.animation_speed
-                if self.blink_timer >= 0.25:  # Change de visibilité toutes les 0.1 secondes
-                    self.blink_timer = 0
-                    if self.image.get_alpha() == 255:
-                        self.image.set_alpha(100)  # Rend le joueur semi-transparent
-                    else:
-                        self.image.set_alpha(255)  # Rétablit l'opacité normale
-                # Vérifie si les iframes sont terminées
-                if current_time - self.iframe_start_time >= self.iframe_duration:
-                    self.is_invulnerable = False
+        if time.time() - self.damageAmpStart >= 2 :
+            self.str = 1
+
+        # Gérer les iframes
+        if self.is_invulnerable:
+            current_time = time.time()
+            # Clignotement visuel
+            self.blink_timer += self.animation_speed
+            if self.blink_timer >= 0.25:  # Change de visibilité toutes les 0.1 secondes
+                self.blink_timer = 0
+                if self.image.get_alpha() == 255:
+                    self.image.set_alpha(100)  # Rend le joueur semi-transparent
+                else:
                     self.image.set_alpha(255)  # Rétablit l'opacité normale
-                else :
-                    self.image.set_alpha(255)
+
+            # Vérifie si les iframes sont terminées
+            if current_time - self.iframe_start_time >= self.iframe_duration:
+                self.is_invulnerable = False
+                self.iframe_duration = 1
+                self.image.set_alpha(255)  # Rétablit l'opacité normale
+        else :
+            self.image.set_alpha(255)
 
             # Animation selon l’état
             if self.state == "walkR":
@@ -224,5 +236,5 @@ class Player(pygame.sprite.Sprite):
 
     def enemy_killed(self, points):
         self.score += points
-        if self.mana < 5:
+        if self.mana < 4:
             self.mana += 1
