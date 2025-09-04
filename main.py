@@ -33,13 +33,12 @@ if __name__ == "__main__":
             break
         
         if menu.start_game_infinite:
-            # g = Dungeon()
-            # g.new()
-            break;
-
-        # Lancer le jeu
-        g = Game()
-        g.new()
+            g = Game(isDungeon=True)
+            g.new()
+        else:
+            # Lancer le jeu en mode normal
+            g = Game()
+            g.new()
 
         # Si le joueur est mort -> retour menu
         if g.game_over:
