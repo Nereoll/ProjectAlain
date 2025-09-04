@@ -237,5 +237,5 @@ class Player(pygame.sprite.Sprite):
 
     def enemy_killed(self, points):
         self.score += points
-        if self.mana < 5:
+        if self.mana < 4:
             self.mana += 1
