@@ -3,7 +3,7 @@ import pygame
 import math
 import time
 from PIL import Image , ImageOps
-from utilitaire import load_sprites, animate
+from utilitaire import load_sprites, animate, scale_sprites
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -32,6 +32,13 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_distance = 100  # Distance du knockback
             self.knockback_speed = 5
             color = (0, 200, 0)
+        elif enemy_type == "scout" :
+            self.hp = 1
+            self.speed = 7
+            self.attack_points = 1
+            self.stagger_timer = 0.5
+            self.knockback_distance = 250
+            self.knockback_speed = 100
         elif enemy_type == "lancier":
             self.hp = 3
             self.speed = 1.5
@@ -57,6 +64,8 @@ class Enemy(pygame.sprite.Sprite):
         imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/Goblin_Run.png"))
         # Miror srite lancier
         imageLwalklancier = ImageOps.mirror(Image.open("assets/images/Lancier_Run.png"))
+        # Miror sprite scout
+        imageLwalkscout = ImageOps.mirror(Image.open("assets/images/scoutRun.png"))
 
         if self.enemy_type == "pawn":
             self.walkRSprites = load_sprites("assets/images/Pawn_Run.png", 6)
@@ -72,6 +81,14 @@ class Enemy(pygame.sprite.Sprite):
             self.attackLSprites = load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
             self.idleRSprites = load_sprites("assets/images/Goblin_IdleR.png", 7)
             self.idleLSprites = load_sprites("assets/images/Goblin_IdleL.png", 7)
+        elif self.enemy_type == "scout":
+            scale_factor = 3
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/scoutRun.png", 8), scale_factor)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/scoutAttack.png", 3), scale_factor)
+            self.walkLSprites = scale_sprites(load_sprites(imagestring=imageLwalkscout, num_frames=8, nopath=True), scale_factor)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/scoutAttack.png", 3), scale_factor)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/scoutIdle.png", 8), scale_factor)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/scoutIdle.png", 8), scale_factor)
         elif self.enemy_type == "lancier":
             self.walkRSprites = load_sprites("assets/images/Lancier_Run.png", 6)
             self.attackRSprites = load_sprites("assets/images/Lancier_Attack.png", 3)
@@ -271,6 +288,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.player.enemy_killed(100)
             if self.enemy_type == "goblin":
                 self.player.enemy_killed(150)
+            if self.enemy_type == "scout":
+                self.player.enemy_killed(100)
             if self.enemy_type == "lancier":
                 self.player.enemy_killed(200)
             self.is_dead = True

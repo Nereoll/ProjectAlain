@@ -66,6 +66,10 @@ def pixelate(img, scale=0.5):
     ver_pixel = pygame.transform.scale(ver_mini, ver_originale) #réagrandit l'image pixelisée
     return ver_pixel
 
+def scale_sprites(sprites, scale_factor):
+    """Redimensionne une liste de sprites."""
+    return [pygame.transform.scale(sprite, (int(sprite.get_width() * scale_factor), int(sprite.get_height() * scale_factor))) for sprite in sprites]
+
 
 class AnimatedEntity:
     """

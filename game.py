@@ -211,6 +211,7 @@ class Game:
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
         enemy_type = random.choice(["pawn", "goblin", "lancier"])
+        #enemy_type = random.choice(["scout"])
 
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])
