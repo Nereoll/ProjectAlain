@@ -6,8 +6,9 @@ from PIL import Image , ImageOps
 from utilitaire import load_sprites, animate, SoundEffects
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, game=None):
         super().__init__()
+        self.game = game
 
         # Miror srite
         imageLwalk = ImageOps.mirror(Image.open("assets/images/Warrior_Run.png"))
@@ -64,7 +65,6 @@ class Player(pygame.sprite.Sprite):
         self.invisibilityDurationLeft = 0
 
         # Stats
-        self.str = 1 #dégats
         self.hp = 4
         self.mana = 40000
         self.score = 0
@@ -169,6 +169,14 @@ class Player(pygame.sprite.Sprite):
         - Idle : on prend juste la première frame de marche.
         - Invisible : on prend la frame d'invisibilité.
         """
+        # Vérifie si le joueur est dans une cutscene (si game est défini)
+        # Vérifie si le joueur est dans une cutscene et ce n'est pas la mort du boss
+        if self.game and getattr(self.game, "in_cutscene", False):
+            if not (self.game.boss and getattr(self.game.boss, "is_dead", False)):
+                self.state = "idleR"
+                return
+
+
         if self.state == "dead" :
             if self.faceRorL == "R" :
                 animate(self, self.idleRSprites, loop=True)

@@ -34,8 +34,6 @@ class PowerUp(pygame.sprite.Sprite):
             self.sprites = [pygame.Surface((32, 32))]
             self.sprites[0].fill((255, 0, 0))
 
-            
-
         self.image = self.sprites[0]  # Première frame de l'animation
         self.current_frame = 0  # Frame actuelle
         self.frame_timer = 0  # Timer pour l'animation

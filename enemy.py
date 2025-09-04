@@ -3,7 +3,7 @@ import pygame
 import math
 import time
 from PIL import Image , ImageOps
-from utilitaire import load_sprites, animate
+from utilitaire import load_sprites, animate, scale_sprites
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -32,6 +32,13 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_distance = 100  # Distance du knockback
             self.knockback_speed = 5
             color = (0, 200, 0)
+        elif enemy_type == "scout" :
+            self.hp = 1
+            self.speed = 7
+            self.attack_points = 1
+            self.stagger_timer = 0.5
+            self.knockback_distance = 250
+            self.knockback_speed = 100
         elif enemy_type == "lancier":
             self.hp = 3
             self.speed = 1.5
@@ -40,9 +47,16 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_distance = 40  # Distance du knockback
             self.knockback_speed = 5
             color = (150, 150, 255)
+        elif enemy_type=="boss":
+            self.hp = 50
+            self.speed = 4
+            self.attack_points = 2
+            self.stagger_timer = 0.5
+            self.knockback_distance = 10  # Distance du knockback
+            self.knockback_speed = 3
         else:
             raise ValueError("Type d'ennemi inconnu")
-        
+
         self.currentKB = self.knockback_distance
         self.default_speed = self.speed  # Sauvegarde de la vitesse initiale
 
@@ -57,6 +71,8 @@ class Enemy(pygame.sprite.Sprite):
         imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/Goblin_Run.png"))
         # Miror srite lancier
         imageLwalklancier = ImageOps.mirror(Image.open("assets/images/Lancier_Run.png"))
+        # Miror sprite scout
+        imageLwalkscout = ImageOps.mirror(Image.open("assets/images/scoutRun.png"))
 
         if self.enemy_type == "pawn":
             self.walkRSprites = load_sprites("assets/images/Pawn_Run.png", 6)
@@ -65,6 +81,7 @@ class Enemy(pygame.sprite.Sprite):
             self.attackLSprites = load_sprites("assets/images/Pawn_Attack_reversed.png", 6)
             self.idleRSprites = load_sprites("assets/images/Pawn_IdleR.png", 6)
             self.idleLSprites = load_sprites("assets/images/Pawn_IdleL.png", 6)
+            self.animation_speed = 0.15 
         elif self.enemy_type == "goblin":
             self.walkRSprites = load_sprites("assets/images/Goblin_Run.png", 6)
             self.attackRSprites = load_sprites("assets/images/Goblin_Attack.png", 6)
@@ -72,6 +89,16 @@ class Enemy(pygame.sprite.Sprite):
             self.attackLSprites = load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
             self.idleRSprites = load_sprites("assets/images/Goblin_IdleR.png", 7)
             self.idleLSprites = load_sprites("assets/images/Goblin_IdleL.png", 7)
+            self.animation_speed = 0.15 
+        elif self.enemy_type == "scout":
+            scale_factor = 3
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/scoutRun.png", 8), scale_factor)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/scoutAttack.png", 3), scale_factor)
+            self.walkLSprites = scale_sprites(load_sprites(imagestring=imageLwalkscout, num_frames=8, nopath=True), scale_factor)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/scoutAttack.png", 3), scale_factor)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/scoutIdle.png", 8), scale_factor)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/scoutIdle.png", 8), scale_factor)
+            self.animation_speed = 0.15 
         elif self.enemy_type == "lancier":
             self.walkRSprites = load_sprites("assets/images/Lancier_Run.png", 6)
             self.attackRSprites = load_sprites("assets/images/Lancier_Attack.png", 3)
@@ -79,6 +106,16 @@ class Enemy(pygame.sprite.Sprite):
             self.attackLSprites = load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
             self.idleRSprites = load_sprites("assets/images/Lancier_IdleR.png", 12)
             self.idleLSprites = load_sprites("assets/images/Lancier_IdleL.png", 12)
+            self.animation_speed = 0.15 
+        elif self.enemy_type=="boss":
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/Boss_Run.png", 6), 5)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/Boss_Attack.png", 13), 5)
+            self.walkLSprites = scale_sprites(load_sprites("assets/images/Boss_Run_reversed.png", 6), 5)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/Boss_Attack_reversed.png", 13), 5)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/Boss_IdleR.png", 11), 5)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/Boss_IdleL.png", 11), 5)
+            self.deathSprites = scale_sprites(load_sprites("assets/images/Boss_Death.png", 11), 5)
+            self.animation_speed = 0.08
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -98,7 +135,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
 
         # Animation
-        self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
+          # vitesse de défilement des frames de mouvement
         self.default_animation_speed = self.animation_speed  # Sauvegarde de la vitesse d'animation initiale (pour le stagger)
         self.frame_timer = 0 #Compte le temps pour passer à la frame suivante.
 
@@ -116,30 +153,58 @@ class Enemy(pygame.sprite.Sprite):
     def handle_state(self):
         """Gère l'état actuel de l'ennemi"""
         if self.state == "walkR":
-            animate(self, self.walkRSprites, loop=True)
+            animate(self, self.walkRSprites, loop=True, animation_speed=self.animation_speed)
         elif self.state == "walkL":
-            animate(self, self.walkLSprites, loop=True)
+            animate(self, self.walkLSprites, loop=True, animation_speed=self.animation_speed)
         elif self.state == "attackR":
-            animate(self, self.attackRSprites, loop=False)
+            animate(self, self.attackRSprites, loop=False, animation_speed=self.animation_speed)
             if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
                 self.state = "idleR"
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "attackL":
-            animate(self, self.attackLSprites, loop=False)
+            animate(self, self.attackLSprites, loop=False, animation_speed=self.animation_speed)
             if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
                 self.state = "idleL"
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "idleR":
-            animate(self, self.idleRSprites, loop=True)
+            animate(self, self.idleRSprites, loop=True, animation_speed=self.animation_speed)
         elif self.state == "idleL":
-            animate(self, self.idleLSprites, loop=True)
+            animate(self, self.idleLSprites, loop=True, animation_speed=self.animation_speed)
 
 
     def update(self):
         """Déplacement vers le joueur + attaque si proche"""
+        # Si le boss est mort et doit jouer son animation
+        if self.enemy_type == "boss" and self.is_dead:
+            if self.current_frame < len(self.deathSprites):
+                self.image = self.deathSprites[self.current_frame]
+                self.rect = self.image.get_rect(center=self.rect.center)
+                self.current_frame += 1
+            else:
+                self.kill()  # Supprime définitivement le boss après animation
+            return
+
+        # Animation normale
         self.handle_state()
+
+        if self.enemy_type == "boss" and self.player.game.in_cutscene:
+            # Le boss reste idle pendant les dialogues
+            self.state = "idleL"
+            self.handle_state()
+            return
+
+        # Ennemis normaux : explosion ou destruction
+        if self.is_dead:
+            if self.explosion_frame_index < len(self.explosionFrames):
+                self.image = self.explosionFrames[self.explosion_frame_index]
+                self.rect = self.image.get_rect(center=self.rect.center)
+                self.explosion_frame_index += 1
+            else:
+                self.kill()
+            return
+
 
         if self.is_dead:
             # Affiche l'animation d'explosion
@@ -149,7 +214,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect = self.image.get_rect(center=self.rect.center)
             else:
                 self.kill()
-    
+
         if self.state == "staggered":
             if self.is_knockback:
                 dx, dy = self.knockback_direction
@@ -164,9 +229,9 @@ class Enemy(pygame.sprite.Sprite):
             if current_time - self.stagger_start_time >= self.stagger_timer:
                 # Fin du stagger, réinitialise les vitesses
                 if self.faceRorL == "L":
-                    self.state = "idleL" 
+                    self.state = "idleL"
                 else:
-                    self.state = "idleR" 
+                    self.state = "idleR"
                 self.speed = self.default_speed
                 self.animation_speed = self.default_animation_speed
 
@@ -205,8 +270,8 @@ class Enemy(pygame.sprite.Sprite):
                 distance = math.hypot(dx, dy)
                 # Face direction
                 if player_x < enemy_x :
-                    self.faceRorL = "L" 
-                else : 
+                    self.faceRorL = "L"
+                else :
                     self.faceRorL = "R"
 
                 # Déplacement seulement si trop loin
@@ -254,24 +319,34 @@ class Enemy(pygame.sprite.Sprite):
         self.state = "staggered"
         self.speed = 0
         self.animation_speed = 0
-        self.stagger_start_time = time.time() # Enregistre le début du stagger
+        self.stagger_start_time = time.time()
 
         player_x, player_y = self.player.rect.center
         enemy_x, enemy_y = self.rect.center
-        dx, dy = enemy_x - player_x, enemy_y - player_y  # Direction opposée au joueur
+        dx, dy = enemy_x - player_x, enemy_y - player_y
         distance = math.hypot(dx, dy)
-        if distance != 0:  # Normalisation
+        if distance != 0:
             dx, dy = dx / distance, dy / distance
         self.knockback_direction = (dx, dy)
         self.is_knockback = True
 
         self.hp -= amount
         if self.hp <= 0:
-            if self.enemy_type == "pawn":
-                self.player.enemy_killed(100)
-            if self.enemy_type == "goblin":
-                self.player.enemy_killed(150)
-            if self.enemy_type == "lancier":
-                self.player.enemy_killed(200)
-            self.is_dead = True
-            self.explosion_frame_index = 0
+            if self.enemy_type == "boss":
+                self.player.enemy_killed(5000)
+                self.is_dead = True
+                self.current_frame = 0  # Pour commencer l'animation Boss_Death
+                self.player.game.start_boss_death_cutscene()
+            else:
+                self.is_dead = True
+                self.explosion_frame_index = 0
+                # Score
+                if self.enemy_type == "pawn":
+                    self.player.enemy_killed(100)
+                elif self.enemy_type == "goblin":
+                    self.player.enemy_killed(150)
+                elif self.enemy_type == "scout":
+                    self.player.enemy_killed(100)
+                elif self.enemy_type == "lancier":
+                    self.player.enemy_killed(200)
+
