@@ -87,7 +87,6 @@ class Menu:
             start_text = self.font_button.render("", True, WHITE)
             self.screen.blit(start_text, (self.start_button.centerx - start_text.get_width() // 2,
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
-            
             # === Chevalier animé ===
             #self.knight.update()
             #self.knight.draw(self.screen)
@@ -109,7 +108,6 @@ class Menu:
             self.playerSprites.draw(self.screen)
 
 
-            
             # === Subtitle ===
             subtitle_lines = SUBTITLE.splitlines()
             subtitle_x = 80

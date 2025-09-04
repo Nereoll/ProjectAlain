@@ -159,7 +159,6 @@ class Game:
                 break
 
 
-
         # Mise à jour explicite de l'ATH
         self.ath.update()
 
