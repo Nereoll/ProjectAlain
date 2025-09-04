@@ -1,5 +1,8 @@
+import random
 import pygame
 import os
+
+pygame.mixer.init()
 
 def load_sprites(path="", num_frames=1, nopath=False, imagestring=None):
     """Charge un spritesheet horizontal découpé en plusieurs frames."""
@@ -90,3 +93,43 @@ class AnimatedEntity:
     def draw(self, screen):
         """Affiche l'entité sur l'écran."""
         screen.blit(self.image, self.pos)
+
+class SoundEffects:
+    def __init__(self):
+        self.sound_groups = {}
+        self.last_played = {}
+    
+    def load_sound_group(self, group_name, sound_files):
+        sounds = []
+        for sound_file in sound_files:
+            if os.path.exists(sound_file):
+                sound = pygame.mixer.Sound(sound_file)
+                sounds.append(sound)
+                print(f"Loaded: {sound_file}")
+            else:
+                print(f"Not found: {sound_file}")
+        
+        self.sound_groups[group_name] = sounds
+    
+    def play_random(self, group_name, volume=1.0, cooldown=0.5):
+        current_time = pygame.time.get_ticks() / 1000.0
+        if group_name in self.last_played:
+            time_since_last = current_time - self.last_played[group_name]
+            if time_since_last < cooldown:
+                return False
+        sound = random.choice(self.sound_groups[group_name])
+        sound.set_volume(volume)
+        sound.play()
+        self.last_played[group_name] = current_time
+
+    def play_music(self, music_file, volume=0.2):
+        if os.path.exists(music_file):
+            pygame.mixer.music.load(music_file)
+            pygame.mixer.music.set_volume(volume)
+            pygame.mixer.music.play()
+
+    def stop_music(self):
+        pygame.mixer.music.stop()
+
+    def is_playing(self):
+        return pygame.mixer.music.get_busy()

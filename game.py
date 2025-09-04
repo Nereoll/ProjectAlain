@@ -109,7 +109,6 @@ class Game:
 
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
 
-
     def new(self):
         """Nouvelle partie"""
         self.run()

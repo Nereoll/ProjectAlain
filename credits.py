@@ -28,6 +28,7 @@ class Credits:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.retour = True
                         self.running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:   # moved inside the loop
                     mouse_pos = pygame.mouse.get_pos()

@@ -2,7 +2,7 @@
 import pygame
 from player import Player
 from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
-from utilitaire import load_sprites, AnimatedEntity, pixelate
+from utilitaire import load_sprites, AnimatedEntity, pixelate, SoundEffects
 
 class Menu:
     def __init__(self, screen):
@@ -72,6 +72,10 @@ class Menu:
         self.player.rect.center = self.playerSpawn
         self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
+        self.music = SoundEffects()
+        if not self.music.is_playing():
+            self.music.play_music("assets/sounds/music/menu_music.ogg", volume=0.2)
+
 
     def run(self):
         """Boucle du menu"""
@@ -83,6 +87,7 @@ class Menu:
             if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.start_game = True
                 self.running = False
+                self.music.stop_music()
                 
             # Vérifie si le joueur collide sur le bouton Crédit
             if self.box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
