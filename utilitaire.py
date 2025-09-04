@@ -59,6 +59,13 @@ def animate(entity, sprites, loop=True, assign_to_image=True):
     else:
         entity.current_sprite = frame
 
+def pixelate(img, scale=0.5):
+    ver_originale = img.get_size() #récupère la taille de l'image originale
+    taille_mini = int(ver_originale[0] * scale), int(ver_originale[1] * scale) # calcule la taille de l'image diminuée avec l'échelle
+    ver_mini = pygame.transform.smoothscale(img, taille_mini) #réduit l'image
+    ver_pixel = pygame.transform.scale(ver_mini, ver_originale) #réagrandit l'image pixelisée
+    return ver_pixel
+
 
 class AnimatedEntity:
     """
