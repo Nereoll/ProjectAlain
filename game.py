@@ -149,17 +149,16 @@ class Game:
                 elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
                     self.running = False
                     self.game_over = True
-                elif event.type == pygame.KEYDOWN:
-                    if self.dialogue_active and event.key == pygame.K_n:
-                        self.current_line += 1
-                        if self.current_line >= len(self.dialogue_lines):
-                            # Fin du dialogue -> début combat
-                            self.dialogue_active = False
-                            self.in_cutscene = False
                 elif self.player.hp <= 0:
                     self.end_screen.handle_event(event)
+            elif event.type == pygame.KEYDOWN:
+                if self.dialogue_active and event.key == pygame.K_n:
+                    self.current_line += 1
+                    if self.current_line >= len(self.dialogue_lines):
+                        # Fin du dialogue -> début combat
+                        self.dialogue_active = False
+                        self.in_cutscene = False
 
-           
 
 
     def update(self):
