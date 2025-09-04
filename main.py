@@ -31,6 +31,11 @@ if __name__ == "__main__":
         if not menu.start_game:  # si le joueur a fermé la fenêtre
             running = False
             break
+        
+        if menu.start_game_infinite:
+            # g = Dungeon()
+            # g.new()
+            break;
 
         # Lancer le jeu
         g = Game()

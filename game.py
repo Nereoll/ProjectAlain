@@ -8,7 +8,6 @@ from enemy import Enemy
 from ath import Ath
 from end import End
 from shadow import Shadow
-from menu import Menu 
 from audio import get_max_db 
 from powerup import PowerUp
 
@@ -140,10 +139,7 @@ class Game:
                 if self.retrie_button.collidepoint(event.pos) and self.player.hp < 0:
                     max_value = get_max_db(5)
                     print(max_value)
-                    if max_value >= 130 :
-                        self.spawnable = True
-                        self.spawn_delay = 3
-                        self.last_spawn = 0
+                    if max_value >= 100 :
                         self.player.hp = 4
                         self.player.state = "idleR"
                 elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
