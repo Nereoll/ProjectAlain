@@ -186,7 +186,7 @@ class Game:
 
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
-            if self.score >= threshold and self.stage < next_stage:
+            if self.player.score >= threshold and self.stage < next_stage:
                 self.clear_stage()
                 if self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
@@ -225,8 +225,6 @@ class Game:
         self.spawnable = False
         self.spawn_delay = 3
         self.last_spawn = 0
-        for enemy in self.enemies:
-            enemy.kill()
         self.door=True
         if self.player.hp <4:
             self.player.hp=4
