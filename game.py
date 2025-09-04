@@ -124,7 +124,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.retrie_button.collidepoint(event.pos):
+                if self.retrie_button.collidepoint(event.pos) and self.player.hp >0:
                     max_value = get_max_db(5)
                     print(max_value)
                     if max_value >= 130 :
@@ -133,7 +133,7 @@ class Game:
                         self.last_spawn = 0
                         self.player.hp = 4
                         self.player.state = "idleR"
-                elif self.menu_button.collidepoint(event.pos):
+                elif self.menu_button.collidepoint(event.pos) and self.player.hp >0:
                     self.running = False
                     self.game_over =True
 
