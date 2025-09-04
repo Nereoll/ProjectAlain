@@ -36,6 +36,7 @@ class Game:
 
         # Joueur
         self.player = Player()
+        self.player.game = self
         self.player.mana=0
         self.playerSpawn = (WIDTH // 2, HEIGHT // 2)
         self.all_sprites.add(self.player, layer=2)
@@ -54,6 +55,13 @@ class Game:
         self.score = 0
 
         self.lastPowerUp = 0
+
+        #Cutscene
+        self.in_cutscene = False
+        self.boss = None
+        self.dialogue_lines = []
+        self.current_line = 0
+        self.dialogue_active = False
 
 
         # Ressources à charger à l'initialisation
@@ -141,6 +149,13 @@ class Game:
                 elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
                     self.running = False
                     self.game_over = True
+                elif event.type == pygame.KEYDOWN:
+                    if self.dialogue_active and event.key == pygame.K_n:
+                        self.current_line += 1
+                        if self.current_line >= len(self.dialogue_lines):
+                            # Fin du dialogue -> début combat
+                            self.dialogue_active = False
+                            self.in_cutscene = False
                 elif self.player.hp <= 0:
                     self.end_screen.handle_event(event)
 
@@ -189,6 +204,10 @@ class Game:
             self.spawnable = False #empeche le spawn de nouceaux ennemis
             self.enemies.empty()
             self.playerSpawn = (WIDTH // 2, 80) #deplaces le joueur au bon endroit
+        if self.stage == 5 and not self.boss:
+            self.start_boss_cutscene()
+
+
 
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
@@ -211,12 +230,58 @@ class Game:
 
         # Mise à jour explicite de l'ATH
         self.ath.update()
-        
+
         if self.player.hp <= 0:
             if not self.end_screen:
                 self.end_screen = End(self.screen, self.player, self)
             self.end_screen.update()
             return 
+
+    def start_boss_cutscene(self):
+        self.in_cutscene = True
+        self.dialogue_active = True
+        self.spawnable = False
+        for ennemies in self.enemies:
+            ennemies.kill()
+
+        # Spawn du boss mais sans qu'il attaque
+        self.boss = Enemy("boss", self.player, self.screen, (WIDTH-350, HEIGHT//2))
+        self.all_sprites.add(self.boss, layer=1)
+
+        # Texte du dialogue
+        self.dialogue_lines = [
+            "Boss: Ah enfin tu arrives...",
+            "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
+            "Boss: Je dois te faire disparaitre pour me venger !",
+            "Alain: ...",
+            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi ? Hahaha !",
+            "Alain: Feur",
+        ]
+        self.current_line = 0
+
+
+    def start_boss_cutscene(self):
+        self.in_cutscene = True
+        self.dialogue_active = True
+        self.spawnable = False
+        for ennemies in self.enemies:
+            ennemies.kill()
+
+        # Spawn du boss mais sans qu'il attaque
+        self.boss = Enemy("boss", self.player, self.screen, (WIDTH-350, HEIGHT//2))
+        self.all_sprites.add(self.boss, layer=1)
+
+        # Texte du dialogue
+        self.dialogue_lines = [
+            "Boss: Ah enfin tu arrives...",
+            "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
+            "Boss: Je dois te faire disparaitre pour me venger !",
+            "Alain: ...",
+            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi ? Hahaha !",
+            "Alain: Feur",
+        ]
+        self.current_line = 0
+
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
@@ -277,12 +342,22 @@ class Game:
             self.end_screen.draw()
         else:
             self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
-                    
+        
 
         # Dessiner le sprite shadow
         if self.player.hp > 0:
             self.shadow_sprites.draw(self.screen)
             self.ath.draw(self.screen)
+
+        if self.dialogue_active:
+            box = pygame.Surface((WIDTH - 100, 150))
+            box.fill((0, 0, 0))
+            pygame.draw.rect(box, (255, 255, 255), box.get_rect(), 3)
+            self.screen.blit(box, (50, HEIGHT - 200))
+
+            text = self.font_text.render(self.dialogue_lines[self.current_line], True, WHITE)
+            self.screen.blit(text, (70, HEIGHT - 180))
+
 
 
         pygame.display.flip()
