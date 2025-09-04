@@ -1,7 +1,7 @@
 # menu.py
 import pygame
 from player import Player
-from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE
+from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
 from utilitaire import load_sprites, AnimatedEntity
 
 class Menu:
@@ -10,7 +10,7 @@ class Menu:
         pygame.display.set_caption(TITLE)
 
         self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 52)
-        self.font_subtitle = pygame.font.Font("assets/fonts/Chomsky.otf", 24)
+        self.font_subtitle = pygame.font.Font("assets/fonts/GenAR102.TTF", 24)
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
         self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
 
@@ -29,7 +29,9 @@ class Menu:
         self.ribbon = pygame.image.load("assets/images/Ribbon_Blue_3Slides.png").convert_alpha()
         
         # === Banner ===
-        self.banner = pygame.image.load("assets/images/Banner_Horizontal.png").convert_alpha()
+        self.banner_rotation_angle = -25
+        self.banner = pygame.image.load("assets/images/Carved_3Slides.png").convert_alpha()
+        self.banner = pygame.transform.rotate(self.banner, self.banner_rotation_angle  - 30)
 
         # === Chevalier ===
         knight_sprites = load_sprites("assets/images/Warrior_Idle.png", 8)
@@ -113,21 +115,21 @@ class Menu:
 
             
             # === Subtitle ===
-            subtitle_lines = SUBTITLE.splitlines()
-            subtitle_x = 80
-            subtitle_y = HEIGHT - 160
+            subtitle_text = self.font_subtitle.render(SUBTITLE, True, WHITE)
+            lines = SUBTITLE.split('\n')
+            subtitle_x = 20
+            subtitle_y = HEIGHT - 200
+            
 
             # === Banner ===
             banner_height = self.banner.get_height()
-            max_line_width = max(self.font_subtitle.size(line)[0] for line in subtitle_lines)
-            scaled_banner = pygame.transform.scale(self.banner, (int(max_line_width * 2.5), banner_height + 40))
-            banner_rect = scaled_banner.get_rect(bottomleft=(-50, HEIGHT))
+            scaled_banner = pygame.transform.scale(self.banner, (subtitle_text.get_width() + 400, banner_height + 100))
+            banner_rect = scaled_banner.get_rect(midtop=(subtitle_x + 120, subtitle_y - 30))
 
             self.screen.blit(scaled_banner, banner_rect)
-            y = subtitle_y
-            for ligne in subtitle_lines:
-                rendered_line = self.font_subtitle.render(ligne, True, WHITE)
-                self.screen.blit(rendered_line, (subtitle_x, y))
-                y += rendered_line.get_height() + 5
+            for i, line in enumerate(lines):
+                subtitle_text = self.font_subtitle.render(line, True, WHITE)
+                subtitle_text = pygame.transform.rotate(subtitle_text, self.banner_rotation_angle)
+                self.screen.blit(subtitle_text, (subtitle_x, (subtitle_y + 35) + i * (subtitle_text.get_height() - 90)))
 
             pygame.display.flip()
