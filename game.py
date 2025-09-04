@@ -141,12 +141,10 @@ class Game:
                 elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
                     self.running = False
                     self.game_over = True
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.running = False
+                elif self.player.hp <= 0:
+                    self.end_screen.handle_event(event)
 
-            if self.player.hp <= 0 and self.end_screen:
-                self.end_screen.handle_event(event)
+           
 
 
     def update(self):
