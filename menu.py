@@ -1,7 +1,7 @@
 # menu.py
 import pygame
 from player import Player
-from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE
+from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
 from utilitaire import load_sprites, AnimatedEntity
 
 class Menu:
@@ -10,9 +10,10 @@ class Menu:
         pygame.display.set_caption(TITLE)
 
         self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 52)
-        self.font_subtitle = pygame.font.Font("assets/fonts/Chomsky.otf", 24)
+        self.font_subtitle = pygame.font.Font("assets/fonts/GenAR102.TTF", 24)
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
         self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
+        self.font_credits = pygame.font.Font("assets/fonts/Chomsky.otf", 28)
 
         self.playerSprites = pygame.sprite.LayeredUpdates()
         self.player = Player()
@@ -22,14 +23,30 @@ class Menu:
         # Bouton start
         self.start_button = pygame.Rect(WIDTH // 2 + 120, HEIGHT // 3, 200, 130)
 
+        # Bouton crédit
+        self.credit_text = self.font_credits.render("Crédits", True, WHITE)
+        self.credit_x = WIDTH - 415
+        self.credit_y = HEIGHT - 297
+        self.credit_rect = self.credit_text.get_rect(topleft=(self.credit_x, self.credit_y))
+        self.padding = 10
+        self.box_rect = pygame.Rect(
+            self.credit_rect.left - self.padding,
+            self.credit_rect.top - self.padding,
+            self.credit_rect.width + 5 * self.padding,
+            self.credit_rect.height + 7 * self.padding
+        )
+
         self.running = True
         self.start_game = False
-        
+        self.show_credits = False
+
         # === Ribbon ===
         self.ribbon = pygame.image.load("assets/images/Ribbon_Blue_3Slides.png").convert_alpha()
         
         # === Banner ===
-        self.banner = pygame.image.load("assets/images/Banner_Horizontal.png").convert_alpha()
+        self.banner_rotation_angle = -25
+        self.banner = pygame.image.load("assets/images/Carved_3Slides.png").convert_alpha()
+        self.banner = pygame.transform.rotate(self.banner, self.banner_rotation_angle  - 30)
 
         # === Chevalier ===
         knight_sprites = load_sprites("assets/images/Warrior_Idle.png", 8)
@@ -55,6 +72,12 @@ class Menu:
         self.player.rect.center = self.playerSpawn
         self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
+    def pixelate(self, img, scale=0.5):
+        ver_originale = img.get_size() #récupère la taille de l'image originale
+        taille_mini = int(ver_originale[0] * scale), int(ver_originale[1] * scale) # calcule la taille de l'image diminuée avec l'échelle
+        ver_mini = pygame.transform.smoothscale(img, taille_mini) #réduit l'image
+        ver_pixel = pygame.transform.scale(ver_mini, ver_originale) #réagrandit l'image pixelisée
+        return ver_pixel
 
     def run(self):
         """Boucle du menu"""
@@ -66,6 +89,12 @@ class Menu:
             if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.start_game = True
                 self.running = False
+                
+            # Vérifie si le joueur collide sur le bouton Crédit
+            if self.box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
+                self.show_credits = True
+                self.running = False
+            
             # --- Dessin ---
             gameMenu = pygame.image.load("assets/images/bg_menu.png").convert_alpha()
             self.screen.blit(gameMenu, (0, 0))
@@ -80,13 +109,19 @@ class Menu:
             scaled_ribbon = pygame.transform.scale(self.ribbon, (title_text.get_width() * 1.7, ribbon_height + 40))
             ribbon_rect = scaled_ribbon.get_rect(midtop=(WIDTH // 2, title_y - 10))
             self.screen.blit(scaled_ribbon, ribbon_rect)
-            self.screen.blit(title_text, (title_x, title_y))
+            self.screen.blit(self.pixelate(title_text, 0.7), (title_x, title_y))
 
 
             # Bouton Start
             start_text = self.font_button.render("", True, WHITE)
             self.screen.blit(start_text, (self.start_button.centerx - start_text.get_width() // 2,
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
+            
+            # Bouton Crédit
+            self.screen.blit(self.credit_text, (self.credit_x + 20, self.credit_y + 80))
+            # pygame.draw.rect(self.screen, BLUE, self.box_rect, 4)
+
+            
             
             # === Chevalier animé ===
             #self.knight.update()
@@ -109,23 +144,22 @@ class Menu:
             self.playerSprites.draw(self.screen)
 
 
-            
             # === Subtitle ===
-            subtitle_lines = SUBTITLE.splitlines()
-            subtitle_x = 80
-            subtitle_y = HEIGHT - 160
+            subtitle_text = self.font_subtitle.render(SUBTITLE, True, WHITE)
+            lines = SUBTITLE.split('\n')
+            subtitle_x = 20
+            subtitle_y = HEIGHT - 200
+            
 
             # === Banner ===
             banner_height = self.banner.get_height()
-            max_line_width = max(self.font_subtitle.size(line)[0] for line in subtitle_lines)
-            scaled_banner = pygame.transform.scale(self.banner, (int(max_line_width * 2.5), banner_height + 40))
-            banner_rect = scaled_banner.get_rect(bottomleft=(-50, HEIGHT))
+            scaled_banner = pygame.transform.scale(self.banner, (subtitle_text.get_width() + 400, banner_height + 100))
+            banner_rect = scaled_banner.get_rect(midtop=(subtitle_x + 120, subtitle_y - 30))
 
             self.screen.blit(scaled_banner, banner_rect)
-            y = subtitle_y
-            for ligne in subtitle_lines:
-                rendered_line = self.font_subtitle.render(ligne, True, WHITE)
-                self.screen.blit(rendered_line, (subtitle_x, y))
-                y += rendered_line.get_height() + 5
+            for i, line in enumerate(lines):
+                subtitle_text = self.font_subtitle.render(line, True, (0, 0, 0))
+                subtitle_text = pygame.transform.rotate(subtitle_text, self.banner_rotation_angle+3)
+                self.screen.blit(subtitle_text, (subtitle_x, (subtitle_y + 35) + i * (subtitle_text.get_height() - 90)))
 
             pygame.display.flip()

@@ -63,16 +63,22 @@ class Enemy(pygame.sprite.Sprite):
             self.attackRSprites = load_sprites("assets/images/Pawn_Attack.png", 6)
             self.walkLSprites = load_sprites(imagestring= imageLwalkpawn, num_frames=6, nopath =True)
             self.attackLSprites = load_sprites("assets/images/Pawn_Attack_reversed.png", 6)
+            self.idleRSprites = load_sprites("assets/images/Pawn_IdleR.png", 6)
+            self.idleLSprites = load_sprites("assets/images/Pawn_IdleL.png", 6)
         elif self.enemy_type == "goblin":
             self.walkRSprites = load_sprites("assets/images/Goblin_Run.png", 6)
             self.attackRSprites = load_sprites("assets/images/Goblin_Attack.png", 6)
             self.walkLSprites = load_sprites(imagestring= imageLwalkgoblin, num_frames=6, nopath =True)
             self.attackLSprites = load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
+            self.idleRSprites = load_sprites("assets/images/Goblin_IdleR.png", 7)
+            self.idleLSprites = load_sprites("assets/images/Goblin_IdleL.png", 7)
         elif self.enemy_type == "lancier":
             self.walkRSprites = load_sprites("assets/images/Lancier_Run.png", 6)
             self.attackRSprites = load_sprites("assets/images/Lancier_Attack.png", 3)
             self.walkLSprites = load_sprites(imagestring= imageLwalklancier, num_frames=6, nopath =True)
             self.attackLSprites = load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
+            self.idleRSprites = load_sprites("assets/images/Lancier_IdleR.png", 12)
+            self.idleLSprites = load_sprites("assets/images/Lancier_IdleL.png", 12)
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -126,9 +132,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "idleR":
-            self.image = self.walkRSprites[0]
+            animate(self, self.idleRSprites, loop=True)
         elif self.state == "idleL":
-            self.image = self.walkLSprites[0]
+            animate(self, self.idleLSprites, loop=True)
 
 
     def update(self):

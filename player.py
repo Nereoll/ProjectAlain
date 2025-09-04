@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
         self.frame_timer = 0 #Compte le temps pour passer à la frame suivante.
 
-        # États possibles : "idleR", "idleL", "walkR", "walkL", "attackR", "attackL", "invisible"
+        # États possibles : "idleR", "idleL", "walkR", "walkL", "attackR", "attackL", "invisible", "dead"
         self.state = "idleR" #État actuel du joueur (idle, walk, attack, invisible).
         self.attacking = False
         self.invisible = False
@@ -66,7 +66,7 @@ class Player(pygame.sprite.Sprite):
         # Stats
         self.str = 1 #dégats
         self.hp = 4
-        self.mana = 0
+        self.mana = 40000
         self.score = 0
 
         # Direction face
@@ -106,7 +106,7 @@ class Player(pygame.sprite.Sprite):
                 self.state = "invisible"
                 self.invisible = True
                 self.invisible_start_time = time.time()
-                self.mana = 0
+                self.mana -=4
 
             # === Déclenchement attaque ===
             if (keys[pygame.K_SPACE] or pygame.mouse.get_pressed()[0]) and not self.attacking and not self.invisible and self.faceRorL == "L":
@@ -147,7 +147,13 @@ class Player(pygame.sprite.Sprite):
         - Idle : on prend juste la première frame de marche.
         - Invisible : on prend la frame d'invisibilité.
         """
-        self.handle_keys()
+        if self.state == "dead" :
+            if self.faceRorL == "R" :
+                animate(self, self.idleRSprites, loop=True)
+            elif self.faceRorL == "L" :
+                animate(self, self.idleLSprites, loop=True)
+        else:
+            self.handle_keys()
 
         # Vérifie si l’invisibilité est terminée
         self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
@@ -178,46 +184,46 @@ class Player(pygame.sprite.Sprite):
         else :
             self.image.set_alpha(255)
 
-        # Animation selon l’état
-        if self.state == "walkR":
-            animate(self, self.walkRSprites, loop=True)
-            self.image.set_alpha(255)  # normal
-        elif self.state == "walkL" :
-            animate(self, self.walkLSprites, loop=True)
-            self.image.set_alpha(255)  # normal
-        elif self.state == "attackR":
+            # Animation selon l’état
+            if self.state == "walkR":
+                animate(self, self.walkRSprites, loop=True)
+                self.image.set_alpha(255)  # normal
+            elif self.state == "walkL" :
+                animate(self, self.walkLSprites, loop=True)
+                self.image.set_alpha(255)  # normal
+            elif self.state == "attackR":
 
-            animate(self, self.attackRSprites, loop=False)
-            self.image.set_alpha(255)  # normal
-            # Quand l'animation d'attaque est terminée
-            if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
-                self.state = "idleR"
-                self.attacking = False
-                self.current_frame = 0
-        elif self.state == "attackL":
+                animate(self, self.attackRSprites, loop=False)
+                self.image.set_alpha(255)  # normal
+                # Quand l'animation d'attaque est terminée
+                if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
+                    self.state = "idleR"
+                    self.attacking = False
+                    self.current_frame = 0
+            elif self.state == "attackL":
 
-            animate(self, self.attackLSprites, loop=False)
-            self.image.set_alpha(255)  # normal
-            # Quand l'animation d'attaque est terminée
-            if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
-                self.state = "idleL"
-                self.attacking = False
-                self.current_frame = 0
-        elif self.state == "invisible":
-            animate(self, self.invisibleSprite, loop=True)
-            # Rendre translucide
-            self.image.set_alpha(10)
+                animate(self, self.attackLSprites, loop=False)
+                self.image.set_alpha(255)  # normal
+                # Quand l'animation d'attaque est terminée
+                if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
+                    self.state = "idleL"
+                    self.attacking = False
+                    self.current_frame = 0
+            elif self.state == "invisible":
+                animate(self, self.invisibleSprite, loop=True)
+                # Rendre translucide
+                self.image.set_alpha(10)
 
-        elif self.state == "idleR" :
-            animate(self, self.idleRSprites, loop=True)
-        elif self.state == "idleL" :
-            animate(self, self.idleLSprites, loop=True)
+            elif self.state == "idleR" :
+                animate(self, self.idleRSprites, loop=True)
+            elif self.state == "idleL" :
+                animate(self, self.idleLSprites, loop=True)
 
     def take_damage(self, amount):
         if not self.is_invulnerable:  # Vérifie si le joueur est invulnérable
             self.hp -= amount
             if self.hp <= 0:
-                print("Game Over")
+                self.state = "dead"
             else:
                 # Active les iframes
                 self.is_invulnerable = True
