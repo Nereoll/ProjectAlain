@@ -1,6 +1,6 @@
-# 🎮 Alain Project
+# 🎮 The InvisiBlade Knight 2 - Ultimate Legendary Game of the Year Edition
 
-Alain project description
+Description à faire
 
 ---
 
@@ -11,7 +11,14 @@ projectalain/
 │── main.py        # Point d'entrée du jeu
 │── settings.py    # Paramètres globaux (résolution, FPS, couleurs…)
 │── game.py        # Classe principale du jeu
-│── player.py      # Exemple de classe pour un joueur/entité
+│── player.py      # Classe qui définit le joueur
+│── enemy.py       # Classe qui définit les ennemies
+│── ath.py         # Overlay d'infos in game (Vie, mana, score...)
+│── audio.py       # Gestion de l'audio
+│── credits.py     # Crédits (Assets, audio, developpeurs...)
+│── menu.py        # Menu du jeu - lancer une partie, ouvrir les crédits
+│── shadow.py      # Gestion des ombres in game
+│── utilitaire.py  # Fonctions utilitaires
 │── requirements.txt # Dépendances du projet
 │── setup.sh       # Script d’installation automatique
 │── assets/        # Dossier pour images, sons, polices
@@ -52,7 +59,7 @@ Ce script :
 
 ## ▶️ Lancer le jeu
 
-Active l’environnement virtuel et exécute le jeu :
+Activer l’environnement virtuel puis exécuter le jeu :
 
 ```bash
 source venv/bin/activate
@@ -64,8 +71,12 @@ python main.py
 ## 📦 Dépendances
 
 - [Python 3.x](https://www.python.org/)
-- [Pygame](https://www.pygame.org/)
+- [Cffi](https://pypi.org/project/cffi/)
+- [Numpy](https://pypi.org/project/numpy/)
 - [Pillow](https://pypi.org/project/pillow/)
+- [Pycparser](https://pypi.org/project/pycparser/)
+- [Pygame](https://www.pygame.org/)
+- [SoundDevice](https://pypi.org/project/sounddevice/)
 
 ---
 
