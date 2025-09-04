@@ -8,7 +8,7 @@ from enemy import Enemy
 from ath import Ath
 from shadow import Shadow
 from menu import Menu 
-from audio import record_max_db 
+from audio import get_max_db 
 
 
 class Game:
@@ -125,9 +125,9 @@ class Game:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.retrie_button.collidepoint(event.pos):
-                    max_value = record_max_db(5)
+                    max_value = get_max_db(5)
                     print(max_value)
-                    if max_value >= -70 :
+                    if max_value >= 130 :
                         self.spawnable = True
                         self.spawn_delay = 3
                         self.last_spawn = 0
