@@ -16,11 +16,11 @@ class Menu:
 
         self.playerSprites = pygame.sprite.LayeredUpdates()
         self.player = Player()
-        self.playerSpawn = (WIDTH // 2 + 225, HEIGHT // 2)
+        self.playerSpawn = (WIDTH // 2 -145, HEIGHT // 2 + 120)
         self.playerSprites.add(self.player, layer=2)
 
         # Bouton start
-        self.start_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
+        self.start_button = pygame.Rect(WIDTH // 2 + 120, HEIGHT // 3, 200, 130)
 
         self.running = True
         self.start_game = False
@@ -57,16 +57,13 @@ class Menu:
         self.player.rect.center = self.playerSpawn
         self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
+
     def run(self):
         """Boucle du menu"""
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.start_button.collidepoint(event.pos):
-                        self.start_game = True
-                        self.running = False
             # Vérifie si le joueur collide avec le bouton Start avec son sprite
             if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.start_game = True
@@ -87,11 +84,11 @@ class Menu:
             self.screen.blit(scaled_ribbon, ribbon_rect)
             self.screen.blit(title_text, (title_x, title_y))
 
+
             # Bouton Start
-            start_text = self.font_button.render("START", True, WHITE)
+            start_text = self.font_button.render("", True, WHITE)
             self.screen.blit(start_text, (self.start_button.centerx - start_text.get_width() // 2,
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
-            
             # === Chevalier animé ===
             #self.knight.update()
             #self.knight.draw(self.screen)
@@ -113,7 +110,6 @@ class Menu:
             self.playerSprites.draw(self.screen)
 
 
-            
             # === Subtitle ===
             subtitle_text = self.font_subtitle.render(SUBTITLE, True, WHITE)
             lines = SUBTITLE.split('\n')
