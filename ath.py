@@ -8,7 +8,7 @@ class Ath(pygame.sprite.Sprite):
         super().__init__()
         
         # === Font ===
-        self.font_title = pygame.font.SysFont("gentiumalt", 36)
+        self.font_title = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
 
         # === Player ===
         self.player = player
