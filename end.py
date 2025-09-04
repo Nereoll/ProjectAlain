@@ -33,9 +33,9 @@ class End:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
                 # Vérifie le cri pour ressusciter
-                max_value = get_max_db(5)
+                max_value = get_max_db(3)
                 print("Max DB:", max_value)
-                if max_value >= 130:
+                if max_value >= 100:
                     self.respawn_player()
             elif self.menu_button.collidepoint(event.pos):
                 # Retour menu = arrêter la game loop
@@ -44,9 +44,10 @@ class End:
 
     def respawn_player(self):
         """Ramène le joueur à la vie"""
-        self.game.spawnable = True
-        self.game.spawn_delay = 3
-        self.game.last_spawn = 0
+        if self.game.stage != 5 : 
+            self.game.spawnable = True
+        else :
+            self.game.spawnable = False
         self.player.hp = 4
         self.player.state = "idleR"
         
