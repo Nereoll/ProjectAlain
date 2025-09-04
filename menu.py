@@ -45,9 +45,10 @@ class Menu:
         self.infinite_box_rect = pygame.Rect(
             self.infinite_rect.left - self.infinite_padding,
             self.infinite_rect.top - self.infinite_padding,
-            self.infinite_rect.width - 10 * self.infinite_padding,
-            self.infinite_rect.height + 14 * self.infinite_padding
+            self.infinite_rect.width + 3 * self.infinite_padding,
+            self.infinite_rect.height + 15 * self.infinite_padding
         )
+
 
         self.running = True
         self.start_game = False
@@ -104,6 +105,7 @@ class Menu:
                 self.running = False
                 
             if self.infinite_box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
+                self.start_game = True
                 self.start_game_infinite = True
                 self.running = False
             

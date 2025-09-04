@@ -13,19 +13,16 @@ from powerup import PowerUp
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, isDungeon=False):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.running = True
+        self.isDungeon = isDungeon
 
         # Game Over
         self.end_screen = None
-
-        # Buttons Game over
-        self.retrie_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
-        self.menu_button = pygame.Rect(WIDTH // 2 - 110, HEIGHT // 4, 300, 200)
 
         # Groupes de sprites
         # Groupes de sprites avec gestion de layers
@@ -136,16 +133,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.retrie_button.collidepoint(event.pos) and self.player.hp < 0:
-                    max_value = get_max_db(5)
-                    print(max_value)
-                    if max_value >= 100 :
-                        self.player.hp = 4
-                        self.player.state = "idleR"
-                elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
-                    self.running = False
-                    self.game_over = True
-                elif self.player.hp <= 0:
+                if self.player.hp <= 0:
                     self.end_screen.handle_event(event)
             elif event.type == pygame.KEYDOWN:
                 if self.dialogue_active and event.key == pygame.K_n:
@@ -185,14 +173,14 @@ class Game:
             self.all_sprites.add(power_up, layer=3)
 
         #change la porte en fonction du stage
-        if self.stage == 1:
+        if self.stage == 1 and not self.isDungeon:
             self.door_image = self.door_image1
-        elif self.stage == 2:
+        elif self.stage == 2 and not self.isDungeon:
             self.door_image = self.door_image2
-        elif self.stage == 3:
+        elif self.stage == 3 and not self.isDungeon:
             self.door_image = self.door_image3
             self.door_rect = pygame.Rect(WIDTH - 80, HEIGHT // 2 , 60, 60)
-        elif self.stage == 4:
+        elif self.stage == 4 and not self.isDungeon:
             self.door_rect = pygame.Rect(WIDTH - 80, HEIGHT // 2 , 60, 60)
 
 
@@ -205,7 +193,7 @@ class Game:
 
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
-            if self.player.score >= threshold and self.stage < next_stage:
+            if self.player.score >= threshold and self.stage < next_stage and not self.isDungeon:
                 if not self.stage_cleared :
                     self.clear_stage()
                     self.stage_cleared = True
