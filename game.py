@@ -226,6 +226,7 @@ class Game:
         if self.player.state == "invisible":
             for enemy in self.enemies:
                 self.screen.blit(enemy.question_mark, enemy.question_mark_rect)
+                enemy.update()
 
         self.all_sprites.draw(self.screen)
 
