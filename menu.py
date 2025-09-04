@@ -13,6 +13,7 @@ class Menu:
         self.font_subtitle = pygame.font.Font("assets/fonts/GenAR102.TTF", 24)
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
         self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
+        self.font_credits = pygame.font.Font("assets/fonts/Chomsky.otf", 28)
 
         self.playerSprites = pygame.sprite.LayeredUpdates()
         self.player = Player()
@@ -22,9 +23,23 @@ class Menu:
         # Bouton start
         self.start_button = pygame.Rect(WIDTH // 2 + 120, HEIGHT // 3, 200, 130)
 
+        # Bouton crédit
+        self.credit_text = self.font_credits.render("Crédits", True, WHITE)
+        self.credit_x = WIDTH - 415
+        self.credit_y = HEIGHT - 297
+        self.credit_rect = self.credit_text.get_rect(topleft=(self.credit_x, self.credit_y))
+        self.padding = 10
+        self.box_rect = pygame.Rect(
+            self.credit_rect.left - self.padding,
+            self.credit_rect.top - self.padding,
+            self.credit_rect.width + 5 * self.padding,
+            self.credit_rect.height + 7 * self.padding
+        )
+
         self.running = True
         self.start_game = False
-        
+        self.show_credits = False
+
         # === Ribbon ===
         self.ribbon = pygame.image.load("assets/images/Ribbon_Blue_3Slides.png").convert_alpha()
         
@@ -74,6 +89,12 @@ class Menu:
             if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.start_game = True
                 self.running = False
+                
+            # Vérifie si le joueur collide sur le bouton Crédit
+            if self.box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
+                self.show_credits = True
+                self.running = False
+            
             # --- Dessin ---
             gameMenu = pygame.image.load("assets/images/bg_menu.png").convert_alpha()
             self.screen.blit(gameMenu, (0, 0))
@@ -95,6 +116,13 @@ class Menu:
             start_text = self.font_button.render("", True, WHITE)
             self.screen.blit(start_text, (self.start_button.centerx - start_text.get_width() // 2,
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
+            
+            # Bouton Crédit
+            self.screen.blit(self.credit_text, (self.credit_x + 20, self.credit_y + 80))
+            # pygame.draw.rect(self.screen, BLUE, self.box_rect, 4)
+
+            
+            
             # === Chevalier animé ===
             #self.knight.update()
             #self.knight.draw(self.screen)
