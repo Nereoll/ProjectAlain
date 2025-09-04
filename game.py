@@ -7,6 +7,7 @@ from player import Player
 from enemy import Enemy
 from ath import Ath
 from shadow import Shadow
+from menu import Menu  
 
 
 class Game:
@@ -16,6 +17,15 @@ class Game:
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.running = True
+
+        # Game Over
+        self.game_over = False
+        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
+        self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
+
+        # Buttons Game over
+        self.retrie_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
+        self.menu_button = pygame.Rect(WIDTH // 2 - 110, HEIGHT // 4, 300, 200)
 
         # Groupes de sprites
         # Groupes de sprites avec gestion de layers
@@ -111,6 +121,12 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.retrie_button.collidepoint(event.pos):
+                    i=0
+                elif self.menu_button.collidepoint(event.pos):
+                    self.running = False
+                    self.game_over =True
 
     def update(self):
         """Mise à jour des objets"""
@@ -211,11 +227,25 @@ class Game:
             self.shadow_sprite.image = self.shadow1
         elif self.player.hp == 2:
             self.shadow_sprite.image = self.shadow2
-        elif self.player.hp <= 1:
+        elif self.player.hp == 1:
             self.shadow_sprite.image = self.shadow3
+        elif self.player.hp <= 0:  
+            # Game OVER
+            GameOver_text = self.font_title.render("Game Over", True, WHITE)
+            self.screen.blit(GameOver_text, (WIDTH // 2 - GameOver_text.get_width() // 2 ,(HEIGHT //2 )+ 10))
+            for enemy in self.enemies :
+                enemy.kill()
+            # Button retry
+            start_text = self.font_button.render("Scream to continu", True, WHITE)
+            self.screen.blit(start_text, (self.retrie_button.centerx - start_text.get_width() // 2,
+                                          self.retrie_button.centery - start_text.get_height() - 0.5 // 2))
+            # Button main menu
+            start_text = self.font_button.render("Main Menu", True, WHITE)
+            self.screen.blit(start_text, (self.menu_button.centerx - start_text.get_width() // 2,
+                                          self.menu_button.centery - start_text.get_height() - 0.5 // 2))
         else:
             self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
-            self.shadow_sprite.image.fill((0, 0, 0, 0))
+            
 
         # Dessiner le sprite shadow
         self.shadow_sprites.draw(self.screen)
