@@ -147,19 +147,19 @@ class Menu:
             # === Subtitle ===
             subtitle_text = self.font_subtitle.render(SUBTITLE, True, WHITE)
             lines = SUBTITLE.split('\n')
-            subtitle_x = 20
+            subtitle_x = 70
             subtitle_y = HEIGHT - 200
             
 
             # === Banner ===
             banner_height = self.banner.get_height()
             scaled_banner = pygame.transform.scale(self.banner, (subtitle_text.get_width() + 400, banner_height + 100))
-            banner_rect = scaled_banner.get_rect(midtop=(subtitle_x + 120, subtitle_y - 30))
+            banner_rect = scaled_banner.get_rect(midtop=(subtitle_x + 70, subtitle_y - 30))
 
             self.screen.blit(scaled_banner, banner_rect)
             for i, line in enumerate(lines):
                 subtitle_text = self.font_subtitle.render(line, True, (0, 0, 0))
                 subtitle_text = pygame.transform.rotate(subtitle_text, self.banner_rotation_angle+3)
-                self.screen.blit(subtitle_text, (subtitle_x, (subtitle_y + 35) + i * (subtitle_text.get_height() - 90)))
+                self.screen.blit(subtitle_text, (subtitle_x, (subtitle_y + 60) + i * 30))
 
             pygame.display.flip()

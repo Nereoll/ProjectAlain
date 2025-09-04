@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
         self.invisible_duration = 2  # secondes
 
         # Stats
-        self.hp = 4
+        self.hp = 1
         self.mana = 40000
         self.score = 0
 

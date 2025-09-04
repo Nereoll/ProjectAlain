@@ -6,6 +6,7 @@ from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
 from player import Player
 from enemy import Enemy
 from ath import Ath
+from end import End
 from shadow import Shadow
 from menu import Menu 
 from audio import get_max_db 
@@ -20,9 +21,7 @@ class Game:
         self.running = True
 
         # Game Over
-        self.game_over = False
-        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
-        self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
+        self.end_screen = None
 
         # Buttons Game over
         self.retrie_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
@@ -136,6 +135,13 @@ class Game:
                 elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
                     self.running = False
                     self.game_over = True
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            if self.player.hp <= 0 and self.end_screen:
+                self.end_screen.handle_event(event)
+
 
     def update(self):
         """Mise à jour des objets"""
@@ -186,6 +192,12 @@ class Game:
 
         # Mise à jour explicite de l'ATH
         self.ath.update()
+        
+        if self.player.hp <= 0:
+            if not self.end_screen:
+                self.end_screen = End(self.screen, self.player, self)
+            self.end_screen.update()
+            return 
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
@@ -240,28 +252,21 @@ class Game:
             self.shadow_sprite.image = self.shadow2
         elif self.player.hp == 1:
             self.shadow_sprite.image = self.shadow3
-        elif self.player.hp <= 0:  
-            # Game OVER
-            GameOver_text = self.font_title.render("Game Over", True, WHITE)
-            self.screen.blit(GameOver_text, (WIDTH // 2 - GameOver_text.get_width() // 2 ,(HEIGHT //2 )+ 10))
-            for enemy in self.enemies :
+        elif self.player.hp <= 0 and self.end_screen:
+            for enemy in self.enemies:
                 enemy.kill()
-            # Button retry
-            start_text = self.font_button.render("Scream to continu", True, WHITE)
-            self.screen.blit(start_text, (self.retrie_button.centerx - start_text.get_width() // 2,
-                                          self.retrie_button.centery - start_text.get_height() - 0.5 // 2))
-            # Button main menu
-            start_text = self.font_button.render("Main Menu", True, WHITE)
-            self.screen.blit(start_text, (self.menu_button.centerx - start_text.get_width() // 2,
-                                          self.menu_button.centery - start_text.get_height() - 0.5 // 2))
+            self.player.image.set_alpha(0)
+            self.shadow_sprites.draw(self.screen)
+            self.end_screen.draw()
         else:
             self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
-            
+                    
 
         # Dessiner le sprite shadow
-        self.shadow_sprites.draw(self.screen)
+        if self.player.hp > 0:
+            self.shadow_sprites.draw(self.screen)
+            self.ath.draw(self.screen)
 
-        self.ath.draw(self.screen)
 
         pygame.display.flip()
 
