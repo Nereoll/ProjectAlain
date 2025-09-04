@@ -211,6 +211,12 @@ class Player(pygame.sprite.Sprite):
                 self.is_invulnerable = True
                 self.iframe_start_time = time.time()  # Enregistre le début des iframes
 
+        def died(self):
+            if self.hp <=0:
+                print("Game Over")
+                return True
+            return False
+
     def enemy_killed(self, points):
         self.score += points
         if self.mana < 5:
