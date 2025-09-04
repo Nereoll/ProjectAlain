@@ -40,9 +40,16 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_distance = 10  # Distance du knockback
             self.knockback_speed = 5
             color = (150, 150, 255)
+        elif enemy_type=="boss":
+            self.hp = 100
+            self.speed = 4
+            self.attack_points = 2
+            self.stagger_timer = 0.5
+            self.knockback_distance = 10  # Distance du knockback
+            self.knockback_speed = 3
         else:
             raise ValueError("Type d'ennemi inconnu")
-        
+
         self.currentKB = self.knockback_distance
         self.default_speed = self.speed  # Sauvegarde de la vitesse initiale
 
@@ -79,6 +86,13 @@ class Enemy(pygame.sprite.Sprite):
             self.attackLSprites = load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
             self.idleRSprites = load_sprites("assets/images/Lancier_IdleR.png", 12)
             self.idleLSprites = load_sprites("assets/images/Lancier_IdleL.png", 12)
+        elif self.enemy_type=="boss":
+            self.walkRSprites = load_sprites("assets/images/Boss_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/Boss_Attack.png", 13)
+            self.walkLSprites = load_sprites("assets/images/Boss_Run_reversed.png", 6)
+            self.attackLSprites = load_sprites("assets/images/Boss_Attack_reversed.png", 13)
+            self.idleRSprites = load_sprites("assets/images/Boss_IdleR.png", 16)
+            self.idleLSprites = load_sprites("assets/images/Boss_IdleL.png", 16)
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -141,6 +155,11 @@ class Enemy(pygame.sprite.Sprite):
         """Déplacement vers le joueur + attaque si proche"""
         self.handle_state()
 
+        if self.enemy_type == "boss" and self.player.game.in_cutscene:
+            self.state = "idleL"  # ou "idleR"
+            self.handle_state()
+            return
+
         if self.is_dead:
             # Affiche l'animation d'explosion
             if self.explosion_frame_index < len(self.explosionFrames):
@@ -149,7 +168,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.rect = self.image.get_rect(center=self.rect.center)
             else:
                 self.kill()
-    
+
         if self.state == "staggered":
             if self.is_knockback:
                 dx, dy = self.knockback_direction
@@ -164,9 +183,9 @@ class Enemy(pygame.sprite.Sprite):
             if current_time - self.stagger_start_time >= self.stagger_timer:
                 # Fin du stagger, réinitialise les vitesses
                 if self.faceRorL == "L":
-                    self.state = "idleL" 
+                    self.state = "idleL"
                 else:
-                    self.state = "idleR" 
+                    self.state = "idleR"
                 self.speed = self.default_speed
                 self.animation_speed = self.default_animation_speed
 
@@ -205,8 +224,8 @@ class Enemy(pygame.sprite.Sprite):
                 distance = math.hypot(dx, dy)
                 # Face direction
                 if player_x < enemy_x :
-                    self.faceRorL = "L" 
-                else : 
+                    self.faceRorL = "L"
+                else :
                     self.faceRorL = "R"
 
                 # Déplacement seulement si trop loin
