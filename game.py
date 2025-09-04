@@ -136,13 +136,20 @@ class Game:
                 if self.player.hp <= 0:
                     self.end_screen.handle_event(event)
             elif event.type == pygame.KEYDOWN:
-                if self.dialogue_active and event.key == pygame.K_n:
+                if self.dialogue_active and event.key == pygame.K_SPACE:
                     self.current_line += 1
                     if self.current_line >= len(self.dialogue_lines):
-                        # Fin du dialogue -> début combat
+                        # Fin du dialogue
                         self.dialogue_active = False
                         self.in_cutscene = False
+                        self.spawnable = True
+                        # Reprend le jeu normalement
 
+                        # Si c'était le boss de fin
+                        if self.boss and self.boss.is_dead:
+                            self.boss.kill()   # Retire le boss après dialogue
+                            self.boss = None
+                            self.in_cutscene = False
 
 
     def update(self):
@@ -218,7 +225,7 @@ class Game:
             if not self.end_screen:
                 self.end_screen = End(self.screen, self.player, self)
             self.end_screen.update()
-            return 
+            return
 
 
 
@@ -240,11 +247,22 @@ class Game:
             "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
             "Boss: Je dois te faire disparaitre pour me venger !",
             "Alain: ...",
-            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi ? Hahaha !",
+            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
             "Alain: Feur",
         ]
         self.current_line = 0
 
+    def start_boss_death_cutscene(self):
+        self.in_cutscene = True
+        self.dialogue_active = True
+        self.spawnable = False
+        self.enemies.empty()
+        for ennemies in self.enemies:
+            ennemies.kill()
+        self.dialogue_lines = [
+            "Boss: Hahaha je meurs mais ta princesse restera invisible...",
+        ]
+        self.current_line = 0
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""

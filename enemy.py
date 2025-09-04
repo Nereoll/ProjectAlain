@@ -48,7 +48,7 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_speed = 5
             color = (150, 150, 255)
         elif enemy_type=="boss":
-            self.hp = 100
+            self.hp = 1
             self.speed = 4
             self.attack_points = 2
             self.stagger_timer = 0.5
@@ -104,12 +104,13 @@ class Enemy(pygame.sprite.Sprite):
             self.idleRSprites = load_sprites("assets/images/Lancier_IdleR.png", 12)
             self.idleLSprites = load_sprites("assets/images/Lancier_IdleL.png", 12)
         elif self.enemy_type=="boss":
-            self.walkRSprites = load_sprites("assets/images/Boss_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/Boss_Attack.png", 13)
-            self.walkLSprites = load_sprites("assets/images/Boss_Run_reversed.png", 6)
-            self.attackLSprites = load_sprites("assets/images/Boss_Attack_reversed.png", 13)
-            self.idleRSprites = load_sprites("assets/images/Boss_IdleR.png", 16)
-            self.idleLSprites = load_sprites("assets/images/Boss_IdleL.png", 16)
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/Boss_Run.png", 6), 5)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/Boss_Attack.png", 13), 5)
+            self.walkLSprites = scale_sprites(load_sprites("assets/images/Boss_Run_reversed.png", 6), 5)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/Boss_Attack_reversed.png", 13), 5)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/Boss_IdleR.png", 16), 5)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/Boss_IdleL.png", 16), 5)
+            self.deathSprites = scale_sprites(load_sprites("assets/images/Boss_Death.png", 11), 5)
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -303,13 +304,17 @@ class Enemy(pygame.sprite.Sprite):
 
         self.hp -= amount
         if self.hp <= 0:
-            if self.enemy_type == "pawn":
-                self.player.enemy_killed(100)
-            if self.enemy_type == "goblin":
-                self.player.enemy_killed(150)
-            if self.enemy_type == "scout":
-                self.player.enemy_killed(100)
-            if self.enemy_type == "lancier":
-                self.player.enemy_killed(200)
-            self.is_dead = True
-            self.explosion_frame_index = 0
+            if self.enemy_type == "boss":
+                # Lance la cutscene de fin de boss
+                self.player.game.start_boss_death_cutscene()
+            else :
+                if self.enemy_type == "pawn":
+                    self.player.enemy_killed(100)
+                if self.enemy_type == "goblin":
+                    self.player.enemy_killed(150)
+                if self.enemy_type == "scout":
+                    self.player.enemy_killed(100)
+                if self.enemy_type == "lancier":
+                    self.player.enemy_killed(200)
+                self.is_dead = True
+                self.explosion_frame_index = 0
