@@ -90,10 +90,10 @@ class Game:
             5: self.fifthStage
         }
         self.stage_thresholds = {
-            2: 100,   # score requis pour passer au stage 2
-            3: 400,   # score requis pour passer au stage 3
-            4: 800,   # score requis pour passer au stage 4
-            5: 800,   # score requis pour passer au stage 5
+            2: 1000,   # score requis pour passer au stage 2
+            3: 4000,   # score requis pour passer au stage 3
+            4: 8000,   # score requis pour passer au stage 4
+            5: 8000,   # score requis pour passer au stage 5
         }
 
         self.stage_spawns = {
@@ -298,7 +298,7 @@ class Game:
 
     def clear_stage(self):
         self.spawnable = False
-        self.spawn_delay = 3
+        self.spawn_delay = 2
         self.last_spawn = 0
         self.door=True
         if self.player.hp <4:
