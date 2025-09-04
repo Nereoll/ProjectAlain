@@ -6,9 +6,11 @@ from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
 from player import Player
 from enemy import Enemy
 from ath import Ath
+from end import End
 from shadow import Shadow
 from menu import Menu 
 from audio import get_max_db 
+from powerup import PowerUp
 
 
 class Game:
@@ -20,9 +22,7 @@ class Game:
         self.running = True
 
         # Game Over
-        self.game_over = False
-        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
-        self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
+        self.end_screen = None
 
         # Buttons Game over
         self.retrie_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
@@ -32,6 +32,7 @@ class Game:
         # Groupes de sprites avec gestion de layers
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.Group()
+        self.power_ups = pygame.sprite.Group()
 
         # Joueur
         self.player = Player()
@@ -43,6 +44,8 @@ class Game:
         # Ath
         self.ath = Ath(self.player)
 
+        self.stage_cleared = False
+
         # Timer de spawn
         self.start_time = time.time()
         self.last_spawn = 0
@@ -50,6 +53,8 @@ class Game:
         self.spawnable = True
         # Score
         self.score = 0
+
+        self.lastPowerUp = 0
 
         #Cutscene
         self.in_cutscene = False
@@ -132,7 +137,7 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.retrie_button.collidepoint(event.pos) and self.player.hp >0:
+                if self.retrie_button.collidepoint(event.pos) and self.player.hp < 0:
                     max_value = get_max_db(5)
                     print(max_value)
                     if max_value >= 130 :
@@ -141,9 +146,9 @@ class Game:
                         self.last_spawn = 0
                         self.player.hp = 4
                         self.player.state = "idleR"
-                elif self.menu_button.collidepoint(event.pos) and self.player.hp >0:
+                elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
                     self.running = False
-                    self.game_over =True
+                    self.game_over = True
             elif event.type == pygame.KEYDOWN:
                 if self.dialogue_active and event.key == pygame.K_n:
                     self.current_line += 1
@@ -151,6 +156,13 @@ class Game:
                         # Fin du dialogue -> début combat
                         self.dialogue_active = False
                         self.in_cutscene = False
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            if self.player.hp <= 0 and self.end_screen:
+                self.end_screen.handle_event(event)
 
 
     def update(self):
@@ -164,8 +176,19 @@ class Game:
                 self.spawn_delay -= 0.1
         oldLength = self.enemies.__len__()
         self.all_sprites.update()
-        if oldLength > self.enemies.__len__():
-            self.score += 100
+
+        if self.player.state == "invisible" and len(self.power_ups) == 0 and (time.time() - self.lastPowerUp >= 2) :
+            self.lastPowerUp = time.time()
+            # Génère une position aléatoire dans la zone de jeu
+            x = random.randint(50, WIDTH - 50)
+            y = random.randint(50, HEIGHT - 50)
+            if self.player.hp < 4 : # Le joueur ne peut pas avoir plus de 4 coeurs
+                bonus_type = random.choice(["damageAmp", "invulnerability", "heart"])  # Type de bonus aléatoire
+            else :
+                bonus_type = random.choice(["damageAmp", "invulnerability"])
+            power_up = PowerUp((x, y), bonus_type, self.player)
+            self.power_ups.add(power_up)
+            self.all_sprites.add(power_up, layer=3)
 
         #change la porte en fonction du stage
         if self.stage == 1:
@@ -191,13 +214,17 @@ class Game:
 
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
-            if self.score >= threshold and self.stage < next_stage:
-                self.clear_stage()
+            if self.player.score >= threshold and self.stage < next_stage:
+                if not self.stage_cleared :
+                    self.clear_stage()
+                    self.stage_cleared = True
                 if self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
                     self.door = False
                     self.spawnable = True
-
+                    self.stage_cleared = False
+                    for enemy in self.enemies:
+                        enemy.kill()
                     # Repositionner le joueur selon le stage
                     self.player.rect.center = self.stage_spawns[self.stage]
                     self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
@@ -206,6 +233,35 @@ class Game:
 
         # Mise à jour explicite de l'ATH
         self.ath.update()
+
+        if self.player.hp <= 0:
+            if not self.end_screen:
+                self.end_screen = End(self.screen, self.player, self)
+            self.end_screen.update()
+            return 
+
+    def start_boss_cutscene(self):
+        self.in_cutscene = True
+        self.dialogue_active = True
+        self.spawnable = False
+        for ennemies in self.enemies:
+            ennemies.kill()
+
+        # Spawn du boss mais sans qu'il attaque
+        self.boss = Enemy("boss", self.player, self.screen, (WIDTH-350, HEIGHT//2))
+        self.all_sprites.add(self.boss, layer=1)
+
+        # Texte du dialogue
+        self.dialogue_lines = [
+            "Boss: Ah enfin tu arrives...",
+            "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
+            "Boss: Je dois te faire disparaitre pour me venger !",
+            "Alain: ...",
+            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi ? Hahaha !",
+            "Alain: Feur",
+        ]
+        self.current_line = 0
+
 
     def start_boss_cutscene(self):
         self.in_cutscene = True
@@ -253,8 +309,6 @@ class Game:
         self.spawnable = False
         self.spawn_delay = 3
         self.last_spawn = 0
-        for enemy in self.enemies:
-            enemy.kill()
         self.door=True
         if self.player.hp <4:
             self.player.hp=4
@@ -283,28 +337,20 @@ class Game:
             self.shadow_sprite.image = self.shadow2
         elif self.player.hp == 1:
             self.shadow_sprite.image = self.shadow3
-        elif self.player.hp <= 0:
-            # Game OVER
-            GameOver_text = self.font_title.render("Game Over", True, WHITE)
-            self.screen.blit(GameOver_text, (WIDTH // 2 - GameOver_text.get_width() // 2 ,(HEIGHT //2 )+ 10))
-            for enemy in self.enemies :
+        elif self.player.hp <= 0 and self.end_screen:
+            for enemy in self.enemies:
                 enemy.kill()
-            # Button retry
-            start_text = self.font_button.render("Scream to continu", True, WHITE)
-            self.screen.blit(start_text, (self.retrie_button.centerx - start_text.get_width() // 2,
-                                          self.retrie_button.centery - start_text.get_height() - 0.5 // 2))
-            # Button main menu
-            start_text = self.font_button.render("Main Menu", True, WHITE)
-            self.screen.blit(start_text, (self.menu_button.centerx - start_text.get_width() // 2,
-                                          self.menu_button.centery - start_text.get_height() - 0.5 // 2))
+            self.player.image.set_alpha(0)
+            self.shadow_sprites.draw(self.screen)
+            self.end_screen.draw()
         else:
             self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
-
+        
 
         # Dessiner le sprite shadow
-        self.shadow_sprites.draw(self.screen)
-
-        self.ath.draw(self.screen)
+        if self.player.hp > 0:
+            self.shadow_sprites.draw(self.screen)
+            self.ath.draw(self.screen)
 
         if self.dialogue_active:
             box = pygame.Surface((WIDTH - 100, 150))
@@ -314,6 +360,7 @@ class Game:
 
             text = self.font_text.render(self.dialogue_lines[self.current_line], True, WHITE)
             self.screen.blit(text, (70, HEIGHT - 180))
+
 
 
         pygame.display.flip()
