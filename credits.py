@@ -1,5 +1,5 @@
 import pygame
-from settings import TITLE, WHITE
+from settings import TITLE, BLACK, HEIGHT
 
 class Credits:
     def __init__(self, screen):
@@ -25,29 +25,29 @@ class Credits:
                         self.running = False
                         
             # --- Dessin ---
-            gameCredits = pygame.image.load("assets/images/bg_menu.png").convert_alpha()
+            gameCredits = pygame.image.load("assets/images/Credit_Page.png").convert_alpha()
             self.screen.blit(gameCredits, (0, 0))
             
             # Titre
-            title_text = self.font_title.render("Crédits", True, WHITE)
+            title_text = self.font_title.render("Crédits", True, BLACK)
             title_rect = title_text.get_rect(midtop=(self.screen.get_width() // 2, 50))
             self.screen.blit(title_text, title_rect)
 
             # Assets
-            assets_subtitle = self.font_subtitle.render("Assets", True, WHITE)
-            assets_rect = assets_subtitle.get_rect(topleft=(150, 150))
+            assets_subtitle = self.font_subtitle.render("Assets", True, BLACK)
+            assets_rect = assets_subtitle.get_rect(topleft=(240, 180))
             self.screen.blit(assets_subtitle, assets_rect)
             #####
             assets_content = [
                 "Tiny Sword Pack by Pixel Frog on itch.io",
             ]
             for i, line in enumerate(assets_content):
-                line_text = self.font_text.render(line, True, WHITE)
-                self.screen.blit(line_text, (150, 200 + i * 30))
+                line_text = self.font_text.render(line, True, BLACK)
+                self.screen.blit(line_text, (220, 220 + i * 30))
             
             # Sounds
-            sounds_subtitle = self.font_subtitle.render("Sounds", True, WHITE)
-            sounds_rect = sounds_subtitle.get_rect(topright=(self.screen.get_width() - 150, 150))
+            sounds_subtitle = self.font_subtitle.render("Sounds", True, BLACK)
+            sounds_rect = sounds_subtitle.get_rect(topright=(self.screen.get_width() - 300, 280))
             self.screen.blit(sounds_subtitle, sounds_rect)
             #####
             sounds_content = [
@@ -63,12 +63,12 @@ class Credits:
                 "Door Open by SoundBible.com"
             ]
             for i, line in enumerate(sounds_content):
-                line_text = self.font_text.render(line, True, WHITE)
-                self.screen.blit(line_text, (self.screen.get_width() - 450, 200 + i * 30))
+                line_text = self.font_text.render(line, True, BLACK)
+                self.screen.blit(line_text, (self.screen.get_width() - 500, 320 + i * 30))
             
             # Developers
-            dev_subtitle = self.font_subtitle.render("Développeurs", True, WHITE)
-            dev_rect = dev_subtitle.get_rect(midtop=(self.screen.get_width() //2, self.screen.get_height() // 2))
+            dev_subtitle = self.font_subtitle.render("Développeurs", True, BLACK)
+            dev_rect = dev_subtitle.get_rect(topleft=(220, HEIGHT - 420))
             self.screen.blit(dev_subtitle, dev_rect)
             #####
             dev_content = [
@@ -77,7 +77,7 @@ class Credits:
                 "Cyrian TORREJON"
             ]
             for i, line in enumerate(dev_content):
-                line_text = self.font_text.render(line, True, WHITE)
-                self.screen.blit(line_text, (self.screen.get_width() // 2 - 150, self.screen.get_height() // 2 + 50 + i * 30))
+                line_text = self.font_text.render(line, True, BLACK)
+                self.screen.blit(line_text, (220, (HEIGHT - 380) + i * 30))
             
             pygame.display.flip()
