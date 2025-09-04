@@ -11,6 +11,9 @@ class Credits:
         self.font_subtitle = pygame.font.Font("assets/fonts/Chomsky.otf", 34)
         self.font_text = pygame.font.Font("assets/fonts/GenAR102.TTF", 18)
         
+        # Back to menu
+        self.back = pygame.image.load("assets/images/Pressed_01.png")
+        
         # Actions
         self.running = True
         self.retour = False
@@ -23,11 +26,20 @@ class Credits:
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:   # moved inside the loop
+                    mouse_pos = pygame.mouse.get_pos()
+                    back_rect = self.back.get_rect(topleft=(10, 10))
+                    if back_rect.collidepoint(mouse_pos):
+                        self.retour = True
+                        self.running = False
                         
             # --- Dessin ---
             gameCredits = pygame.image.load("assets/images/Credit_Page.png").convert_alpha()
             self.screen.blit(gameCredits, (0, 0))
             
+            # Back
+            self.screen.blit(self.back, (10, 10))
+
             # Titre
             title_text = self.font_title.render("Crédits", True, BLACK)
             title_rect = title_text.get_rect(midtop=(self.screen.get_width() // 2, 50))
