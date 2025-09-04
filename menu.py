@@ -128,16 +128,14 @@ class Menu:
             start_text = self.font_button.render("", True, WHITE)
             self.screen.blit(start_text, (self.start_button.centerx - start_text.get_width() // 2,
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
-            
             # Bouton Crédit
             self.screen.blit(self.credit_text, (self.credit_x + 20, self.credit_y + 80))
             # pygame.draw.rect(self.screen, BLUE, self.box_rect, 4)
-            
+
             # Bouton Start Infinite
             self.screen.blit(self.infinite_text, (self.infinite_x + 5, self.infinite_y + 65))
             # pygame.draw.rect(self.screen, BLUE, self.infinite_box_rect, 4)
-            
-            
+
             # === Chevalier animé ===
             #self.knight.update()
             #self.knight.draw(self.screen)

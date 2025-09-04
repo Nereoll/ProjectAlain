@@ -35,15 +35,27 @@ def load_sprites_from_folder(folder):
     return sprites
 
 
-def animate(entity, sprites, loop=True, assign_to_image=True):
+def animate(entity, sprites, loop=True, assign_to_image=True, animation_speed=None):
     """
-    Anime un spritesheet générique pour un sprite-like (entité ayant
-    current_frame, frame_timer, animation_speed).
+    Anime un sprite-like (entité avec current_frame, frame_timer).
+
+    Args:
+        entity: L'objet à animer (doit avoir `current_frame`, `frame_timer`, `image`).
+        sprites: Liste des frames.
+        loop: Si True, l'animation boucle.
+        assign_to_image: Si True, met à jour `entity.image`.
+        animation_speed: Vitesse spécifique pour cet appel. Si None, prend `entity.animation_speed`.
     """
-    if entity.current_frame >= len(sprites):
+    # Utiliser la vitesse passée en paramètre ou celle de l'entité
+    speed = animation_speed if animation_speed is not None else getattr(entity, 'animation_speed', 0.15)
+
+    # Incrément du timer
+    if not hasattr(entity, 'frame_timer'):
+        entity.frame_timer = 0
+    if not hasattr(entity, 'current_frame'):
         entity.current_frame = 0
 
-    entity.frame_timer += entity.animation_speed
+    entity.frame_timer += speed
     if entity.frame_timer >= 1:
         entity.frame_timer = 0
         entity.current_frame += 1
@@ -52,6 +64,12 @@ def animate(entity, sprites, loop=True, assign_to_image=True):
                 entity.current_frame = 0
             else:
                 entity.current_frame = len(sprites) - 1
+
+    # Ensure current_frame is within bounds
+    if entity.current_frame >= len(sprites):
+        entity.current_frame = len(sprites) - 1
+    elif entity.current_frame < 0:
+        entity.current_frame = 0
 
     frame = sprites[entity.current_frame]
     if assign_to_image:
