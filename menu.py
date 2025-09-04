@@ -2,7 +2,7 @@
 import pygame
 from player import Player
 from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
-from utilitaire import load_sprites, AnimatedEntity
+from utilitaire import load_sprites, AnimatedEntity, pixelate
 
 class Menu:
     def __init__(self, screen):
@@ -72,12 +72,6 @@ class Menu:
         self.player.rect.center = self.playerSpawn
         self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
-    def pixelate(self, img, scale=0.5):
-        ver_originale = img.get_size() #récupère la taille de l'image originale
-        taille_mini = int(ver_originale[0] * scale), int(ver_originale[1] * scale) # calcule la taille de l'image diminuée avec l'échelle
-        ver_mini = pygame.transform.smoothscale(img, taille_mini) #réduit l'image
-        ver_pixel = pygame.transform.scale(ver_mini, ver_originale) #réagrandit l'image pixelisée
-        return ver_pixel
 
     def run(self):
         """Boucle du menu"""
@@ -109,7 +103,7 @@ class Menu:
             scaled_ribbon = pygame.transform.scale(self.ribbon, (title_text.get_width() * 1.7, ribbon_height + 40))
             ribbon_rect = scaled_ribbon.get_rect(midtop=(WIDTH // 2, title_y - 10))
             self.screen.blit(scaled_ribbon, ribbon_rect)
-            self.screen.blit(self.pixelate(title_text, 0.7), (title_x, title_y))
+            self.screen.blit(pixelate(title_text, 0.7), (title_x, title_y))
 
 
             # Bouton Start

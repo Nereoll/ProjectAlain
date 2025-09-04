@@ -44,6 +44,8 @@ class Game:
         # Ath
         self.ath = Ath(self.player)
 
+        self.stage_cleared = False
+
         # Timer de spawn
         self.start_time = time.time()
         self.last_spawn = 0
@@ -187,12 +189,16 @@ class Game:
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
             if self.player.score >= threshold and self.stage < next_stage:
-                self.clear_stage()
+                if not self.stage_cleared :
+                    self.clear_stage()
+                    self.stage_cleared = True
                 if self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
                     self.door = False
                     self.spawnable = True
-
+                    self.stage_cleared = False
+                    for enemy in self.enemies:
+                        enemy.kill()
                     # Repositionner le joueur selon le stage
                     self.player.rect.center = self.stage_spawns[self.stage]
                     self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
