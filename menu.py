@@ -35,9 +35,23 @@ class Menu:
             self.credit_rect.width + 5 * self.padding,
             self.credit_rect.height + 7 * self.padding
         )
+        
+        # Bouton start infinite
+        self.infinite_text = self.font_credits.render("Dungeon", True, WHITE)
+        self.infinite_x = 50
+        self.infinite_y = 50
+        self.infinite_rect = self.infinite_text.get_rect(topleft=(self.infinite_x, self.infinite_y))
+        self.infinite_padding = 10
+        self.infinite_box_rect = pygame.Rect(
+            self.infinite_rect.left - self.infinite_padding,
+            self.infinite_rect.top - self.infinite_padding,
+            self.infinite_rect.width - 10 * self.infinite_padding,
+            self.infinite_rect.height + 14 * self.infinite_padding
+        )
 
         self.running = True
         self.start_game = False
+        self.start_game_infinite = False
         self.show_credits = False
 
         # === Ribbon ===
@@ -88,6 +102,10 @@ class Menu:
             if self.box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.show_credits = True
                 self.running = False
+                
+            if self.infinite_box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
+                self.start_game_infinite = True
+                self.running = False
             
             # --- Dessin ---
             gameMenu = pygame.image.load("assets/images/bg_menu.png").convert_alpha()
@@ -114,7 +132,10 @@ class Menu:
             # Bouton Crédit
             self.screen.blit(self.credit_text, (self.credit_x + 20, self.credit_y + 80))
             # pygame.draw.rect(self.screen, BLUE, self.box_rect, 4)
-
+            
+            # Bouton Start Infinite
+            self.screen.blit(self.infinite_text, (self.infinite_x + 5, self.infinite_y + 65))
+            # pygame.draw.rect(self.screen, BLUE, self.infinite_box_rect, 4)
             
             
             # === Chevalier animé ===

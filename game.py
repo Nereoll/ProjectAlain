@@ -8,7 +8,6 @@ from enemy import Enemy
 from ath import Ath
 from end import End
 from shadow import Shadow
-from menu import Menu 
 from audio import get_max_db 
 from powerup import PowerUp
 
