@@ -91,6 +91,9 @@ class Game:
         self.door=False
 
 
+        self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
+
+
     def new(self):
         """Nouvelle partie"""
         self.run()
@@ -185,8 +188,8 @@ class Game:
         self.last_spawn = 0
         if self.enemies.__len__() == 0:
             self.door=True
-        if self.player.hp <4:
-            self.player.hp=4
+            if self.player.hp <4:
+                self.player.hp=4
 
     def draw(self):
         """Affichage"""

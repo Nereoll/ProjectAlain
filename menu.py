@@ -1,5 +1,6 @@
 # menu.py
 import pygame
+from player import Player
 from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE
 from utilitaire import load_sprites, AnimatedEntity
 
@@ -12,7 +13,12 @@ class Menu:
         self.font_subtitle = pygame.font.Font("assets/fonts/Chomsky.otf", 24)
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
         self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
-        
+
+        self.playerSprites = pygame.sprite.LayeredUpdates()
+        self.player = Player()
+        self.playerSpawn = (WIDTH // 2 + 225, HEIGHT // 2)
+        self.playerSprites.add(self.player, layer=2)
+
         # Bouton start
         self.start_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
 
@@ -37,9 +43,17 @@ class Menu:
         tree_sprites = load_sprites("assets/images/Tree3.png", 8)
         self.tree = AnimatedEntity(tree_sprites, (WIDTH - 140, HEIGHT // 2))
 
+        # === Bush ===
+        bush_sprites = load_sprites("assets/images/Bushe3.png", 8)
+        self.bush = AnimatedEntity(bush_sprites, (WIDTH // 2 - 80, 80))
+
 
         # Paramètres communs d’animation
         self.animation_speed = 0.15
+
+        # Repositionner le joueur sur le spawn défini
+        self.player.rect.center = self.playerSpawn
+        self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
     def run(self):
         """Boucle du menu"""
@@ -51,7 +65,10 @@ class Menu:
                     if self.start_button.collidepoint(event.pos):
                         self.start_game = True
                         self.running = False
-
+            # Vérifie si le joueur collide avec le bouton Start avec son sprite
+            if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
+                self.start_game = True
+                self.running = False
             # --- Dessin ---
             gameMenu = pygame.image.load("assets/images/bg_menu.png").convert_alpha()
             self.screen.blit(gameMenu, (0, 0))
@@ -74,8 +91,8 @@ class Menu:
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
             
             # === Chevalier animé ===
-            self.knight.update()
-            self.knight.draw(self.screen)
+            #self.knight.update()
+            #self.knight.draw(self.screen)
 
             # === Mouton animé ===
             self.sheep.update()
@@ -84,6 +101,16 @@ class Menu:
             # === Arbre animé ===
             self.tree.update()
             self.tree.draw(self.screen)
+
+            # === Bush animé ===
+            self.bush.update()
+            self.bush.draw(self.screen)
+
+            # === Joueur ===
+            self.playerSprites.update()
+            self.playerSprites.draw(self.screen)
+
+
             
             # === Subtitle ===
             subtitle_lines = SUBTITLE.splitlines()
