@@ -159,7 +159,6 @@ class Player(pygame.sprite.Sprite):
         self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
         if self.invisible and (time.time() - self.invisible_start_time >= self.invisible_duration):
             self.invisible = False
-            self.state = "idleR"
 
         if time.time() - self.damageAmpStart >= 2 :
             self.str = 1
