@@ -7,7 +7,8 @@ from player import Player
 from enemy import Enemy
 from ath import Ath
 from shadow import Shadow
-from menu import Menu  
+from menu import Menu 
+from audio import record_max_db 
 
 
 class Game:
@@ -124,7 +125,14 @@ class Game:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.retrie_button.collidepoint(event.pos):
-                    i=0
+                    max_value = record_max_db(5)
+                    print(max_value)
+                    if max_value >= -70 :
+                        self.spawnable = True
+                        self.spawn_delay = 3
+                        self.last_spawn = 0
+                        self.player.hp = 4
+                        self.player.state = "idleR"
                 elif self.menu_button.collidepoint(event.pos):
                     self.running = False
                     self.game_over =True
@@ -202,10 +210,11 @@ class Game:
         self.spawnable = False
         self.spawn_delay = 3
         self.last_spawn = 0
-        if self.enemies.__len__() == 0:
-            self.door=True
-            if self.player.hp <4:
-                self.player.hp=4
+        for enemy in self.enemies:
+            enemy.kill()
+        self.door=True
+        if self.player.hp <4:
+            self.player.hp=4
 
     def draw(self):
         """Affichage"""
