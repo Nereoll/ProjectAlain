@@ -2,6 +2,7 @@
 import pygame
 from game import Game
 from menu import Menu  
+from credits import Credits
 from settings import WIDTH, HEIGHT
 
 if __name__ == "__main__":
@@ -18,4 +19,8 @@ if __name__ == "__main__":
         g = Game()
         g.new()
         
+    if menu.show_credits:
+        c = Credits(screen)
+        c.run()
+
     pygame.quit()
