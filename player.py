@@ -163,6 +163,8 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.iframe_start_time >= self.iframe_duration:
                 self.is_invulnerable = False
                 self.image.set_alpha(255)  # Rétablit l'opacité normale
+        else :
+            self.image.set_alpha(255)
 
         # Animation selon l’état
         if self.state == "walkR":
@@ -208,6 +210,12 @@ class Player(pygame.sprite.Sprite):
                 # Active les iframes
                 self.is_invulnerable = True
                 self.iframe_start_time = time.time()  # Enregistre le début des iframes
+
+        def died(self):
+            if self.hp <=0:
+                print("Game Over")
+                return True
+            return False
 
     def enemy_killed(self, points):
         self.score += points
