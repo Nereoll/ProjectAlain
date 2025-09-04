@@ -163,6 +163,8 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.iframe_start_time >= self.iframe_duration:
                 self.is_invulnerable = False
                 self.image.set_alpha(255)  # Rétablit l'opacité normale
+        else :
+            self.image.set_alpha(255)
 
         # Animation selon l’état
         if self.state == "walkR":
