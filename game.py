@@ -10,6 +10,7 @@ from end import End
 from shadow import Shadow
 from menu import Menu 
 from audio import get_max_db 
+from powerup import PowerUp
 
 
 class Game:
@@ -31,6 +32,7 @@ class Game:
         # Groupes de sprites avec gestion de layers
         self.all_sprites = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.Group()
+        self.power_ups = pygame.sprite.Group()
 
         # Joueur
         self.player = Player()
@@ -41,6 +43,8 @@ class Game:
         # Ath
         self.ath = Ath(self.player)
 
+        self.stage_cleared = False
+
         # Timer de spawn
         self.start_time = time.time()
         self.last_spawn = 0
@@ -48,6 +52,8 @@ class Game:
         self.spawnable = True
         # Score
         self.score = 0
+
+        self.lastPowerUp = 0
 
 
         # Ressources à charger à l'initialisation
@@ -154,8 +160,19 @@ class Game:
                 self.spawn_delay -= 0.1
         oldLength = self.enemies.__len__()
         self.all_sprites.update()
-        if oldLength > self.enemies.__len__():
-            self.score += 100
+
+        if self.player.state == "invisible" and len(self.power_ups) == 0 and (time.time() - self.lastPowerUp >= 2) :
+            self.lastPowerUp = time.time()
+            # Génère une position aléatoire dans la zone de jeu
+            x = random.randint(50, WIDTH - 50)
+            y = random.randint(50, HEIGHT - 50)
+            if self.player.hp < 4 : # Le joueur ne peut pas avoir plus de 4 coeurs
+                bonus_type = random.choice(["damageAmp", "invulnerability", "heart"])  # Type de bonus aléatoire
+            else :
+                bonus_type = random.choice(["damageAmp", "invulnerability"])
+            power_up = PowerUp((x, y), bonus_type, self.player)
+            self.power_ups.add(power_up)
+            self.all_sprites.add(power_up, layer=3)
 
         #change la porte en fonction du stage
         if self.stage == 1:
@@ -177,13 +194,17 @@ class Game:
 
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
-            if self.score >= threshold and self.stage < next_stage:
-                self.clear_stage()
+            if self.player.score >= threshold and self.stage < next_stage:
+                if not self.stage_cleared :
+                    self.clear_stage()
+                    self.stage_cleared = True
                 if self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
                     self.door = False
                     self.spawnable = True
-
+                    self.stage_cleared = False
+                    for enemy in self.enemies:
+                        enemy.kill()
                     # Repositionner le joueur selon le stage
                     self.player.rect.center = self.stage_spawns[self.stage]
                     self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
@@ -222,8 +243,6 @@ class Game:
         self.spawnable = False
         self.spawn_delay = 3
         self.last_spawn = 0
-        for enemy in self.enemies:
-            enemy.kill()
         self.door=True
         if self.player.hp <4:
             self.player.hp=4

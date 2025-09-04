@@ -1,5 +1,6 @@
 import pygame
 from settings import TITLE, BLACK, HEIGHT
+from utilitaire import pixelate
 
 class Credits:
     def __init__(self, screen):
@@ -17,6 +18,8 @@ class Credits:
         # Actions
         self.running = True
         self.retour = False
+
+        self.pixel_ratio = 0.8  # Ratio de pixelisation
 
     def run(self):
         while self.running:
@@ -43,12 +46,12 @@ class Credits:
             # Titre
             title_text = self.font_title.render("Crédits", True, BLACK)
             title_rect = title_text.get_rect(midtop=(self.screen.get_width() // 2, 50))
-            self.screen.blit(title_text, title_rect)
+            self.screen.blit(pixelate(title_text, self.pixel_ratio), title_rect)
 
             # Assets
             assets_subtitle = self.font_subtitle.render("Assets", True, BLACK)
             assets_rect = assets_subtitle.get_rect(topleft=(240, 180))
-            self.screen.blit(assets_subtitle, assets_rect)
+            self.screen.blit(pixelate(assets_subtitle, self.pixel_ratio), assets_rect)
             #####
             assets_content = [
                 "Tiny Sword Pack by Pixel Frog on itch.io",
@@ -60,7 +63,7 @@ class Credits:
             # Sounds
             sounds_subtitle = self.font_subtitle.render("Sounds", True, BLACK)
             sounds_rect = sounds_subtitle.get_rect(topright=(self.screen.get_width() - 300, 280))
-            self.screen.blit(sounds_subtitle, sounds_rect)
+            self.screen.blit(pixelate(sounds_subtitle, self.pixel_ratio), sounds_rect)
             #####
             sounds_content = [
                 "Medieval Battle by SoundBible.com",
@@ -81,7 +84,7 @@ class Credits:
             # Developers
             dev_subtitle = self.font_subtitle.render("Développeurs", True, BLACK)
             dev_rect = dev_subtitle.get_rect(topleft=(220, HEIGHT - 420))
-            self.screen.blit(dev_subtitle, dev_rect)
+            self.screen.blit(pixelate(dev_subtitle, self.pixel_ratio), dev_rect)
             #####
             dev_content = [
                 "Bastien ALLEGRE / Hugo BARBIERI",
