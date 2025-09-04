@@ -59,7 +59,7 @@ class Player(pygame.sprite.Sprite):
 
         # Stats
         self.hp = 4
-        self.mana = 0
+        self.mana = 40000
         self.score = 0
 
         # Direction face
@@ -99,7 +99,7 @@ class Player(pygame.sprite.Sprite):
                 self.state = "invisible"
                 self.invisible = True
                 self.invisible_start_time = time.time()
-                self.mana = 0
+                self.mana -=4
 
             # === Déclenchement attaque ===
             if (keys[pygame.K_SPACE] or pygame.mouse.get_pressed()[0]) and not self.attacking and not self.invisible and self.faceRorL == "L":
@@ -144,7 +144,7 @@ class Player(pygame.sprite.Sprite):
             if self.faceRorL == "R" :
                 animate(self, self.idleRSprites, loop=True)
             elif self.faceRorL == "L" :
-                animate(self, self.idleLSprites, loop=True)               
+                animate(self, self.idleLSprites, loop=True)
         else:
             self.handle_keys()
 

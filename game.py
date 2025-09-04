@@ -34,6 +34,7 @@ class Game:
 
         # Joueur
         self.player = Player()
+        self.player.mana=0
         self.playerSpawn = (WIDTH // 2, HEIGHT // 2)
         self.all_sprites.add(self.player, layer=2)
 
