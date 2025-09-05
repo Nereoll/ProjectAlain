@@ -1,7 +1,7 @@
 # end.py
 import pygame
 from settings import TITLE, WHITE, WIDTH, HEIGHT
-from utilitaire import load_sprites, animate, SoundEffects
+from utilitaire import load_sprites, animate, SoundEffects, scale_sprites
 from audio import SoundMeter
 
 import threading
@@ -67,9 +67,18 @@ class End:
         self.menu_button = pygame.Rect(WIDTH // 2 + 10, HEIGHT // 4, 300, 200)
         self.retry_clicked = False
 
+        #microphone
+        self.micro= pygame.image.load("assets/images/ui/micro.png").convert_alpha()
+        self.microRect=self.micro.get_rect(center=(WIDTH//2,HEIGHT-200))
+
         # Audio
         self.sound = SoundEffects()
         self.meters = SoundMeter()
+
+        # Timer
+        self.timer = 1
+        self.timer_active = False
+        self.last_tick = pygame.time.get_ticks()
 
     # ---------------------------
     # Logic
@@ -84,6 +93,9 @@ class End:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
                 # Lancer l'écoute micro dans un thread
+                self.timer_active = True
+                self.timer = 0
+                self.last_tick = pygame.time.get_ticks()
                 threading.Thread(target=self._try_respawn).start()
             elif self.menu_button.collidepoint(event.pos):
                 self._go_to_menu()
@@ -117,10 +129,19 @@ class End:
         self.player.hp = 4
         self.player.nb_rea += 1
         self.player.state = "idleR"
+        self.timer = 0  # reset timer quand le joueur respawn
+        self.last_tick = pygame.time.get_ticks()
 
 
     def update(self):
         """Met à jour l'animation de mort."""
+        # Timer incrémenté toutes les 1000ms
+        if self.timer_active:
+            now = pygame.time.get_ticks()
+            if now - self.last_tick >= 1000:
+                self.timer += 1
+                self.last_tick = now
+
         mouse_pressed = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
         self.retry_clicked = self.retry_button.collidepoint(mouse_pos) and mouse_pressed[0]
@@ -144,6 +165,15 @@ class End:
             if self.retry_clicked:
                 self._draw_button(self.retry_button, self.retry_button_pressed_image)
         self._draw_button(self.menu_button, self.menu_button_image)
+
+        if self.timer_active:
+            timer_text = self.font_button.render(f"{self.timer}s", True, WHITE)
+            timer_rect = timer_text.get_rect(center=(WIDTH // 2, HEIGHT - 100))
+            self.screen.blit(timer_text, timer_rect)
+            # Microphone
+            self._draw_button(self.microRect, self.micro)
+
+
 
     def _draw_title(self, text: str):
         """
