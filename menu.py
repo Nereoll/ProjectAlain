@@ -109,6 +109,7 @@ class Menu:
             self.start_game = True
             self.running = False
             self.sound.stop_music()
+            self.sound.play_one("assets/sounds/music/lvl_1_bridge.ogg", volume=0.2)
 
         # Vérifie si le joueur collide sur le bouton Crédit
         if self.credit_button.collidepoint(player_rect_center):
@@ -120,6 +121,8 @@ class Menu:
             self.start_game = True
             self.start_game_infinite = True
             self.running = False
+            self.sound.stop_music()
+            self.sound.play_one("assets/sounds/music/lvl_dungeon_bridge.ogg", volume=0.2)
 
     def draw(self):
         # Fond du menu

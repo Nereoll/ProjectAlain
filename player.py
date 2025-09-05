@@ -305,11 +305,11 @@ class Player(pygame.sprite.Sprite):
             self.image.set_alpha(10)
         elif self.state == "walkR":
             animate(self, self.walkRSprites, loop=True)
-            self.sound.play_group("footstep_stone", 0.2, 0.4)
+            self.sound.play_group("footstep_stone", 0.3, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "walkL" :
             animate(self, self.walkLSprites, loop=True)
-            self.sound.play_group("footstep_stone", 0.2, 0.4)
+            self.sound.play_group("footstep_stone", 0.3, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "attackR":
             animate(self, self.attackRSprites, loop=False)

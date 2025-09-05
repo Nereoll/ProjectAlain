@@ -220,6 +220,7 @@ class Game:
                             self.dialogue_active = False
                             self.in_cutscene = False
                             self.sound.stop_music()
+                            self.sound.play_one(self.ambient_music[self.stage], 0.2)
                             if self.boss and self.boss.is_dead:
                                 self.stage = 6
                                 self.boss.kill()
@@ -319,13 +320,16 @@ class Game:
                 self.end_screen = End(self.screen, self.player, self)
             self.end_screen.update()
             return
-        
-        if not self.sound.is_playing() and not self.in_cutscene:
+        if self.isDungeon and not self.sound.is_playing():
+            self.sound.play_one("assets/sounds/music/lvl_dungeon.ogg", 0.2)
+        elif not self.sound.is_playing() and not self.in_cutscene:
             self.sound.play_one(self.ambient_music[self.stage], 0.2)
 
 
 
     def start_boss_cutscene(self):
+        self.sound.stop_music()
+        self.sound.play_one("assets/sounds/sound_effects/boss_talk.ogg", 0.1)
         self.in_cutscene = True
         self.dialogue_active = True
         self.spawnable = False
