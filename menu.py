@@ -52,6 +52,8 @@ class Menu:
         self.credit_button.box_rect = pygame.Rect(WIDTH - 280, HEIGHT - 306, 120, 100)
         self.infinite_button = Button("Dungeon", self.font_credits, 55, 115, 10, WHITE)
         self.infinite_button.box_rect = pygame.Rect(40, 40, 120, 180)
+        self.lore_button = Button("Histoire", self.font_credits, WIDTH - 330, HEIGHT - 590)
+        self.lore_button.box_rect = pygame.Rect(WIDTH - 455, HEIGHT - 740, 350, 120)
 
         # Charger les sprites animées
         knight_sprites = load_sprites(chemin_relatif("assets/images/player/Warrior_Idle.png"), 8)
@@ -76,7 +78,8 @@ class Menu:
         self.running = True
         self.start_game = False
         self.start_game_infinite = False
-        self.show_credits = False
+        self.show_credits = False   
+        self.show_lore = False
 
         # Repositionner le joueur sur le spawn défini
         self.player.rect.center = self.playerSpawn
@@ -116,6 +119,11 @@ class Menu:
             self.show_credits = True
             self.running = False
 
+        # Vérifie si le joueur collide sur le bouton Lore
+        if self.lore_button.collidepoint(player_rect_center):
+            self.show_lore = True
+            self.running = False
+
         # Vérifie si le joueur collide sur le bouton Dungeon
         if self.infinite_button.collidepoint(player_rect_center):
             self.start_game = True
@@ -146,6 +154,8 @@ class Menu:
         # pygame.draw.rect(self.screen, BLUE, self.credit_button.box_rect, 4) # Debug box
         self.infinite_button.draw(self.screen)
         # pygame.draw.rect(self.screen, BLUE, self.infinite_button.box_rect, 4) # Debug box
+        self.lore_button.draw(self.screen)
+        #pygame.draw.rect(self.screen, BLUE, self.lore_button.box_rect, 4) # Debug box
 
         # Mise à jour et rendu des éléments animés
         self.sheep.update()
