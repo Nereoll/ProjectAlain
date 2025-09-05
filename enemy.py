@@ -86,19 +86,19 @@ ENEMY_SPRITES = {
     "scout": {
         "walkR": ("assets/images/enemy/scout/scoutRun.png", 8, False, 3),
         "attackR": ("assets/images/enemy/scout/scoutAttack.png", 3, False, 3),
-        "walkL": ("assets/images/enemy/scout/scoutRun.png", 8, True, 3),
-        "attackL": ("assets/images/enemy/scout/scoutAttack.png", 3, False, 3),
+        "walkL": ("assets/images/enemy/scout/scoutRunL.png", 8, True, 3),
+        "attackL": ("assets/images/enemy/scout/scoutAttackL.png", 3, False, 3),
         "idleR": ("assets/images/enemy/scout/scoutIdle.png", 8, False, 3),
-        "idleL": ("assets/images/enemy/scout/scoutIdle.png", 8, False, 3),
+        "idleL": ("assets/images/enemy/scout/scoutIdleL.png", 8, False, 3),
         "animation_speed": 0.15
     },
     "tnt": {
         "walkR": ("assets/images/enemy/tnt/tntRun.png", 6, False, 1),
         "attackR": ("assets/images/enemy/tnt/tntAttack.png", 7, False, 1),
-        "walkL": ("assets/images/enemy/tnt/tntRun.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/tnt/tntAttack.png", 7, False, 1),
+        "walkL": ("assets/images/enemy/tnt/tntRunL.png", 6, True, 1),
+        "attackL": ("assets/images/enemy/tnt/tntAttackL.png", 7, False, 1),
         "idleR": ("assets/images/enemy/tnt/tntIdle.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/tnt/tntIdle.png", 6, False, 1),
+        "idleL": ("assets/images/enemy/tnt/tntIdleL.png", 6, False, 1),
         "animation_speed": 0.15
     },
     "lancier": {
@@ -113,10 +113,10 @@ ENEMY_SPRITES = {
     "archer": {
         "walkR": ("assets/images/enemy/archer/archerWalkR.png", 6, False, 1),
         "attackR": ("assets/images/enemy/archer/archerAttackR.png", 8, False, 1),
-        "walkL": ("assets/images/enemy/archer/archerWalkR.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/archer/archerAttackR.png", 8, False, 1),
+        "walkL": ("assets/images/enemy/archer/archerWalkL.png", 6, True, 1),
+        "attackL": ("assets/images/enemy/archer/archerAttackL.png", 8, False, 1),
         "idleR": ("assets/images/enemy/archer/archerIdleR.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/archer/archerIdleR.png", 6, False, 1),
+        "idleL": ("assets/images/enemy/archer/archerIdleL.png", 6, False, 1),
         "animation_speed": 0.15
     },
     "boss": {
