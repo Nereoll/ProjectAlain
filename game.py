@@ -99,7 +99,6 @@ class Game:
         self.current_line = 0
         self.dialogue_active = False
 
-
         # Ressources à charger à l'initialisation
         self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
         self.shadow1 = pygame.image.load("assets/images/shadow/Shadow1.png").convert_alpha()

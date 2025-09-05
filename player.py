@@ -33,6 +33,7 @@ class Player(pygame.sprite.Sprite):
         invisible (bool): Indique si le joueur est invisible.
         is_invulnerable (bool): Indique si le joueur est temporairement invulnérable.
         joystick (pygame.joystick.Joystick | None): Manette détectée (si disponible).
+        nb_rea (int): Nombre de réaparition faite pars le joueur
     """
     def __init__(self, game=None):
         super().__init__()
@@ -85,6 +86,7 @@ class Player(pygame.sprite.Sprite):
         self.invisible = False
         self.invisible_start_time = 0
         self.invisible_duration = 2  # secondes
+        self.nb_rea = 0
         # Ne pas équilibrer les power ups ici
         self.damageAmpStart = 0
         self.damageAmpValue = 0

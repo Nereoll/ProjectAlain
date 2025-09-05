@@ -115,6 +115,7 @@ class End:
         """
         self.game.spawnable = (self.game.stage != 5)
         self.player.hp = 4
+        self.player.nb_rea += 1
         self.player.state = "idleR"
 
 
@@ -138,9 +139,10 @@ class End:
         """
         self._draw_title("Game Over")
         self._draw_death_animation()
-        self._draw_button(self.retry_button, self.retry_button_image)
-        if self.retry_clicked:
-            self._draw_button(self.retry_button, self.retry_button_pressed_image)
+        if (self.player.nb_rea < 3):
+            self._draw_button(self.retry_button, self.retry_button_image)
+            if self.retry_clicked:
+                self._draw_button(self.retry_button, self.retry_button_pressed_image)
         self._draw_button(self.menu_button, self.menu_button_image)
 
     def _draw_title(self, text: str):
