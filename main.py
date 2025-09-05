@@ -1,3 +1,10 @@
+"""
+main.py
+
+Point d'entrée du jeu. 
+Gère la boucle principale entre le menu, les crédits et le lancement du jeu.
+"""
+
 import pygame
 from game import Game
 from menu import Menu
@@ -5,6 +12,15 @@ from credits import Credits
 from settings import WIDTH, HEIGHT
 
 def main():
+    """
+    Fonction principale du programme.
+
+    - Initialise Pygame et la fenêtre.
+    - Affiche le menu principal.
+    - Permet d’accéder aux crédits.
+    - Lance une partie si le joueur choisit de jouer.
+    - Termine l’application si le joueur quitte depuis le menu ou les crédits.
+    """
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     running = True

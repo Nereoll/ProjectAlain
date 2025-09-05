@@ -5,7 +5,18 @@ import os
 pygame.mixer.init()
 
 def load_sprites(path="", num_frames=1, nopath=False, imagestring=None):
-    """Charge un spritesheet horizontal découpé en plusieurs frames."""
+    """
+    Charge un spritesheet horizontal et le découpe en plusieurs frames.
+
+    Args:
+        path (str): Chemin vers l'image.
+        num_frames (int): Nombre de frames contenues dans le spritesheet.
+        nopath (bool): Si True, charge à partir d'un objet `imagestring` (via PIL).
+        imagestring (PIL.Image): Image PIL à convertir en surface Pygame.
+
+    Returns:
+        list[pygame.Surface]: Liste des frames découpées et recadrées.
+    """
     if nopath:
         mode = imagestring.mode
         size = imagestring.size
@@ -29,7 +40,15 @@ def load_sprites(path="", num_frames=1, nopath=False, imagestring=None):
 
 
 def load_sprites_from_folder(folder):
-    """Charge une animation depuis un dossier contenant plusieurs PNG."""
+    """
+    Charge une animation depuis un dossier contenant plusieurs fichiers PNG.
+
+    Args:
+        folder (str): Chemin vers le dossier contenant les images.
+
+    Returns:
+        list[pygame.Surface]: Liste des images triées et chargées.
+    """
     sprites = []
     for filename in sorted(os.listdir(folder)):
         if filename.endswith(".png"):
@@ -40,14 +59,15 @@ def load_sprites_from_folder(folder):
 
 def animate(entity, sprites, loop=True, assign_to_image=True, animation_speed=None):
     """
-    Anime un sprite-like (entité avec current_frame, frame_timer).
+    Anime une entité (doit avoir `current_frame`, `frame_timer` et `image`).
 
     Args:
-        entity: L'objet à animer (doit avoir `current_frame`, `frame_timer`, `image`).
-        sprites: Liste des frames.
-        loop: Si True, l'animation boucle.
-        assign_to_image: Si True, met à jour `entity.image`.
-        animation_speed: Vitesse spécifique pour cet appel. Si None, prend `entity.animation_speed`.
+        entity: Objet à animer (Player, AnimatedEntity, etc.).
+        sprites (list[pygame.Surface]): Frames de l’animation.
+        loop (bool): Si True, l’animation boucle, sinon elle s’arrête à la dernière frame.
+        assign_to_image (bool): Si True, assigne directement la frame à `entity.image`.
+        animation_speed (float|None): Vitesse d’animation (frames par tick). 
+                                       Si None, utilise `entity.animation_speed`.
     """
     # Utiliser la vitesse passée en paramètre ou celle de l'entité
     speed = animation_speed if animation_speed is not None else getattr(entity, 'animation_speed', 0.15)
@@ -81,6 +101,16 @@ def animate(entity, sprites, loop=True, assign_to_image=True, animation_speed=No
         entity.current_sprite = frame
 
 def pixelate(img, scale=0.5):
+    """
+    Applique un effet de pixelisation à une image.
+
+    Args:
+        img (pygame.Surface): Image originale.
+        scale (float): Facteur de réduction (ex: 0.5 = réduit de moitié).
+
+    Returns:
+        pygame.Surface: Image pixelisée (agrandie après réduction).
+    """
     ver_originale = img.get_size() #récupère la taille de l'image originale
     taille_mini = int(ver_originale[0] * scale), int(ver_originale[1] * scale) # calcule la taille de l'image diminuée avec l'échelle
     ver_mini = pygame.transform.smoothscale(img, taille_mini) #réduit l'image
@@ -88,14 +118,31 @@ def pixelate(img, scale=0.5):
     return ver_pixel
 
 def scale_sprites(sprites, scale_factor):
-    """Redimensionne une liste de sprites."""
+    """
+    Redimensionne une liste de sprites.
+
+    Args:
+        sprites (list[pygame.Surface]): Liste des images.
+        scale_factor (float): Facteur d’échelle (ex: 2 = double la taille).
+
+    Returns:
+        list[pygame.Surface]: Liste des sprites redimensionnés.
+    """
     return [pygame.transform.scale(sprite, (int(sprite.get_width() * scale_factor), int(sprite.get_height() * scale_factor))) for sprite in sprites]
 
 
 class AnimatedEntity:
     """
-    Petit helper pour gérer une animation simple (idle, walk, etc.)
-    dans le menu ou le jeu, sans devoir créer un sprite complet.
+    Représente une entité animée simple (utile pour le menu ou le décor).
+
+    Attributes:
+        sprites (list[pygame.Surface]): Frames de l’animation.
+        pos (tuple): Position (x, y) où afficher l’entité.
+        animation_speed (float): Vitesse d’animation.
+        loop (bool): Si True, l’animation boucle.
+        current_frame (int): Frame actuelle.
+        frame_timer (float): Timer pour l’animation.
+        image (pygame.Surface): Frame courante affichée.
     """
     def __init__(self, sprites, pos, animation_speed=0.15, loop=True):
         self.sprites = sprites

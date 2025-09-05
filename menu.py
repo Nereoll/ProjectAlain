@@ -1,3 +1,13 @@
+"""
+menu.py
+
+Définit l’écran de menu principal du jeu.
+
+Le joueur peut déplacer son personnage (sprite) et interagir avec les boutons 
+du menu en les "touchant" avec son sprite (Start, Crédits, Dungeon).
+Le menu contient aussi des animations, une musique de fond et un rendu graphique
+(personnage, mouton, arbres, buissons, ruban, bannière, etc.).
+"""
 import pygame
 from player import Player
 from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
@@ -6,6 +16,17 @@ from components.button import Button
 from components.animatedElement import AnimatedElement
 
 class Menu:
+    """
+    Classe représentant le menu principal du jeu.
+
+    Attributes:
+        screen (pygame.Surface): Surface d’affichage Pygame.
+        player (Player): Sprite du joueur permettant d’interagir avec le menu.
+        start_game (bool): Indique si une partie doit être lancée.
+        start_game_infinite (bool): Indique si la partie doit démarrer en mode infini/donjon.
+        show_credits (bool): Indique si les crédits doivent être affichés.
+        running (bool): Boucle de contrôle du menu.
+    """
     def __init__(self, screen):
         self.screen = screen
         pygame.display.set_caption(TITLE)
