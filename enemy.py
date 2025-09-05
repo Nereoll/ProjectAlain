@@ -253,11 +253,10 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.is_dead:
             self.handle_death()
-            return
 
         if self.state == "staggered":
             self.handle_stagger()
-        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect):
+        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect) and not self.player.invisible:
             self.handle_player_attack()
         else:
             self.handle_movement_and_attack()
@@ -309,7 +308,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.last_damage_time = current_time
 
     def handle_movement_and_attack(self):
-        if self.player.state == "invisible":
+        if self.player.invisible :
             self.handle_invisible_player()
         else:
             self.handle_visible_player()

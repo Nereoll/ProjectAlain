@@ -185,7 +185,7 @@ class Game:
 
         self.all_sprites.update()
 
-        if self.player.state == "invisible" and len(self.power_ups) == 0 and (time.time() - self.lastPowerUp >= 2) :
+        if self.player.invisible and len(self.power_ups) == 0 and (time.time() - self.lastPowerUp >= 2) :
             self.lastPowerUp = time.time()
             # Génère une position aléatoire dans la zone de jeu
             x = random.randint(50, WIDTH - 50)
@@ -275,11 +275,11 @@ class Game:
 
         # Texte du dialogue
         self.dialogue_lines = [
-            "Boss: Ah enfin tu arrives...",
-            "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
-            "Boss: Je dois te faire disparaitre pour me venger !",
+            "Joris: Ah enfin tu arrives...",
+            "Joris: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
+            "Joris: Je dois te faire disparaitre pour me venger !",
             "Alain: ...",
-            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
+            "Joris: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
             "Alain: Feur",
         ]
         self.current_line = 0
@@ -294,7 +294,7 @@ class Game:
 
         # Dialogue de fin
         self.dialogue_lines = [
-            "Boss: Hahaha... je meurs mais ta princesse restera invisible...",
+            "Joris (mort): Hahaha... je meurs mais ta princesse restera invisible...",
         ]
         self.current_line = 0
 
@@ -335,7 +335,7 @@ class Game:
 
 
         # Sprites
-        if self.player.state == "invisible":
+        if self.player.invisible :
             for enemy in self.enemies:
                 self.screen.blit(enemy.question_mark, enemy.question_mark_rect)
                 enemy.update()

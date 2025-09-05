@@ -135,8 +135,7 @@ class Player(pygame.sprite.Sprite):
 
             # === Déclenchement invisibilité ===
             if keys[pygame.K_LSHIFT] and not self.invisible and self.mana >= 4:
-                self.state = "invisible"
-                self.invisible = True 
+                self.invisible = True
                 self.invisible_start_time = time.time()
                 self.mana -=4
 
@@ -187,7 +186,6 @@ class Player(pygame.sprite.Sprite):
                         self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
 
                 if ( self.joystick.get_button(4) or self.joystick.get_button(2) )  and not self.invisible and self.mana >= 4:
-                    self.state = "invisible"
                     self.invisible = True 
                     self.invisible_start_time = time.time()
                     self.mana -=4
@@ -231,6 +229,14 @@ class Player(pygame.sprite.Sprite):
         - Idle : on prend juste la première frame de marche.
         - Invisible : on prend la frame d'invisibilité.
         """
+
+        # print((str)(self.invisibilityDurationLeft) + " | " + (str)(self.state))
+        
+        # Vérifie si l’invisibilité est terminée
+        self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
+        if self.invisibilityDurationLeft < 0 :
+            self.invisible = False
+
         # Vérifie si le joueur est dans une cutscene (si game est défini)
         # Vérifie si le joueur est dans une cutscene et ce n'est pas la mort du boss
         if self.game and getattr(self.game, "in_cutscene", False):
@@ -246,11 +252,6 @@ class Player(pygame.sprite.Sprite):
                 animate(self, self.idleLSprites, loop=True)
         else:
             self.handle_keys()
-
-        # Vérifie si l’invisibilité est terminée
-        self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
-        if self.invisible and (time.time() - self.invisible_start_time >= self.invisible_duration):
-            self.invisible = False
 
         if time.time() - self.damageAmpStart >= 2 :
             self.str = 1
@@ -277,7 +278,11 @@ class Player(pygame.sprite.Sprite):
             self.image.set_alpha(255)
 
         # Animation selon l’état
-        if self.state == "walkR":
+        if self.invisible :
+            animate(self, self.invisibleSprite, loop=True)
+            # Rendre translucide
+            self.image.set_alpha(10)
+        elif self.state == "walkR":
             animate(self, self.walkRSprites, loop=True)
             self.sound.play_group("footstep_stone", 0.2, 0.4)
             self.image.set_alpha(255)  # normal
@@ -286,7 +291,6 @@ class Player(pygame.sprite.Sprite):
             self.sound.play_group("footstep_stone", 0.2, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "attackR":
-
             animate(self, self.attackRSprites, loop=False)
             self.sound.play_group("sword_swings", 0.2)
             self.image.set_alpha(255)  # normal
@@ -296,7 +300,6 @@ class Player(pygame.sprite.Sprite):
                 self.attacking = False
                 self.current_frame = 0
         elif self.state == "attackL":
-
             animate(self, self.attackLSprites, loop=False)
             self.sound.play_group("sword_swings", 0.2)
             self.image.set_alpha(255)  # normal
@@ -305,11 +308,6 @@ class Player(pygame.sprite.Sprite):
                 self.state = "idleL"
                 self.attacking = False
                 self.current_frame = 0
-        elif self.state == "invisible":
-            animate(self, self.invisibleSprite, loop=True)
-            # Rendre translucide
-            self.image.set_alpha(10)
-
         elif self.state == "idleR" :
             animate(self, self.idleRSprites, loop=True)
         elif self.state == "idleL" :
