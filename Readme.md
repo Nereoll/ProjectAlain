@@ -20,7 +20,7 @@ projectalain/
 │── shadow.py      # Gestion des ombres in game
 │── utilitaire.py  # Fonctions utilitaires
 │── requirements.txt # Dépendances du projet
-│── setup.sh       # Script d’installation automatique
+│── setup.sh       # Script d'installation automatique
 │── assets/        # Dossier pour images, sons, polices
 │   ├── images/
 │   ├── sounds/
@@ -38,13 +38,13 @@ projectalain/
    cd ProjectAlain
    ```
 
-2. **Donner les droits d’exécution au script d’installation :**
+2. **Donner les droits d'exécution au script d'installation :**
 
    ```bash
    chmod +x setup.sh
    ```
 
-3. **Lancer l’installation :**
+3. **Lancer l'installation :**
 
    ```bash
    ./setup.sh
@@ -59,7 +59,7 @@ Ce script :
 
 ## ▶️ Lancer le jeu
 
-Activer l’environnement virtuel puis exécuter le jeu :
+Activer l'environnement virtuel puis exécuter le jeu :
 
 ```bash
 source venv/bin/activate

@@ -86,19 +86,19 @@ ENEMY_SPRITES = {
     "scout": {
         "walkR": ("assets/images/enemy/scout/scoutRun.png", 8, False, 3),
         "attackR": ("assets/images/enemy/scout/scoutAttack.png", 3, False, 3),
-        "walkL": ("assets/images/enemy/scout/scoutRun.png", 8, True, 3),
-        "attackL": ("assets/images/enemy/scout/scoutAttack.png", 3, False, 3),
+        "walkL": ("assets/images/enemy/scout/scoutRunL.png", 8, True, 3),
+        "attackL": ("assets/images/enemy/scout/scoutAttackL.png", 3, False, 3),
         "idleR": ("assets/images/enemy/scout/scoutIdle.png", 8, False, 3),
-        "idleL": ("assets/images/enemy/scout/scoutIdle.png", 8, False, 3),
+        "idleL": ("assets/images/enemy/scout/scoutIdleL.png", 8, False, 3),
         "animation_speed": 0.15
     },
     "tnt": {
         "walkR": ("assets/images/enemy/tnt/tntRun.png", 6, False, 1),
         "attackR": ("assets/images/enemy/tnt/tntAttack.png", 7, False, 1),
-        "walkL": ("assets/images/enemy/tnt/tntRun.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/tnt/tntAttack.png", 7, False, 1),
+        "walkL": ("assets/images/enemy/tnt/tntRunL.png", 6, True, 1),
+        "attackL": ("assets/images/enemy/tnt/tntAttackL.png", 7, False, 1),
         "idleR": ("assets/images/enemy/tnt/tntIdle.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/tnt/tntIdle.png", 6, False, 1),
+        "idleL": ("assets/images/enemy/tnt/tntIdleL.png", 6, False, 1),
         "animation_speed": 0.15
     },
     "lancier": {
@@ -113,10 +113,10 @@ ENEMY_SPRITES = {
     "archer": {
         "walkR": ("assets/images/enemy/archer/archerWalkR.png", 6, False, 1),
         "attackR": ("assets/images/enemy/archer/archerAttackR.png", 8, False, 1),
-        "walkL": ("assets/images/enemy/archer/archerWalkR.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/archer/archerAttackR.png", 8, False, 1),
+        "walkL": ("assets/images/enemy/archer/archerWalkL.png", 6, True, 1),
+        "attackL": ("assets/images/enemy/archer/archerAttackL.png", 8, False, 1),
         "idleR": ("assets/images/enemy/archer/archerIdleR.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/archer/archerIdleR.png", 6, False, 1),
+        "idleL": ("assets/images/enemy/archer/archerIdleL.png", 6, False, 1),
         "animation_speed": 0.15
     },
     "boss": {
@@ -132,6 +132,32 @@ ENEMY_SPRITES = {
 }
 
 class Enemy(pygame.sprite.Sprite):
+    """
+    Représente un ennemi dans le jeu.
+
+    Chaque ennemi hérite de pygame.sprite.Sprite et possède :
+    - Des stats propres (HP, vitesse, dégâts…)
+    - Des animations (idle, walk, attack, death)
+    - Une IA simple (suivi du joueur, attaque à distance rapprochée)
+    - Un comportement spécifique en cas de mort (explosion ou cutscene pour le boss)
+
+    Args:
+        enemy_type (str): Type d'ennemi (clé dans ENEMY_STATS et ENEMY_SPRITES).
+        player (Player): Référence au joueur.
+        screen (pygame.Surface): Surface d'affichage.
+        pos (tuple[int, int], optional): Position initiale. Par défaut (0, 0).
+
+    Attributs principaux :
+        hp (int): Points de vie.
+        speed (float): Vitesse de déplacement.
+        attack_points (int): Dégâts infligés au joueur.
+        state (str): État actuel de l'ennemi (idleR, walkL, attackR, etc.).
+        is_dead (bool): True si l'ennemi est mort.
+        attacking (bool): True si l'ennemi est en train d'attaquer.
+        faceRorL (str): Direction ("R" ou "L").
+        explosionFrames (list[Surface]): Frames d'explosion (non-boss).
+        deathSprites (list[Surface]): Animation de mort (boss).
+    """
     def __init__(self, enemy_type, player, screen, pos=(0, 0)):
         super().__init__()
         self.enemy_type = enemy_type
