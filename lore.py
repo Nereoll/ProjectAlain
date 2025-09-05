@@ -1,6 +1,6 @@
 import pygame
 from settings import BLACK, HEIGHT
-from utilitaire import pixelate
+from utilitaire import pixelate, chemin_relatif
 
 
 class Lore:
@@ -22,12 +22,12 @@ class Lore:
         retour (bool): Indique si on doit retourner au menu précédent.
         pixel_ratio (float): Facteur de pixelisation appliqué aux textes.
     """
-    FONT_TITLE = ("assets/fonts/Chomsky.otf", 52)
-    FONT_SUBTITLE = ("assets/fonts/Chomsky.otf", 34)
-    FONT_TEXT = ("assets/fonts/GenAR102.TTF", 18)
+    FONT_TITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 52)
+    FONT_SUBTITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 34)
+    FONT_TEXT = chemin_relatif(("assets/fonts/GenAR102.TTF"), 18)
 
-    BACK_IMG = "assets/images/ressources/Pressed_01.png"
-    BG_IMG = "assets/images/background/Credit_Page.png"
+    BACK_IMG = chemin_relatif("assets/images/ressources/Pressed_01.png")
+    BG_IMG = chemin_relatif("assets/images/background/Credit_Page.png")
 
     def __init__(self, screen, fullscreen):
         """
