@@ -241,8 +241,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.explosion_frame_index += 1
             else:
                 self.kill()
-            return
-
 
         if self.is_dead:
             # Affiche l'animation d'explosion
