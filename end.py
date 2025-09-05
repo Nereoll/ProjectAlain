@@ -1,7 +1,7 @@
 # end.py
 import pygame
 from settings import TITLE, WHITE, WIDTH, HEIGHT
-from utilitaire import load_sprites, animate, SoundEffects
+from utilitaire import load_sprites, animate, SoundEffects, chemin_relatif
 from audio import SoundMeter
 
 import threading
@@ -30,9 +30,9 @@ class End:
         sound (SoundEffects): Gestionnaire des sons et musiques.
         meters (SoundMeter): Microphone pour mesurer le volume du joueur.
     """
-    FONT_TITLE = ("assets/fonts/Chomsky.otf", 64)
-    FONT_BUTTON = ("assets/fonts/GenAR102.TTF", 32)
-    DEATH_SPRITE_PATH = "assets/images/player/Dead.png"
+    FONT_TITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 64)
+    FONT_BUTTON = (chemin_relatif("assets/fonts/GenAR102.TTF"), 32)
+    DEATH_SPRITE_PATH = chemin_relatif("assets/images/player/Dead.png")
     DEATH_FRAMES = 14
 
     def __init__(self, screen, player, game):
@@ -60,15 +60,15 @@ class End:
         self.frame_timer = 0
 
         # Boutons
-        self.retry_button_image = pygame.image.load("assets/images/ui/retry_button.png").convert_alpha()
-        self.retry_button_pressed_image = pygame.image.load("assets/images/ui/retry_button_pressed.png").convert_alpha()
-        self.menu_button_image = pygame.image.load("assets/images/ui/menu_button.png").convert_alpha()
+        self.retry_button_image = pygame.image.load(chemin_relatif("assets/images/ui/retry_button.png")).convert_alpha()
+        self.retry_button_pressed_image = pygame.image.load(chemin_relatif("assets/images/ui/retry_button_pressed.png")).convert_alpha()
+        self.menu_button_image = pygame.image.load(chemin_relatif("assets/images/ui/menu_button.png")).convert_alpha()
         self.retry_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
         self.menu_button = pygame.Rect(WIDTH // 2 + 10, HEIGHT // 4, 300, 200)
         self.retry_clicked = False
 
         #microphone
-        self.micro= pygame.image.load("assets/images/ui/micro.png").convert_alpha()
+        self.micro= pygame.image.load(chemin_relatif("assets/images/ui/micro.png")).convert_alpha()
         self.microRect=self.micro.get_rect(center=(WIDTH//2,HEIGHT-200))
 
         # Audio
