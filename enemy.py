@@ -144,18 +144,18 @@ class Enemy(pygame.sprite.Sprite):
     Args:
         enemy_type (str): Type d'ennemi (clé dans ENEMY_STATS et ENEMY_SPRITES).
         player (Player): Référence au joueur.
-        screen (pygame.Surface): Surface d’affichage.
+        screen (pygame.Surface): Surface d'affichage.
         pos (tuple[int, int], optional): Position initiale. Par défaut (0, 0).
 
     Attributs principaux :
         hp (int): Points de vie.
         speed (float): Vitesse de déplacement.
         attack_points (int): Dégâts infligés au joueur.
-        state (str): État actuel de l’ennemi (idleR, walkL, attackR, etc.).
-        is_dead (bool): True si l’ennemi est mort.
-        attacking (bool): True si l’ennemi est en train d’attaquer.
+        state (str): État actuel de l'ennemi (idleR, walkL, attackR, etc.).
+        is_dead (bool): True si l'ennemi est mort.
+        attacking (bool): True si l'ennemi est en train d'attaquer.
         faceRorL (str): Direction ("R" ou "L").
-        explosionFrames (list[Surface]): Frames d’explosion (non-boss).
+        explosionFrames (list[Surface]): Frames d'explosion (non-boss).
         deathSprites (list[Surface]): Animation de mort (boss).
     """
     def __init__(self, enemy_type, player, screen, pos=(0, 0)):

@@ -8,7 +8,7 @@ import threading
 
 class End:
     """
-    Classe représentant l’écran de fin de partie (Game Over).
+    Classe représentant l'écran de fin de partie (Game Over).
 
     Affiche :
         - Le titre "Game Over"
@@ -16,15 +16,15 @@ class End:
         - Deux boutons (respawn par cri, retour menu principal)
 
     Attributs :
-        screen (pygame.Surface): Surface principale pour l’affichage.
+        screen (pygame.Surface): Surface principale pour l'affichage.
         player (Player): Référence au joueur pour gérer respawn et stats.
         game (Game): Référence au jeu pour modifier son état.
         font_title (pygame.font.Font): Police pour le titre.
         font_button (pygame.font.Font): Police pour les boutons.
-        death_sprite (list[pygame.Surface]): Frames de l’animation de mort.
-        current_frame (int): Frame actuelle de l’animation.
-        animation_speed (float): Vitesse d’animation.
-        frame_timer (float): Timer interne pour l’animation.
+        death_sprite (list[pygame.Surface]): Frames de l'animation de mort.
+        current_frame (int): Frame actuelle de l'animation.
+        animation_speed (float): Vitesse d'animation.
+        frame_timer (float): Timer interne pour l'animation.
         retry_button (pygame.Rect): Zone du bouton "Scream to continue".
         menu_button (pygame.Rect): Zone du bouton "Main Menu".
         sound (SoundEffects): Gestionnaire des sons et musiques.
@@ -37,7 +37,7 @@ class End:
 
     def __init__(self, screen, player, game):
         """
-        Initialise l’écran de fin de partie.
+        Initialise l'écran de fin de partie.
 
         Args:
             screen (pygame.Surface): Surface du jeu.
@@ -83,7 +83,7 @@ class End:
         """
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
-                # Lancer l’écoute micro dans un thread
+                # Lancer l'écoute micro dans un thread
                 threading.Thread(target=self._try_respawn).start()
             elif self.menu_button.collidepoint(event.pos):
                 self._go_to_menu()
@@ -100,7 +100,7 @@ class End:
     def _go_to_menu(self):
         """
         Retourne au menu principal.
-        Stoppe la musique et modifie l’état du jeu.
+        Stoppe la musique et modifie l'état du jeu.
         """
         self.sound.stop_music()
         self.game.running = False
@@ -119,7 +119,7 @@ class End:
 
 
     def update(self):
-        """Met à jour l’animation de mort."""
+        """Met à jour l'animation de mort."""
         mouse_pressed = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
         self.retry_clicked = self.retry_button.collidepoint(mouse_pos) and mouse_pressed[0]
@@ -131,7 +131,7 @@ class End:
 
     def draw(self):
         """
-        Affiche l’écran de fin :
+        Affiche l'écran de fin :
         - Titre
         - Animation de mort
         - Boutons
@@ -145,7 +145,7 @@ class End:
 
     def _draw_title(self, text: str):
         """
-        Affiche le titre centré en haut de l’écran.
+        Affiche le titre centré en haut de l'écran.
 
         Args:
             text (str): Texte du titre.
@@ -156,8 +156,8 @@ class End:
 
     def _draw_death_animation(self):
         """
-        Affiche l’animation de mort du joueur
-        au centre de l’écran.
+        Affiche l'animation de mort du joueur
+        au centre de l'écran.
         """
         if self.current_frame < len(self.death_sprite):
             img = self.death_sprite[self.current_frame]

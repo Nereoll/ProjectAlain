@@ -25,10 +25,10 @@ class Player(pygame.sprite.Sprite):
         rect (pygame.Rect): Zone de collision du joueur.
         mask (pygame.Mask): Masque pour collisions pixel-perfect.
         hp (int): Points de vie du joueur.
-        mana (int): Ressource consommée pour l’invisibilité.
+        mana (int): Ressource consommée pour l'invisibilité.
         score (int): Score du joueur.
         state (str): État actuel ("idleR", "walkL", "attackR", "invisible", "dead", ...).
-        attacking (bool): Indique si le joueur est en train d’attaquer.
+        attacking (bool): Indique si le joueur est en train d'attaquer.
         invisible (bool): Indique si le joueur est invisible.
         is_invulnerable (bool): Indique si le joueur est temporairement invulnérable.
         joystick (pygame.joystick.Joystick | None): Manette détectée (si disponible).
@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
-        self.image = self.walkLSprites[self.current_frame] #Image actuelle du sprite affichée à l’écran.
+        self.image = self.walkLSprites[self.current_frame] #Image actuelle du sprite affichée à l'écran.
         self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT // 2)) #Rectangle qui définit la position et la taille du sprite.
         self.original_rect = self.rect.copy()
 
@@ -252,7 +252,7 @@ class Player(pygame.sprite.Sprite):
 
         # print((str)(self.invisibilityDurationLeft) + " | " + (str)(self.state))
 
-        # Vérifie si l’invisibilité est terminée
+        # Vérifie si l'invisibilité est terminée
         self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
         if self.invisibilityDurationLeft < 0 :
             self.invisible = False
@@ -297,7 +297,7 @@ class Player(pygame.sprite.Sprite):
         else :
             self.image.set_alpha(255)
 
-        # Animation selon l’état
+        # Animation selon l'état
         if self.invisible :
             animate(self, self.invisibleSprite, loop=True)
             # Rendre translucide
