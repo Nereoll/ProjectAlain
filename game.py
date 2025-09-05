@@ -195,6 +195,8 @@ class Game:
                             self.player.mana = 40000
             elif self.player.joystick:
                 if event.type == pygame.JOYBUTTONDOWN:
+                    if self.player.hp <= 0:
+                        self.end_screen.handle_event(event)
                     if self.dialogue_active and event.button == 0:  # Bouton A
                         self.current_line += 1
                         self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)

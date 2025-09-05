@@ -76,6 +76,8 @@ class Credits:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.back.get_rect(topleft=(10, 10)).collidepoint(pygame.mouse.get_pos()):
                     self.retour, self.running = True, False
+            elif event.type == pygame.JOYBUTTONDOWN and event.button == 1:
+                    self.retour, self.running = True, False               
 
     def _draw(self):
         """
