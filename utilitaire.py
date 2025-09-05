@@ -178,16 +178,16 @@ class SoundEffects:
     def __init__(self):
         self.sound_groups = {}
         self.last_played = {}
-    
+
     def load_sound_group(self, group_name, sound_files):
         sounds = []
         for sound_file in sound_files:
             if os.path.exists(sound_file):
                 sound = pygame.mixer.Sound(sound_file)
                 sounds.append(sound)
-        
+
         self.sound_groups[group_name] = sounds
-    
+
     def play_group(self, group_name, volume=1.0, cooldown=0.5):
         current_time = pygame.time.get_ticks() / 1000.0
         if group_name in self.last_played:
