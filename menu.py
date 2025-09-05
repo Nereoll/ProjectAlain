@@ -3,15 +3,15 @@ menu.py
 
 Définit l'écran de menu principal du jeu.
 
-Le joueur peut déplacer son personnage (sprite) et interagir avec les boutons 
+Le joueur peut déplacer son personnage (sprite) et interagir avec les boutons
 du menu en les "touchant" avec son sprite (Start, Crédits, Dungeon).
 Le menu contient aussi des animations, une musique de fond et un rendu graphique
 (personnage, mouton, arbres, buissons, ruban, bannière, etc.).
 """
 import pygame
 from player import Player
-from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
-from utilitaire import load_sprites, pixelate, SoundEffects
+from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE
+from utilitaire import load_sprites, pixelate, SoundEffects, chemin_relatif
 from components.button import Button
 from components.animatedElement import AnimatedElement
 
@@ -34,11 +34,11 @@ class Menu:
         # pygame.display.set_caption(TITLE)
 
         # Charger les polices
-        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 52)
-        self.font_subtitle = pygame.font.Font("assets/fonts/GenAR102.TTF", 24)
-        self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
-        self.font_button = pygame.font.Font("assets/fonts/GenAR102.TTF", 40)
-        self.font_credits = pygame.font.Font("assets/fonts/Chomsky.otf", 28)
+        self.font_title = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 52)
+        self.font_subtitle = pygame.font.Font(chemin_relatif("assets/fonts/GenAR102.TTF"), 24)
+        self.font_text = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 32)
+        self.font_button = pygame.font.Font(chemin_relatif("assets/fonts/GenAR102.TTF"), 40)
+        self.font_credits = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 28)
 
         # Initialiser le joueur
         self.playerSprites = pygame.sprite.LayeredUpdates()
@@ -54,21 +54,21 @@ class Menu:
         self.infinite_button.box_rect = pygame.Rect(40, 40, 120, 180)
 
         # Charger les sprites animées
-        knight_sprites = load_sprites("assets/images/player/Warrior_Idle.png", 8)
+        knight_sprites = load_sprites(chemin_relatif("assets/images/player/Warrior_Idle.png"), 8)
         self.knight = AnimatedElement(knight_sprites, (WIDTH // 2 - 100, HEIGHT // 2))
 
-        sheep_sprites = load_sprites("assets/images/ressources/Sheep_Idle.png", 12)
+        sheep_sprites = load_sprites(chemin_relatif("assets/images/ressources/Sheep_Idle.png"), 12)
         self.sheep = AnimatedElement(sheep_sprites, (WIDTH // 4 - 80, HEIGHT // 2 + 100))
 
-        tree_sprites = load_sprites("assets/images/ressources/Tree3.png", 8)
+        tree_sprites = load_sprites(chemin_relatif("assets/images/ressources/Tree3.png"), 8)
         self.tree = AnimatedElement(tree_sprites, (WIDTH - 140, HEIGHT // 2))
 
-        bush_sprites = load_sprites("assets/images/ressources/Bushe3.png", 8)
+        bush_sprites = load_sprites(chemin_relatif("assets/images/ressources/Bushe3.png"), 8)
         self.bush = AnimatedElement(bush_sprites, (WIDTH // 2 - 80, 80))
 
         # Charger les images statiques
-        self.ribbon = pygame.image.load("assets/images/ressources/Ribbon_Blue_3Slides.png").convert_alpha()
-        self.banner = pygame.image.load("assets/images/ressources/Carved_3Slides.png").convert_alpha()
+        self.ribbon = pygame.image.load(chemin_relatif("assets/images/ressources/Ribbon_Blue_3Slides.png")).convert_alpha()
+        self.banner = pygame.image.load(chemin_relatif("assets/images/ressources/Carved_3Slides.png")).convert_alpha()
         self.banner_rotation_angle = -25
         self.banner = pygame.transform.rotate(self.banner, self.banner_rotation_angle - 30)
 
@@ -85,7 +85,7 @@ class Menu:
         # Charger les effets sonores
         self.sound = SoundEffects()
         if not self.sound.is_playing():
-            self.sound.play_one("assets/sounds/music/menu_music.ogg", volume=0.2)
+            self.sound.play_one(chemin_relatif("assets/sounds/music/menu_music.ogg"), volume=0.2)
 
     def run(self):
         """Boucle du menu"""
@@ -126,7 +126,7 @@ class Menu:
 
     def draw(self):
         # Fond du menu
-        gameMenu = pygame.image.load("assets/images/background/bg_menu.png").convert_alpha()
+        gameMenu = pygame.image.load(chemin_relatif("assets/images/background/bg_menu.png")).convert_alpha()
         self.screen.blit(gameMenu, (0, 0))
 
         # Titre
