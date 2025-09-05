@@ -4,6 +4,7 @@ from settings import TITLE, WHITE, WIDTH, HEIGHT
 from utilitaire import load_sprites, animate, SoundEffects
 from audio import SoundMeter
 
+import threading
 
 class End:
     """
@@ -59,8 +60,12 @@ class End:
         self.frame_timer = 0
 
         # Boutons
+        self.retry_button_image = pygame.image.load("assets/images/ui/retry_button.png").convert_alpha()
+        self.retry_button_pressed_image = pygame.image.load("assets/images/ui/retry_button_pressed.png").convert_alpha()
+        self.menu_button_image = pygame.image.load("assets/images/ui/menu_button.png").convert_alpha()
         self.retry_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
         self.menu_button = pygame.Rect(WIDTH // 2 + 10, HEIGHT // 4, 300, 200)
+        self.retry_clicked = False
 
         # Audio
         self.sound = SoundEffects()
@@ -78,7 +83,8 @@ class End:
         """
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
-                self._try_respawn()
+                # Lancer l’écoute micro dans un thread
+                threading.Thread(target=self._try_respawn).start()
             elif self.menu_button.collidepoint(event.pos):
                 self._go_to_menu()
 
@@ -88,7 +94,6 @@ class End:
         Seuil fixé à 100 dB (valeur simulée via SoundMeter).
         """
         max_value = self.meters.get_max_db(3)
-        print("Max DB:", max_value)
         if max_value >= 100:
             self.respawn_player()
 
@@ -112,13 +117,18 @@ class End:
         self.player.hp = 4
         self.player.state = "idleR"
 
+
     def update(self):
         """Met à jour l’animation de mort."""
+        mouse_pressed = pygame.mouse.get_pressed()
+        mouse_pos = pygame.mouse.get_pos()
+        self.retry_clicked = self.retry_button.collidepoint(mouse_pos) and mouse_pressed[0]
         animate(self, self.death_sprite, loop=True)
 
     # ---------------------------
     # Rendering
     # ---------------------------
+
     def draw(self):
         """
         Affiche l’écran de fin :
@@ -128,8 +138,10 @@ class End:
         """
         self._draw_title("Game Over")
         self._draw_death_animation()
-        self._draw_button(self.retry_button, "Scream to continue")
-        self._draw_button(self.menu_button, "Main Menu")
+        self._draw_button(self.retry_button, self.retry_button_image)
+        if self.retry_clicked:
+            self._draw_button(self.retry_button, self.retry_button_pressed_image)
+        self._draw_button(self.menu_button, self.menu_button_image)
 
     def _draw_title(self, text: str):
         """
@@ -153,14 +165,12 @@ class End:
                                         self.screen.get_height() // 2))
             self.screen.blit(img, rect)
 
-    def _draw_button(self, rect: pygame.Rect, text: str):
+    def _draw_button(self, rect: pygame.Rect, image):
         """
         Affiche un bouton avec texte centré.
 
         Args:
             rect (pygame.Rect): Zone du bouton.
-            text (str): Texte affiché.
+            iamge (pygame.Sprite) : Texte affiché.
         """
-        surf = self.font_button.render(text, True, WHITE)
-        text_rect = surf.get_rect(center=rect.center)
-        self.screen.blit(surf, text_rect)
+        self.screen.blit(image, rect)

@@ -282,7 +282,7 @@ class Enemy(pygame.sprite.Sprite):
 
         if self.state == "staggered":
             self.handle_stagger()
-        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect):
+        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect) and not self.player.invisible:
             self.handle_player_attack()
         else:
             self.handle_movement_and_attack()
