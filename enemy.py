@@ -281,7 +281,7 @@ class Enemy(pygame.sprite.Sprite):
                 if distance > self.stop_distance and self.faceRorL =="R":
                     self.state = "walkR"  # Passe à l'état "walk" si trop loin
 
-        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect):
+        elif (self.player.state == "attackR" or self.player.state == "attackL") and self.player.rect.colliderect(self.rect) and not self.player.invisible :
             current_time = time.time()
             # Vérifie si l'ennemi peut prendre des dégâts (délai entre deux dégâts)
             if current_time - self.last_damage_time >= 0.5:  # Délai de 0.5 seconde
@@ -289,7 +289,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.take_damage(self.player.str)
                     self.last_damage_time = current_time  # Met à jour le temps du dernier dégât
         else :
-            if self.player.state == "invisible":
+            if self.player.invisible :
                 if self.faceRorL == "L":
                     self.state = "idleL"
                 else:

@@ -42,7 +42,7 @@ class PowerUp(pygame.sprite.Sprite):
     def update(self):
         """Met à jour l'animation du power-up et vérifie la collision avec le joueur."""
         # Anime le sprite
-        if self.player.invisibilityDurationLeft < 0 :
+        if self.player.invisibilityDurationLeft < 0.5 :
             self.kill()
 
         if hasattr(self, "sprites") and self.sprites:
