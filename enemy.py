@@ -60,73 +60,73 @@ class Enemy(pygame.sprite.Sprite):
         self.currentKB = self.knockback_distance
         self.default_speed = self.speed  # Sauvegarde de la vitesse initiale
 
-        self.question_mark = pygame.image.load("assets/images/question_mark.png").convert_alpha()
+        self.question_mark = pygame.image.load("assets/images/ressources/question_mark.png").convert_alpha()
         self.question_mark = pygame.transform.scale(self.question_mark, (30, 30))  # Redimensionne à 20x20 pixels
         self.question_mark_rect = self.question_mark.get_rect()
 
         # === Sprites ===
         # Miror srite pawn
-        imageLwalkpawn = ImageOps.mirror(Image.open("assets/images/Pawn_Run.png"))
+        imageLwalkpawn = ImageOps.mirror(Image.open("assets/images/enemy/Pawn_Run.png"))
         # Miror srite goblin
-        imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/Goblin_Run.png"))
+        imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/enemy/Goblin_Run.png"))
         # Miror srite lancier
-        imageLwalklancier = ImageOps.mirror(Image.open("assets/images/Lancier_Run.png"))
+        imageLwalklancier = ImageOps.mirror(Image.open("assets/images/enemy/Lancier_Run.png"))
         # Miror sprite scout
-        imageLwalkscout = ImageOps.mirror(Image.open("assets/images/scoutRun.png"))
+        imageLwalkscout = ImageOps.mirror(Image.open("assets/images/enemy/scoutRun.png"))
 
         if self.enemy_type == "pawn":
-            self.walkRSprites = load_sprites("assets/images/Pawn_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/Pawn_Attack.png", 6)
+            self.walkRSprites = load_sprites("assets/images/enemy/Pawn_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/Pawn_Attack.png", 6)
             self.walkLSprites = load_sprites(imagestring= imageLwalkpawn, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/Pawn_Attack_reversed.png", 6)
-            self.idleRSprites = load_sprites("assets/images/Pawn_IdleR.png", 6)
-            self.idleLSprites = load_sprites("assets/images/Pawn_IdleL.png", 6)
+            self.attackLSprites = load_sprites("assets/images/enemy/Pawn_Attack_reversed.png", 6)
+            self.idleRSprites = load_sprites("assets/images/enemy/Pawn_IdleR.png", 6)
+            self.idleLSprites = load_sprites("assets/images/enemy/Pawn_IdleL.png", 6)
             self.animation_speed = 0.15 
         elif self.enemy_type == "goblin":
-            self.walkRSprites = load_sprites("assets/images/Goblin_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/Goblin_Attack.png", 6)
+            self.walkRSprites = load_sprites("assets/images/enemy/Goblin_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/Goblin_Attack.png", 6)
             self.walkLSprites = load_sprites(imagestring= imageLwalkgoblin, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/Goblin_Attack_reversed.png", 6)
-            self.idleRSprites = load_sprites("assets/images/Goblin_IdleR.png", 7)
-            self.idleLSprites = load_sprites("assets/images/Goblin_IdleL.png", 7)
+            self.attackLSprites = load_sprites("assets/images/enemy/Goblin_Attack_reversed.png", 6)
+            self.idleRSprites = load_sprites("assets/images/enemy/Goblin_IdleR.png", 7)
+            self.idleLSprites = load_sprites("assets/images/enemy/Goblin_IdleL.png", 7)
             self.animation_speed = 0.15 
         elif self.enemy_type == "scout":
             scale_factor = 3
-            self.walkRSprites = scale_sprites(load_sprites("assets/images/scoutRun.png", 8), scale_factor)
-            self.attackRSprites = scale_sprites(load_sprites("assets/images/scoutAttack.png", 3), scale_factor)
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutRun.png", 8), scale_factor)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutAttack.png", 3), scale_factor)
             self.walkLSprites = scale_sprites(load_sprites(imagestring=imageLwalkscout, num_frames=8, nopath=True), scale_factor)
-            self.attackLSprites = scale_sprites(load_sprites("assets/images/scoutAttack.png", 3), scale_factor)
-            self.idleRSprites = scale_sprites(load_sprites("assets/images/scoutIdle.png", 8), scale_factor)
-            self.idleLSprites = scale_sprites(load_sprites("assets/images/scoutIdle.png", 8), scale_factor)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/enemy/scoutAttack.png", 3), scale_factor)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutIdle.png", 8), scale_factor)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/enemy/scoutIdle.png", 8), scale_factor)
             self.animation_speed = 0.15 
         elif self.enemy_type == "lancier":
-            self.walkRSprites = load_sprites("assets/images/Lancier_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/Lancier_Attack.png", 3)
+            self.walkRSprites = load_sprites("assets/images/enemy/Lancier_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/Lancier_Attack.png", 3)
             self.walkLSprites = load_sprites(imagestring= imageLwalklancier, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/Lancier_Attack_reversed.png", 3)
-            self.idleRSprites = load_sprites("assets/images/Lancier_IdleR.png", 12)
-            self.idleLSprites = load_sprites("assets/images/Lancier_IdleL.png", 12)
-            self.animation_speed = 0.15 
+            self.attackLSprites = load_sprites("assets/images/enemy/Lancier_Attack_reversed.png", 3)
+            self.idleRSprites = load_sprites("assets/images/enemy/Lancier_IdleR.png", 12)
+            self.idleLSprites = load_sprites("assets/images/enemy/Lancier_IdleL.png", 12)
+            self.animation_speed = 0.15
         elif self.enemy_type=="boss":
-            self.walkRSprites = scale_sprites(load_sprites("assets/images/Boss_Run.png", 6), 5)
-            self.attackRSprites = scale_sprites(load_sprites("assets/images/Boss_Attack.png", 13), 5)
-            self.walkLSprites = scale_sprites(load_sprites("assets/images/Boss_Run_reversed.png", 6), 5)
-            self.attackLSprites = scale_sprites(load_sprites("assets/images/Boss_Attack_reversed.png", 13), 5)
-            self.idleRSprites = scale_sprites(load_sprites("assets/images/Boss_IdleR.png", 11), 5)
-            self.idleLSprites = scale_sprites(load_sprites("assets/images/Boss_IdleL.png", 11), 5)
-            self.deathSprites = scale_sprites(load_sprites("assets/images/Boss_Death.png", 11), 5)
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Run.png", 6), 5)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Attack.png", 13), 5)
+            self.walkLSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Run_reversed.png", 6), 5)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Attack_reversed.png", 13), 5)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_IdleR.png", 11), 5)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_IdleL.png", 11), 5)
+            self.deathSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Death.png", 11), 5)
             self.animation_speed = 0.08
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
             self.image.fill((255, 0, 0))
 
-        self.explosionFrames = load_sprites("assets/images/explosion.png", 11)
+        self.explosionFrames = load_sprites("assets/images/items/explosion.png", 11)
         self.explosion_frame_index = 0  # Index de la frame actuelle
         self.is_dead = False
         self.explosionFrames = [
             pygame.transform.scale(frame, (100, 100))  # Redimensionne chaque frame à 128x128
-            for frame in load_sprites("assets/images/explosion.png", 11)
+            for frame in load_sprites("assets/images/items/explosion.png", 11)
         ]
 
         # Animation courante
@@ -194,6 +194,10 @@ class Enemy(pygame.sprite.Sprite):
             self.state = "idleL"
             self.handle_state()
             return
+        
+        if self.enemy_type == "boss" and not self.player.game.in_cutscene:
+            self.player.game.spawnable = True
+            self.player.game.spawn_delay = 3
 
         # Ennemis normaux : explosion ou destruction
         if self.is_dead:

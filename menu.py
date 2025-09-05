@@ -56,27 +56,27 @@ class Menu:
         self.show_credits = False
 
         # === Ribbon ===
-        self.ribbon = pygame.image.load("assets/images/Ribbon_Blue_3Slides.png").convert_alpha()
+        self.ribbon = pygame.image.load("assets/images/ressources/Ribbon_Blue_3Slides.png").convert_alpha()
         
         # === Banner ===
         self.banner_rotation_angle = -25
-        self.banner = pygame.image.load("assets/images/Carved_3Slides.png").convert_alpha()
+        self.banner = pygame.image.load("assets/images/ressources/Carved_3Slides.png").convert_alpha()
         self.banner = pygame.transform.rotate(self.banner, self.banner_rotation_angle  - 30)
 
         # === Chevalier ===
-        knight_sprites = load_sprites("assets/images/Warrior_Idle.png", 8)
+        knight_sprites = load_sprites("assets/images/player/Warrior_Idle.png", 8)
         self.knight = AnimatedEntity(knight_sprites, (WIDTH // 2 - 100, HEIGHT // 2))
 
         # === Mouton ===
-        sheep_sprites = load_sprites("assets/images/Sheep_Idle.png", 12)
+        sheep_sprites = load_sprites("assets/images/ressources/Sheep_Idle.png", 12)
         self.sheep = AnimatedEntity(sheep_sprites, (WIDTH // 4 - 80, HEIGHT // 2 + 100))
 
         # === Arbre ===
-        tree_sprites = load_sprites("assets/images/Tree3.png", 8)
+        tree_sprites = load_sprites("assets/images/ressources/Tree3.png", 8)
         self.tree = AnimatedEntity(tree_sprites, (WIDTH - 140, HEIGHT // 2))
 
         # === Bush ===
-        bush_sprites = load_sprites("assets/images/Bushe3.png", 8)
+        bush_sprites = load_sprites("assets/images/ressources/Bushe3.png", 8)
         self.bush = AnimatedEntity(bush_sprites, (WIDTH // 2 - 80, 80))
 
 
@@ -115,7 +115,7 @@ class Menu:
                 self.running = False
             
             # --- Dessin ---
-            gameMenu = pygame.image.load("assets/images/bg_menu.png").convert_alpha()
+            gameMenu = pygame.image.load("assets/images/background/bg_menu.png").convert_alpha()
             self.screen.blit(gameMenu, (0, 0))
 
             # Titre
