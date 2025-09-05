@@ -107,3 +107,6 @@ python main.py
   --icon=assets/images/icon.ico \
   main.py
   ```
+
+  build/ -> Windows (main.exe)
+  dist/ -> Mac/Linux (main)
