@@ -1,10 +1,38 @@
-# player.py
+"""
+player.py
+
+Définit la classe Player, représentant le personnage jouable.
+
+Le joueur peut se déplacer, attaquer, devenir invisible, prendre des dégâts,
+et interagir avec son environnement. La classe gère :
+- les sprites et animations (idle, marche, attaque, invisible, mort),
+- les contrôles clavier et manette,
+- les points de vie, mana et score,
+- les sons associés (attaques, pas, dégâts, mort).
+"""
 import pygame
 import time
 from settings import WIDTH, HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
 from utilitaire import load_sprites, animate, SoundEffects
 
 class Player(pygame.sprite.Sprite):
+    """
+    Classe représentant le joueur.
+
+    Attributes:
+        game (Game | None): Référence optionnelle au jeu en cours.
+        image (pygame.Surface): Sprite actuel affiché.
+        rect (pygame.Rect): Zone de collision du joueur.
+        mask (pygame.Mask): Masque pour collisions pixel-perfect.
+        hp (int): Points de vie du joueur.
+        mana (int): Ressource consommée pour l’invisibilité.
+        score (int): Score du joueur.
+        state (str): État actuel ("idleR", "walkL", "attackR", "invisible", "dead", ...).
+        attacking (bool): Indique si le joueur est en train d’attaquer.
+        invisible (bool): Indique si le joueur est invisible.
+        is_invulnerable (bool): Indique si le joueur est temporairement invulnérable.
+        joystick (pygame.joystick.Joystick | None): Manette détectée (si disponible).
+    """
     def __init__(self, game=None):
         super().__init__()
         self.game = game

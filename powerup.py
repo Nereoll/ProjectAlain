@@ -4,6 +4,17 @@ import time
 from utilitaire import load_sprites
 
 class PowerUp(pygame.sprite.Sprite):
+    """
+    Classe représentant un power-up (bonus) que le joueur peut ramasser.
+
+    Un power-up est un objet animé qui apparaît sur la carte et confère un effet
+    temporaire ou permanent au joueur lorsqu'il est ramassé.
+
+    Types disponibles :
+    - "damageAmp" : Augmente temporairement la force d'attaque du joueur.
+    - "invulnerability" : Rend le joueur invulnérable pendant un certain temps.
+    - "heart" : Rend un point de vie au joueur.
+    """
     def __init__(self, pos, bonus_type, player):
         super().__init__()
         self.image = pygame.Surface((64, 64))  # Taille par défaut
