@@ -186,7 +186,6 @@ class Player(pygame.sprite.Sprite):
                         self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
 
                 if ( self.joystick.get_button(4) or self.joystick.get_button(2) )  and not self.invisible and self.mana >= 4:
-                    self.state = "invisible"
                     self.invisible = True 
                     self.invisible_start_time = time.time()
                     self.mana -=4
@@ -231,7 +230,8 @@ class Player(pygame.sprite.Sprite):
         - Invisible : on prend la frame d'invisibilité.
         """
 
-        print((str)(self.invisibilityDurationLeft) + " | " + (str)(self.state))
+        # print((str)(self.invisibilityDurationLeft) + " | " + (str)(self.state))
+        
         # Vérifie si l’invisibilité est terminée
         self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
         if self.invisibilityDurationLeft < 0 :
