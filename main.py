@@ -1,49 +1,45 @@
-# main.py
 import pygame
 from game import Game
-from menu import Menu  
+from menu import Menu
 from credits import Credits
 from settings import WIDTH, HEIGHT
 
-if __name__ == "__main__":
+def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
     running = True
+
     while running:
         # Lancer le menu
         menu = Menu(screen)
         menu.run()
 
-        # Lancer les crédits
+        # Lancer les crédits si nécessaire
         if menu.show_credits:
-            c = Credits(screen)
-            c.run()  # d'abord on exécute les crédits
-
-            if c.retour:  
-                # retour au menu sans quitter la boucle principale
-                continue  
-            else:
-                # si on a quitté autrement -> fermer le programme
+            credits = Credits(screen)
+            credits.run()
+            if credits.retour:  # Si on retourne au menu, continuer
+                continue
+            else:  # Si on ne retourne pas au menu, quitter le programme
                 running = False
                 break
 
-        if not menu.start_game:  # si le joueur a fermé la fenêtre
+        # Vérifier si le jeu doit démarrer
+        if not menu.start_game:  # Si le menu est fermé sans lancer le jeu
             running = False
             break
-        
-        if menu.start_game_infinite:
-            g = Game(isDungeon=True)
-            g.new()
-        else:
-            # Lancer le jeu en mode normal
-            g = Game()
-            g.new()
 
-        # Si le joueur est mort -> retour menu
-        if g.game_over:
-            continue  # reboucle sur Menu
-        else:
-            running = False  # sinon on arrête tout
+        # Lancer le jeu en mode approprié
+        game_mode = menu.start_game_infinite
+        if not start_game(screen, game_mode):
+            running = False
 
     pygame.quit()
+
+def start_game(screen, is_dungeon=False):
+    g = Game(isDungeon=is_dungeon)
+    g.new()
+    return g.game_over  # Retourne True pour continuer (game over), False pour quitter
+
+if __name__ == "__main__":
+    main()
