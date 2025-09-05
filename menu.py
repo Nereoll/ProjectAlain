@@ -10,7 +10,7 @@ Le menu contient aussi des animations, une musique de fond et un rendu graphique
 """
 import pygame
 from player import Player
-from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
+from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE
 from utilitaire import load_sprites, pixelate, SoundEffects
 from components.button import Button
 from components.animatedElement import AnimatedElement

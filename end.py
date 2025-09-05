@@ -1,7 +1,7 @@
 # end.py
 import pygame
 from settings import TITLE, WHITE, WIDTH, HEIGHT
-from utilitaire import load_sprites, animate, SoundEffects, scale_sprites
+from utilitaire import load_sprites, animate, SoundEffects
 from audio import SoundMeter
 
 import threading

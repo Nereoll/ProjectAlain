@@ -1,5 +1,5 @@
 import pygame
-from settings import TITLE, BLACK, HEIGHT, WIDTH
+from settings import BLACK, HEIGHT
 from utilitaire import pixelate
 
 
