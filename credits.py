@@ -1,5 +1,5 @@
 import pygame
-from settings import TITLE, BLACK, HEIGHT
+from settings import TITLE, BLACK, HEIGHT, WIDTH
 from utilitaire import pixelate
 
 
@@ -29,7 +29,7 @@ class Credits:
     BACK_IMG = "assets/images/ressources/Pressed_01.png"
     BG_IMG = "assets/images/background/Credit_Page.png"
 
-    def __init__(self, screen):
+    def __init__(self, screen, fullscreen):
         """
         Initialise l'écran des crédits.
 
@@ -37,7 +37,7 @@ class Credits:
             screen (pygame.Surface): La surface principale du jeu.
         """
         self.screen = screen
-        pygame.display.set_caption(TITLE)
+        self.fullscreen = fullscreen
 
         # Fonts
         self.font_title = pygame.font.Font(*self.FONT_TITLE)
@@ -71,8 +71,11 @@ class Credits:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.retour, self.running = True, False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.retour, self.running = True, False
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.back.get_rect(topleft=(10, 10)).collidepoint(pygame.mouse.get_pos()):
                     self.retour, self.running = True, False

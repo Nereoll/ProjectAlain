@@ -53,13 +53,13 @@ class Game:
         shadow_sprite (Shadow): Sprite représentant l'ombre du joueur selon ses HP.
         sound (SoundEffects): Gestionnaire des effets sonores.
     """
-    def __init__(self, isDungeon=False):
-        pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption(TITLE)
-        self.clock = pygame.time.Clock()
-        self.running = True
+    def __init__(self, screen, fullscreen, isDungeon=False):
+        self.screen = screen
+        self.fullscreen = fullscreen
         self.isDungeon = isDungeon
+        self.running = True
+
+        self.clock = pygame.time.Clock()
 
         # Game Over
         self.end_screen = None
@@ -193,6 +193,8 @@ class Game:
                             self.boss = None
                             self.spawnable = False
                             self.player.mana = 40000
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
             elif self.player.joystick:
                 if event.type == pygame.JOYBUTTONDOWN:
                     if self.player.hp <= 0:
