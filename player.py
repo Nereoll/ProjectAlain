@@ -268,11 +268,10 @@ class Player(pygame.sprite.Sprite):
 
 
         if self.state == "dead" :
-            if self.faceRorL == "R" :
-                animate(self, self.idleRSprites, loop=True)
-            elif self.faceRorL == "L" :
-                animate(self, self.idleLSprites, loop=True)
+            self.image.set_alpha(0)
+            return
         else:
+            self.image.set_alpha(255)
             self.handle_keys()
 
         if time.time() - self.damageAmpStart >= 2 :
