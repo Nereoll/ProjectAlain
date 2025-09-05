@@ -80,67 +80,67 @@ class Enemy(pygame.sprite.Sprite):
 
         # === Sprites ===
         # Miror srite pawn
-        imageLwalkpawn = ImageOps.mirror(Image.open("assets/images/enemy/Pawn_Run.png"))
+        imageLwalkpawn = ImageOps.mirror(Image.open("assets/images/enemy/pawn/Pawn_Run.png"))
         # Miror srite goblin
-        imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/enemy/Goblin_Run.png"))
+        imageLwalkgoblin = ImageOps.mirror(Image.open("assets/images/enemy/goblin/Goblin_Run.png"))
         # Miror srite lancier
-        imageLwalklancier = ImageOps.mirror(Image.open("assets/images/enemy/Lancier_Run.png"))
+        imageLwalklancier = ImageOps.mirror(Image.open("assets/images/enemy/lancier/Lancier_Run.png"))
         # Miror sprite scout
-        imageLwalkscout = ImageOps.mirror(Image.open("assets/images/enemy/scoutRun.png"))
+        imageLwalkscout = ImageOps.mirror(Image.open("assets/images/enemy/scout/scoutRun.png"))
         # Miror sprite tnt
-        imageLwalktnt = ImageOps.mirror(Image.open("assets/images/enemy/tntRun.png"))
+        imageLwalktnt = ImageOps.mirror(Image.open("assets/images/enemy/tnt/tntRun.png"))
         # Miror sprite tnt
-        imageLwalkarcher = ImageOps.mirror(Image.open("assets/images/enemy/archerWalkR.png"))
+        imageLwalkarcher = ImageOps.mirror(Image.open("assets/images/enemy/archer/archerWalkR.png"))
 
         if self.enemy_type == "pawn":
-            self.walkRSprites = load_sprites("assets/images/enemy/Pawn_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/enemy/Pawn_Attack.png", 6)
+            self.walkRSprites = load_sprites("assets/images/enemy/pawn/Pawn_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/pawn/Pawn_Attack.png", 6)
             self.walkLSprites = load_sprites(imagestring= imageLwalkpawn, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/enemy/Pawn_Attack_reversed.png", 6)
-            self.idleRSprites = load_sprites("assets/images/enemy/Pawn_IdleR.png", 6)
-            self.idleLSprites = load_sprites("assets/images/enemy/Pawn_IdleL.png", 6)
+            self.attackLSprites = load_sprites("assets/images/enemy/pawn/Pawn_Attack_reversed.png", 6)
+            self.idleRSprites = load_sprites("assets/images/enemy/pawn/Pawn_IdleR.png", 6)
+            self.idleLSprites = load_sprites("assets/images/enemy/pawn/Pawn_IdleL.png", 6)
             self.animation_speed = 0.15 
         elif self.enemy_type == "goblin":
-            self.walkRSprites = load_sprites("assets/images/enemy/Goblin_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/enemy/Goblin_Attack.png", 6)
+            self.walkRSprites = load_sprites("assets/images/enemy/goblin/Goblin_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/goblin/Goblin_Attack.png", 6)
             self.walkLSprites = load_sprites(imagestring= imageLwalkgoblin, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/enemy/Goblin_Attack_reversed.png", 6)
-            self.idleRSprites = load_sprites("assets/images/enemy/Goblin_IdleR.png", 7)
-            self.idleLSprites = load_sprites("assets/images/enemy/Goblin_IdleL.png", 7)
+            self.attackLSprites = load_sprites("assets/images/enemy/goblin/Goblin_Attack_reversed.png", 6)
+            self.idleRSprites = load_sprites("assets/images/enemy/goblin/Goblin_IdleR.png", 7)
+            self.idleLSprites = load_sprites("assets/images/enemy/goblin/Goblin_IdleL.png", 7)
             self.animation_speed = 0.15 
         elif self.enemy_type == "scout":
             scale_factor = 3
-            self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutRun.png", 8), scale_factor)
-            self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutAttack.png", 3), scale_factor)
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/scout/scoutRun.png", 8), scale_factor)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/scout/scoutAttack.png", 3), scale_factor)
             self.walkLSprites = scale_sprites(load_sprites(imagestring=imageLwalkscout, num_frames=8, nopath=True), scale_factor)
-            self.attackLSprites = scale_sprites(load_sprites("assets/images/enemy/scoutAttack.png", 3), scale_factor)
-            self.idleRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutIdle.png", 8), scale_factor)
-            self.idleLSprites = scale_sprites(load_sprites("assets/images/enemy/scoutIdle.png", 8), scale_factor)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/enemy/scout/scoutAttack.png", 3), scale_factor)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/enemy/scout/scoutIdle.png", 8), scale_factor)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/enemy/scout/scoutIdle.png", 8), scale_factor)
             self.animation_speed = 0.15 
         elif self.enemy_type == "tnt":
-            self.walkRSprites = load_sprites("assets/images/enemy/tntRun.png", 6)
-            self.attackRSprites = load_sprites("assets/images/enemy/tntAttack.png", 7)
+            self.walkRSprites = load_sprites("assets/images/enemy/tnt/tntRun.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/tnt/tntAttack.png", 7)
             self.walkLSprites = load_sprites(imagestring= imageLwalktnt, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/enemy/tntAttack.png", 7)
-            self.idleRSprites = load_sprites("assets/images/enemy/tntIdle.png", 6)
-            self.idleLSprites = load_sprites("assets/images/enemy/tntIdle.png", 6)
+            self.attackLSprites = load_sprites("assets/images/enemy/tnt/tntAttack.png", 7)
+            self.idleRSprites = load_sprites("assets/images/enemy/tnt/tntIdle.png", 6)
+            self.idleLSprites = load_sprites("assets/images/enemy/tnt/tntIdle.png", 6)
             self.animation_speed = 0.15 
         elif self.enemy_type == "lancier":
-            self.walkRSprites = load_sprites("assets/images/enemy/Lancier_Run.png", 6)
-            self.attackRSprites = load_sprites("assets/images/enemy/Lancier_Attack.png", 3)
+            self.walkRSprites = load_sprites("assets/images/enemy/lancier/Lancier_Run.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/lancier/Lancier_Attack.png", 3)
             self.walkLSprites = load_sprites(imagestring= imageLwalklancier, num_frames=6, nopath =True)
-            self.attackLSprites = load_sprites("assets/images/enemy/Lancier_Attack_reversed.png", 3)
-            self.idleRSprites = load_sprites("assets/images/enemy/Lancier_IdleR.png", 12)
-            self.idleLSprites = load_sprites("assets/images/enemy/Lancier_IdleL.png", 12)
+            self.attackLSprites = load_sprites("assets/images/enemy/lancier/Lancier_Attack_reversed.png", 3)
+            self.idleRSprites = load_sprites("assets/images/enemy/lancier/Lancier_IdleR.png", 12)
+            self.idleLSprites = load_sprites("assets/images/enemy/lancier/Lancier_IdleL.png", 12)
             self.animation_speed = 0.15
         elif self.enemy_type == "archer":
-            self.walkRSprites = load_sprites("assets/images/enemy/archerWalkR.png", 6)
-            self.attackRSprites = load_sprites("assets/images/enemy/archerAttackR.png", 8)
+            self.walkRSprites = load_sprites("assets/images/enemy/archer/archerWalkR.png", 6)
+            self.attackRSprites = load_sprites("assets/images/enemy/archer/archerAttackR.png", 8)
             self.walkLSprites = load_sprites(imagestring=imageLwalkarcher, num_frames=6, nopath=True)
-            self.attackLSprites = load_sprites("assets/images/enemy/archerAttackR.png", 8)
-            self.idleRSprites = load_sprites("assets/images/enemy/archerIdleR.png", 6)
-            self.idleLSprites = load_sprites("assets/images/enemy/archerIdleR.png", 6)
-            self.animation_speed = 0.15 
+            self.attackLSprites = load_sprites("assets/images/enemy/archer/archerAttackR.png", 8)
+            self.idleRSprites = load_sprites("assets/images/enemy/archer/archerIdleR.png", 6)
+            self.idleLSprites = load_sprites("assets/images/enemy/archer/archerIdleR.png", 6)
+            self.animation_speed = 0.15
         elif self.enemy_type=="boss":
             self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Run.png", 6), 5)
             self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Attack.png", 13), 5)
