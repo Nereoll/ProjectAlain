@@ -11,19 +11,19 @@ class Player(pygame.sprite.Sprite):
         self.game = game
 
         # Miror srite
-        imageLwalk = ImageOps.mirror(Image.open("assets/images/Warrior_Run.png"))
-        imageLattack = ImageOps.mirror(Image.open("assets/images/Warrior_Attack2.png"))
-        imageLidle = ImageOps.mirror(Image.open("assets/images/Warrior_Idle.png"))
+        imageLwalk = ImageOps.mirror(Image.open("assets/images/player/Warrior_Run.png"))
+        imageLattack = ImageOps.mirror(Image.open("assets/images/player/Warrior_Attack2.png"))
+        imageLidle = ImageOps.mirror(Image.open("assets/images/player/Warrior_Idle.png"))
 
 
         # === Sprites ===
-        self.walkRSprites = load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
-        self.idleRSprites = load_sprites("assets/images/Warrior_Idle.png",8)
+        self.walkRSprites = load_sprites("assets/images/player/Warrior_Run.png", 6) # 6 frames d'animation
+        self.idleRSprites = load_sprites("assets/images/player/Warrior_Idle.png",8)
         self.walkLSprites = load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
-        self.attackRSprites = load_sprites("assets/images/Warrior_Attack2.png", 4)
+        self.attackRSprites = load_sprites("assets/images/player/Warrior_Attack2.png", 4)
         self.attackLSprites = load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
         self.idleLSprites = load_sprites(imagestring= imageLidle, num_frames= 8, nopath =True)
-        self.invisibleSprite = load_sprites("assets/images/Foam.png", 8)
+        self.invisibleSprite = load_sprites("assets/images/items/Foam.png", 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -275,44 +275,44 @@ class Player(pygame.sprite.Sprite):
         else :
             self.image.set_alpha(255)
 
-            # Animation selon l’état
-            if self.state == "walkR":
-                animate(self, self.walkRSprites, loop=True)
-                self.sound.play_group("footstep_stone", 0.2, 0.4)
-                self.image.set_alpha(255)  # normal
-            elif self.state == "walkL" :
-                animate(self, self.walkLSprites, loop=True)
-                self.sound.play_group("footstep_stone", 0.2, 0.4)
-                self.image.set_alpha(255)  # normal
-            elif self.state == "attackR":
+        # Animation selon l’état
+        if self.state == "walkR":
+            animate(self, self.walkRSprites, loop=True)
+            self.sound.play_group("footstep_stone", 0.2, 0.4)
+            self.image.set_alpha(255)  # normal
+        elif self.state == "walkL" :
+            animate(self, self.walkLSprites, loop=True)
+            self.sound.play_group("footstep_stone", 0.2, 0.4)
+            self.image.set_alpha(255)  # normal
+        elif self.state == "attackR":
 
-                animate(self, self.attackRSprites, loop=False)
-                self.sound.play_group("sword_swings", 0.2)
-                self.image.set_alpha(255)  # normal
-                # Quand l'animation d'attaque est terminée
-                if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
-                    self.state = "idleR"
-                    self.attacking = False
-                    self.current_frame = 0
-            elif self.state == "attackL":
+            animate(self, self.attackRSprites, loop=False)
+            self.sound.play_group("sword_swings", 0.2)
+            self.image.set_alpha(255)  # normal
+            # Quand l'animation d'attaque est terminée
+            if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
+                self.state = "idleR"
+                self.attacking = False
+                self.current_frame = 0
+        elif self.state == "attackL":
 
-                animate(self, self.attackLSprites, loop=False)
-                self.sound.play_group("sword_swings", 0.2)
-                self.image.set_alpha(255)  # normal
-                # Quand l'animation d'attaque est terminée
-                if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
-                    self.state = "idleL"
-                    self.attacking = False
-                    self.current_frame = 0
-            elif self.state == "invisible":
-                animate(self, self.invisibleSprite, loop=True)
-                # Rendre translucide
-                self.image.set_alpha(10)
+            animate(self, self.attackLSprites, loop=False)
+            self.sound.play_group("sword_swings", 0.2)
+            self.image.set_alpha(255)  # normal
+            # Quand l'animation d'attaque est terminée
+            if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
+                self.state = "idleL"
+                self.attacking = False
+                self.current_frame = 0
+        elif self.state == "invisible":
+            animate(self, self.invisibleSprite, loop=True)
+            # Rendre translucide
+            self.image.set_alpha(10)
 
-            elif self.state == "idleR" :
-                animate(self, self.idleRSprites, loop=True)
-            elif self.state == "idleL" :
-                animate(self, self.idleLSprites, loop=True)
+        elif self.state == "idleR" :
+            animate(self, self.idleRSprites, loop=True)
+        elif self.state == "idleL" :
+            animate(self, self.idleLSprites, loop=True)
 
     def take_damage(self, amount):
         if not self.is_invulnerable and self.state != "dead":  # Vérifie si le joueur est invulnérable ou mort

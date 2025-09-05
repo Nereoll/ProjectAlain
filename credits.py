@@ -13,7 +13,7 @@ class Credits:
         self.font_text = pygame.font.Font("assets/fonts/GenAR102.TTF", 18)
         
         # Back to menu
-        self.back = pygame.image.load("assets/images/Pressed_01.png")
+        self.back = pygame.image.load("assets/images/ressources/Pressed_01.png")
         
         # Actions
         self.running = True
@@ -38,7 +38,7 @@ class Credits:
                         self.running = False
                         
             # --- Dessin ---
-            gameCredits = pygame.image.load("assets/images/Credit_Page.png").convert_alpha()
+            gameCredits = pygame.image.load("assets/images/background/Credit_Page.png").convert_alpha()
             self.screen.blit(gameCredits, (0, 0))
             
             # Back

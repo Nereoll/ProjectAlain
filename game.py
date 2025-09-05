@@ -8,7 +8,6 @@ from enemy import Enemy
 from ath import Ath
 from end import End
 from shadow import Shadow
-from audio import get_max_db 
 from powerup import PowerUp
 from utilitaire import SoundEffects
 
@@ -63,20 +62,20 @@ class Game:
 
         # Ressources à charger à l'initialisation
         self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
-        self.shadow1 = pygame.image.load("assets/images/Shadow1.png").convert_alpha()
-        self.shadow2 = pygame.image.load("assets/images/Shadow2.png").convert_alpha()
-        self.shadow3 = pygame.image.load("assets/images/Shadow3.png").convert_alpha()
+        self.shadow1 = pygame.image.load("assets/images/shadow/Shadow1.png").convert_alpha()
+        self.shadow2 = pygame.image.load("assets/images/shadow/Shadow2.png").convert_alpha()
+        self.shadow3 = pygame.image.load("assets/images/shadow/Shadow3.png").convert_alpha()
 
         # On garde un seul sprite shadow et on change son image selon le HP
         self.shadow_sprite = Shadow(self.shadow1, (0, 80))
         self.shadow_sprites = pygame.sprite.LayeredUpdates()
         self.shadow_sprites.add(self.shadow_sprite, layer=4)
 
-        self.firstStage = pygame.image.load("assets/images/Base_Stage.png").convert()
-        self.secondStage = pygame.image.load("assets/images/Second_Stage.png").convert()
-        self.thirdStage = pygame.image.load("assets/images/Third_Stage.png").convert()
-        self.fourthStage = pygame.image.load("assets/images/Fourth_Stage.png").convert()
-        self.fifthStage = pygame.image.load("assets/images/Fifth_Stage.png").convert()
+        self.firstStage = pygame.image.load("assets/images/background/Base_Stage.png").convert()
+        self.secondStage = pygame.image.load("assets/images/background/Second_Stage.png").convert()
+        self.thirdStage = pygame.image.load("assets/images/background/Third_Stage.png").convert()
+        self.fourthStage = pygame.image.load("assets/images/background/Fourth_Stage.png").convert()
+        self.fifthStage = pygame.image.load("assets/images/background/Fifth_Stage.png").convert()
 
         # Gestion des stages
         self.stage = 1
@@ -108,9 +107,9 @@ class Game:
 
         #door
         self.door_rect = pygame.Rect(WIDTH // 2 - 30, (HEIGHT - 650), 60, 15)
-        self.door_image1 = pygame.image.load("assets/images/Door.png").convert_alpha()
-        self.door_image2 = pygame.image.load("assets/images/Door2.png").convert_alpha()
-        self.door_image3 = pygame.image.load("assets/images/Door3.png").convert_alpha()
+        self.door_image1 = pygame.image.load("assets/images/ressources/Door.png").convert_alpha()
+        self.door_image2 = pygame.image.load("assets/images/ressources/Door2.png").convert_alpha()
+        self.door_image3 = pygame.image.load("assets/images/ressources/Door3.png").convert_alpha()
         self.door_image4 = pygame.image.load("assets/images/Phara.png").convert_alpha()
         self.door=False
 
@@ -167,7 +166,6 @@ class Game:
             self.last_spawn = current_time
             if self.spawn_delay > 0.8:
                 self.spawn_delay -= 0.1
-        oldLength = self.enemies.__len__()
 
 
         self.all_sprites.update()
@@ -222,7 +220,7 @@ class Game:
                 if self.door and self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
                     self.door = False
-                    if not self.stage > 3:
+                    if not self.stage > 4:
                         self.spawnable = True
                     if self.stage >= 6:
                         self.running = False
@@ -288,8 +286,8 @@ class Game:
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
-        enemy_type = random.choice(["pawn", "goblin", "lancier", "scout"])
-        #enemy_type = random.choice(["scout"])
+        enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+        #enemy_type = random.choice(["archer"])
 
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])

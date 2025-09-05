@@ -1,5 +1,4 @@
 import pygame
-import os
 from settings import WIDTH, ATH_HEIGHT, BLACK, WHITE
 from utilitaire import load_sprites, load_sprites_from_folder, animate
 
