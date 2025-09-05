@@ -11,19 +11,19 @@ class Player(pygame.sprite.Sprite):
         self.game = game
 
         # Miror srite
-        imageLwalk = ImageOps.mirror(Image.open("assets/images/Warrior_Run.png"))
-        imageLattack = ImageOps.mirror(Image.open("assets/images/Warrior_Attack2.png"))
-        imageLidle = ImageOps.mirror(Image.open("assets/images/Warrior_Idle.png"))
+        imageLwalk = ImageOps.mirror(Image.open("assets/images/player/Warrior_Run.png"))
+        imageLattack = ImageOps.mirror(Image.open("assets/images/player/Warrior_Attack2.png"))
+        imageLidle = ImageOps.mirror(Image.open("assets/images/player/Warrior_Idle.png"))
 
 
         # === Sprites ===
-        self.walkRSprites = load_sprites("assets/images/Warrior_Run.png", 6) # 6 frames d'animation
-        self.idleRSprites = load_sprites("assets/images/Warrior_Idle.png",8)
+        self.walkRSprites = load_sprites("assets/images/player/Warrior_Run.png", 6) # 6 frames d'animation
+        self.idleRSprites = load_sprites("assets/images/player/Warrior_Idle.png",8)
         self.walkLSprites = load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
-        self.attackRSprites = load_sprites("assets/images/Warrior_Attack2.png", 4)
+        self.attackRSprites = load_sprites("assets/images/player/Warrior_Attack2.png", 4)
         self.attackLSprites = load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
         self.idleLSprites = load_sprites(imagestring= imageLidle, num_frames= 8, nopath =True)
-        self.invisibleSprite = load_sprites("assets/images/Foam.png", 8)
+        self.invisibleSprite = load_sprites("assets/images/items/Foam.png", 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
