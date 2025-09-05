@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self.player = player
         self.screen = screen
         self.last_attack_time = 0
-        
+
 
         # Stats selon le type
         if enemy_type == "pawn":
@@ -50,8 +50,8 @@ class Enemy(pygame.sprite.Sprite):
         elif enemy_type=="boss":
             self.hp = 50
             self.speed = 4
-            self.attack_points = 2
-            self.stagger_timer = 0.5
+            self.attack_points = 0
+            self.stagger_timer = 0
             self.knockback_distance = 10  # Distance du knockback
             self.knockback_speed = 3
         else:
@@ -108,14 +108,14 @@ class Enemy(pygame.sprite.Sprite):
             self.idleLSprites = load_sprites("assets/images/Lancier_IdleL.png", 12)
             self.animation_speed = 0.15 
         elif self.enemy_type=="boss":
-            self.walkRSprites = scale_sprites(load_sprites("assets/images/Boss_Run.png", 6), 5)
-            self.attackRSprites = scale_sprites(load_sprites("assets/images/Boss_Attack.png", 13), 5)
-            self.walkLSprites = scale_sprites(load_sprites("assets/images/Boss_Run_reversed.png", 6), 5)
-            self.attackLSprites = scale_sprites(load_sprites("assets/images/Boss_Attack_reversed.png", 13), 5)
-            self.idleRSprites = scale_sprites(load_sprites("assets/images/Boss_IdleR.png", 11), 5)
-            self.idleLSprites = scale_sprites(load_sprites("assets/images/Boss_IdleL.png", 11), 5)
-            self.deathSprites = scale_sprites(load_sprites("assets/images/Boss_Death.png", 11), 5)
-            self.animation_speed = 0.08
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/Boss_Run.png", 8), 5)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/Boss_Attack.png", 6), 5)
+            self.walkLSprites = scale_sprites(load_sprites("assets/images/Boss_Run_reversed.png", 8), 5)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/Boss_Attack_reversed.png", 6), 5)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/Boss_IdleR.png", 12), 5)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/Boss_IdleL.png", 12), 5)
+            self.deathSprites = scale_sprites(load_sprites("assets/images/Boss_Death.png", 10), 5)
+            self.animation_speed = 0.05
         else:
             # fallback : un carré rouge
             self.image = pygame.Surface((40, 40))
@@ -315,20 +315,20 @@ class Enemy(pygame.sprite.Sprite):
 
     def take_damage(self, amount):
         """Le joueur ou d'autres entités peuvent attaquer l'ennemi"""
+        if self.enemy_type != "boss":
+            self.state = "staggered"
+            self.speed = 0
+            self.animation_speed = 0
+            self.stagger_start_time = time.time()
 
-        self.state = "staggered"
-        self.speed = 0
-        self.animation_speed = 0
-        self.stagger_start_time = time.time()
-
-        player_x, player_y = self.player.rect.center
-        enemy_x, enemy_y = self.rect.center
-        dx, dy = enemy_x - player_x, enemy_y - player_y
-        distance = math.hypot(dx, dy)
-        if distance != 0:
-            dx, dy = dx / distance, dy / distance
-        self.knockback_direction = (dx, dy)
-        self.is_knockback = True
+            player_x, player_y = self.player.rect.center
+            enemy_x, enemy_y = self.rect.center
+            dx, dy = enemy_x - player_x, enemy_y - player_y
+            distance = math.hypot(dx, dy)
+            if distance != 0:
+                dx, dy = dx / distance, dy / distance
+            self.knockback_direction = (dx, dy)
+            self.is_knockback = True
 
         self.hp -= amount
         if self.hp <= 0:

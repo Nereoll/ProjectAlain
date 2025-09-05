@@ -45,7 +45,7 @@ class Player(pygame.sprite.Sprite):
         self.blink_timer = 0
 
         # Variables de déplacement
-        self.speed = 5
+        self.speed = 10
 
         # Animation
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
         # Stats
         self.hp = 4
         self.mana = 40000
-        self.score = 0
+        self.score = 4000
 
         #initialisation sons
         self.sound = SoundEffects()
@@ -195,6 +195,7 @@ class Player(pygame.sprite.Sprite):
 
         # Gérer les iframes
         if self.is_invulnerable:
+
             current_time = time.time()
             # Clignotement visuel
             self.blink_timer += self.animation_speed
