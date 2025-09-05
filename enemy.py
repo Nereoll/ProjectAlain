@@ -54,7 +54,7 @@ ENEMY_STATS = {
         "knockback_speed": 5,
     },
     "boss": {
-        "hp": 50,
+        "hp": 1,
         "speed": 4,
         "attack_points": 2,
         "stagger_timer": 0.5,

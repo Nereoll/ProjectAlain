@@ -168,6 +168,8 @@ class Game:
             4: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
             5: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
             6: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
+            7: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
+            8: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
         }
         self.ambient_music_bridge = {
             2: chemin_relatif("assets/sounds/music/lvl_2.ogg"),
@@ -199,13 +201,10 @@ class Game:
                     self.current_line += 1
                     self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                     if self.current_line >= len(self.dialogue_lines):
-                        print("end of dialogue")
-                        print("current stage : " + str(self.stage))
                         self.dialogue_active = False
                         self.in_cutscene = False
                         self.sound.stop_music()
                         self.sound.play_one(self.ambient_music[self.stage], 0.2)
-
 
                         # Si c’est la cutscene finale avec la princesse → retour menu
                         if self.stage == 8:
@@ -398,9 +397,10 @@ class Game:
         self.screen.blit(self.idleRSprites, (WIDTH//2 - 96, HEIGHT//2 -96))
 
         self.dialogue_lines = [
-            "Pharah: Merci Alain, tu m'as enfin libérée...",
-            "Alain: Kouisine !?",
-            "Pharah: Kouisine",
+            "Alain : Princesse Pharah ! Enfin, je t'ai retrouvée.",
+            "Pharah : Alain ! Tu m'as sauvée… comment te remercier ?",
+            "Alain : Facile… un bol de bonne sousoupe !",
+            "Pharah : mmmmmh, la délicieuse soupe !"
         ]
         self.current_line = 0
 
