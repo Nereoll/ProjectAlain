@@ -209,7 +209,7 @@ class Player(pygame.sprite.Sprite):
                         self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
 
                 if ( self.joystick.get_button(4) or self.joystick.get_button(2) )  and not self.invisible and self.mana >= 4:
-                    self.invisible = True 
+                    self.invisible = True
                     self.invisible_start_time = time.time()
                     self.mana -=4
 

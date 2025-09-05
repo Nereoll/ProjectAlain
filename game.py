@@ -337,7 +337,7 @@ class Game:
 
     def start_boss_cutscene(self):
         self.sound.stop_music()
-        self.sound.play_one("assets/sounds/sound_effects/boss_talk.ogg", 0.1)
+        self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/boss_talk.ogg"), 0.1)
         self.in_cutscene = True
         self.dialogue_active = True
         self.spawnable = False
