@@ -1,6 +1,5 @@
 cffi==1.17.1
 numpy==2.3.2
-pillow==11.3.0
 pycparser==2.22
 pygame==2.6.1
 sounddevice==0.5.2

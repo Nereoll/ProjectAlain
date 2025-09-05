@@ -24,7 +24,7 @@ class Ath(pygame.sprite.Sprite):
         animation_speed (float): Vitesse de l'animation.
         frame_timer (float): Timer interne pour gérer l'animation.
     """
-    
+
     SCALE_FACTOR = 2
     FONT_PATH = "assets/fonts/GenAR102.TTF"
     FONT_SIZE = 40

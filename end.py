@@ -99,6 +99,14 @@ class End:
                 threading.Thread(target=self._try_respawn).start()
             elif self.menu_button.collidepoint(event.pos):
                 self._go_to_menu()
+        elif event.type == pygame.JOYBUTTONDOWN:
+            if event.button == 4:
+                print("rea")
+                # Lancer l'écoute micro dans un thread
+                threading.Thread(target=self._try_respawn).start()
+            elif event.button == 5:
+                print("menu")
+                self._go_to_menu()
 
     def _try_respawn(self):
         """
