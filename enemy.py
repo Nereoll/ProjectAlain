@@ -62,7 +62,7 @@ class Enemy(pygame.sprite.Sprite):
             self.knockback_speed = 5
             color = (150, 150, 255)
         elif enemy_type=="boss":
-            self.hp = 50
+            self.hp = 25
             self.speed = 4
             self.attack_points = 2
             self.stagger_timer = 0.5

@@ -4,6 +4,10 @@ from settings import TITLE, WHITE, WIDTH, HEIGHT
 from utilitaire import load_sprites, animate, SoundEffects
 from audio import get_max_db
 
+import threading
+
+
+
 class End:
     def __init__(self, screen, player, game):
         self.screen = screen
@@ -22,28 +26,35 @@ class End:
         self.current_frame = 0
         self.animation_speed = 0.2
         self.frame_timer = 0 
-        
+
         # Boutons
+        self.retry_button_image = pygame.image.load("assets/images/ui/retry_button.png").convert_alpha()
+        self.retry_button_pressed_image = pygame.image.load("assets/images/ui/retry_button_pressed.png").convert_alpha()
+        self.menu_button_image = pygame.image.load("assets/images/ui/menu_button.png").convert_alpha()
         self.retry_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
         self.menu_button = pygame.Rect(WIDTH // 2 + 10, HEIGHT // 4, 300, 200)
+        self.retry_clicked = False
 
         self.sound = SoundEffects()
-        
-        
+
     def handle_event(self, event):
         """Gestion des clics souris"""
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
-                # Vérifie le cri pour ressusciter
-                max_value = get_max_db(3)
-                print("Max DB:", max_value)
-                if max_value >= 100:
-                    self.respawn_player()
+                # Lancer l’écoute micro dans un thread
+                threading.Thread(target=self.listen_for_scream).start()
             elif self.menu_button.collidepoint(event.pos):
-                # Retour menu = arrêter la game loop
                 self.sound.stop_music()
                 self.game.running = False
                 self.game.game_over = True
+
+    def listen_for_scream(self):
+        """Mesure le son en arrière-plan et respawn si assez fort"""
+        max_value = get_max_db(3)
+        print("Max DB:", max_value)
+        if max_value >= 100:
+            self.respawn_player()
+
 
     def respawn_player(self):
         """Ramène le joueur à la vie"""
@@ -53,18 +64,21 @@ class End:
             self.game.spawnable = False
         self.player.hp = 4
         self.player.state = "idleR"
-        
+
     def update(self):
-        """Met à jour l’animation"""
+        """Met à jour l'animation"""
+        mouse_pressed = pygame.mouse.get_pressed()
+        mouse_pos = pygame.mouse.get_pos()
+        self.retry_clicked = self.retry_button.collidepoint(mouse_pos) and mouse_pressed[0]
         animate(self, self.death_sprite, loop=True)
-        
+
     def draw(self):
-        """Affiche l’écran de fin"""
+        """Affiche l'écran de fin"""
         # Titre
         end_title = self.font_title.render("Game Over", True, WHITE)
         end_title_rect = end_title.get_rect(center=(self.screen.get_width() // 2, 100))
         self.screen.blit(end_title, end_title_rect)
-        
+
         # Affiche l'animation de mort
         if self.current_frame < len(self.death_sprite):
             death_image = self.death_sprite[self.current_frame]
@@ -74,9 +88,13 @@ class End:
         # Bouton retry
         retry_text = self.font_button.render("Scream to continue", True, WHITE)
         retry_rect = retry_text.get_rect(center=self.retry_button.center)
-        self.screen.blit(retry_text, retry_rect)
+        self.screen.blit(self.retry_button_image, retry_rect)
+        if self.retry_clicked:
+            self.screen.blit(self.retry_button_pressed_image, retry_rect)
 
         # Bouton menu
         menu_text = self.font_button.render("Main Menu", True, WHITE)
         menu_rect = menu_text.get_rect(center=self.menu_button.center)
-        self.screen.blit(menu_text, menu_rect)
+        self.screen.blit(self.menu_button_image, menu_rect)
+
+
