@@ -4,10 +4,7 @@ from settings import TITLE, WHITE, WIDTH, HEIGHT
 from utilitaire import load_sprites, animate, SoundEffects
 from audio import SoundMeter
 
-
 import threading
-
-
 
 class End:
     FONT_TITLE = ("assets/fonts/Chomsky.otf", 64)
@@ -51,16 +48,13 @@ class End:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
                 # Lancer l’écoute micro dans un thread
-                threading.Thread(target=self.listen_for_scream).start()
-
-                self._try_respawn()
+                threading.Thread(target=self._try_respawn).start()
             elif self.menu_button.collidepoint(event.pos):
                 self._go_to_menu()
 
     def _try_respawn(self):
         """Vérifie si le joueur crie assez fort pour continuer."""
         max_value = self.meters.get_max_db(3)
-        print("Max DB:", max_value)
         if max_value >= 100:
             self.respawn_player()
 
@@ -69,14 +63,6 @@ class End:
         self.sound.stop_music()
         self.game.running = False
         self.game.game_over = True
-
-    def listen_for_scream(self):
-        """Mesure le son en arrière-plan et respawn si assez fort"""
-        max_value = get_max_db(3)
-        print("Max DB:", max_value)
-        if max_value >= 100:
-            self.respawn_player()
-
 
     def respawn_player(self):
         """Ramène le joueur à la vie."""
@@ -100,8 +86,10 @@ class End:
         """Affiche l’écran de fin."""
         self._draw_title("Game Over")
         self._draw_death_animation()
-        self._draw_button(self.retry_button, "Scream to continue")
-        self._draw_button(self.menu_button, "Main Menu")
+        self._draw_button(self.retry_button, self.retry_button_image)
+        if self.retry_clicked:
+            self._draw_button(self.retry_button, self.retry_button_pressed_image)
+        self._draw_button(self.menu_button, self.menu_button_image)
 
     def _draw_title(self, text: str):
         """Affiche le titre centré en haut."""
@@ -111,29 +99,13 @@ class End:
 
     def _draw_death_animation(self):
         """Affiche l'animation de mort du joueur."""
-        """Affiche l'écran de fin"""
-        # Titre
-        end_title = self.font_title.render("Game Over", True, WHITE)
-        end_title_rect = end_title.get_rect(center=(self.screen.get_width() // 2, 100))
-        self.screen.blit(end_title, end_title_rect)
-
-        # Affiche l'animation de mort
         if self.current_frame < len(self.death_sprite):
             img = self.death_sprite[self.current_frame]
             rect = img.get_rect(center=(self.screen.get_width() // 2,
                                         self.screen.get_height() // 2))
             self.screen.blit(img, rect)
 
-        # Bouton retry
-        retry_text = self.font_button.render("Scream to continue", True, WHITE)
-        retry_rect = retry_text.get_rect(center=self.retry_button.center)
-        self.screen.blit(self.retry_button_image, retry_rect)
-        if self.retry_clicked:
-            self.screen.blit(self.retry_button_pressed_image, retry_rect)
-
-        # Bouton menu
-        menu_text = self.font_button.render("Main Menu", True, WHITE)
-        menu_rect = menu_text.get_rect(center=self.menu_button.center)
-        self.screen.blit(self.menu_button_image, menu_rect)
-
+    def _draw_button(self, rect: pygame.Rect, image):
+        """Affiche un bouton avec son texte centré."""
+        self.screen.blit(image, rect)
 
