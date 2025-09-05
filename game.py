@@ -154,6 +154,21 @@ class Game:
                             self.boss = None
                             self.spawnable = False
                             self.player.mana = 40000
+            elif self.player.joystick:
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if self.dialogue_active and event.button == 0:  # Bouton A
+                        self.current_line += 1
+                        self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
+                        if self.current_line >= len(self.dialogue_lines):
+                            self.dialogue_active = False
+                            self.in_cutscene = False
+                            self.sound.stop_music()
+                            if self.boss and self.boss.is_dead:
+                                self.stage = 6
+                                self.boss.kill()
+                                self.boss = None
+                                self.spawnable = False
+                                self.player.mana = 40000
 
 
 
