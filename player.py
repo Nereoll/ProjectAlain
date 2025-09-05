@@ -209,7 +209,7 @@ class Player(pygame.sprite.Sprite):
                         self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
 
                 if ( self.joystick.get_button(4) or self.joystick.get_button(2) )  and not self.invisible and self.mana >= 4:
-                    self.invisible = True 
+                    self.invisible = True
                     self.invisible_start_time = time.time()
                     self.mana -=4
 
@@ -338,17 +338,11 @@ class Player(pygame.sprite.Sprite):
             self.sound.play_group("player_hurts", 0.2)
             if self.hp <= 0:
                 self.state = "dead"
-                self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/player_death.ogg"), volume=0.4)
+                self.sound.play_one(chemin_relatif("assets/sounds/music/death_music.ogg"), volume=0.3)
             else:
                 # Active les iframes
                 self.is_invulnerable = True
                 self.iframe_start_time = time.time()  # Enregistre le début des iframes
-
-        def died(self):
-            if self.hp <=0:
-                print("Game Over")
-                return True
-            return False
 
     def enemy_killed(self, points):
         #self.sound.play_one("assets/sounds/sound_effects/mob_death.ogg", volume=1)
