@@ -27,9 +27,11 @@ class Menu:
         show_credits (bool): Indique si les crédits doivent être affichés.
         running (bool): Boucle de contrôle du menu.
     """
-    def __init__(self, screen):
+    def __init__(self, screen, fullscreen):
         self.screen = screen
-        pygame.display.set_caption(TITLE)
+        self.fullscreen = fullscreen
+
+        # pygame.display.set_caption(TITLE)
 
         # Charger les polices
         self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 52)
@@ -95,6 +97,10 @@ class Menu:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
+                    self.fullscreen = not self.fullscreen
 
         # Vérifie si le joueur collide avec le bouton Start avec son sprite
         player_rect_center = self.playerSprites.sprites()[0].rect.center

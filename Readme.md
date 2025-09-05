@@ -73,7 +73,6 @@ python main.py
 - [Python 3.x](https://www.python.org/)
 - [Cffi](https://pypi.org/project/cffi/)
 - [Numpy](https://pypi.org/project/numpy/)
-- [Pillow](https://pypi.org/project/pillow/)
 - [Pycparser](https://pypi.org/project/pycparser/)
 - [Pygame](https://www.pygame.org/)
 - [SoundDevice](https://pypi.org/project/sounddevice/)

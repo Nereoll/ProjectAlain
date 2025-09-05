@@ -37,7 +37,7 @@ class SoundMeter:
 
         Returns:
             float: Niveau sonore maximal en dB, arrondi à deux décimales.
-        
+
         Fonctionnement :
             - Capture le flux audio en temps réel via sounddevice.
             - Calcule le RMS (Root Mean Square) pour chaque buffer.

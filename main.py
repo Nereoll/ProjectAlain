@@ -9,7 +9,7 @@ import pygame
 from game import Game
 from menu import Menu
 from credits import Credits
-from settings import WIDTH, HEIGHT
+from settings import WIDTH, HEIGHT, TITLE
 
 def main():
     """
@@ -22,17 +22,27 @@ def main():
     - Termine l'application si le joueur quitte depuis le menu ou les crédits.
     """
     pygame.init()
+
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption(TITLE)
+
+    fullscreen = False
     running = True
 
     while running:
         # Lancer le menu
-        menu = Menu(screen)
+        menu = Menu(screen, fullscreen)
         menu.run()
+        fullscreen = menu.fullscreen
+
+        if fullscreen:
+            screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+        else:
+            screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
         # Lancer les crédits si nécessaire
         if menu.show_credits:
-            credits = Credits(screen)
+            credits = Credits(screen, fullscreen)
             credits.run()
             if credits.retour:  # Si on retourne au menu, continuer
                 continue
@@ -47,13 +57,13 @@ def main():
 
         # Lancer le jeu en mode approprié
         game_mode = menu.start_game_infinite
-        if not start_game(screen, game_mode):
+        if not start_game(screen, fullscreen, game_mode):
             running = False
 
     pygame.quit()
 
-def start_game(screen, is_dungeon=False):
-    g = Game(isDungeon=is_dungeon)
+def start_game(screen, fullscreen, is_dungeon=False):
+    g = Game(screen, fullscreen, isDungeon=is_dungeon)
     g.new()
     return g.game_over  # Retourne True pour continuer (game over), False pour quitter
 
