@@ -4,6 +4,27 @@ from utilitaire import load_sprites, load_sprites_from_folder, animate
 
 
 class Ath(pygame.sprite.Sprite):
+    """
+    Classe représentant l'ATH (Affichage Tête Haute) du jeu.
+
+    Affiche les informations principales du joueur : 
+    - Points de vie (HP)
+    - Mana
+    - Score
+
+    Attributs :
+        player (Player): Référence au joueur pour récupérer HP, mana et score.
+        font_title (pygame.font.Font): Police pour afficher le score.
+        image (pygame.Surface): Surface principale sur laquelle on dessine l'ATH.
+        rect (pygame.Rect): Rectangle de la surface principale.
+        life_sprites (dict): Sprites des points de vie, indexés par HP.
+        mana_sprites (dict): Sprites du mana, indexés par points de mana.
+        current_sprite (pygame.Surface): Sprite HP actuellement affiché.
+        current_frame (int): Frame actuelle de l'animation.
+        animation_speed (float): Vitesse de l'animation.
+        frame_timer (float): Timer interne pour gérer l'animation.
+    """
+    
     SCALE_FACTOR = 2
     FONT_PATH = "assets/fonts/GenAR102.TTF"
     FONT_SIZE = 40
@@ -24,7 +45,13 @@ class Ath(pygame.sprite.Sprite):
         4: "assets/images/ath/fullMana.png",
     }
 
-    def __init__(self, player):
+    def __init__(self, player): 
+        """
+        Initialise l'ATH avec les sprites et la police.
+
+        Args:
+            player (Player): Objet joueur pour récupérer HP, mana et score.
+        """
         super().__init__()
         self.player = player
 
@@ -52,7 +79,15 @@ class Ath(pygame.sprite.Sprite):
         self.frame_timer = 0
 
     def _load_and_scale(self, sprites):
-        """Charge et redimensionne une liste de sprites."""
+        """
+        Redimensionne tous les sprites d'une liste.
+
+        Args:
+            sprites (list[pygame.Surface]): Liste de surfaces à redimensionner.
+
+        Returns:
+            list[pygame.Surface]: Liste de surfaces redimensionnées.
+        """
         return [
             pygame.transform.scale(
                 img,
@@ -62,6 +97,10 @@ class Ath(pygame.sprite.Sprite):
         ]
 
     def update(self):
+        """
+        Met à jour l'ATH : HP, mana et score.
+        Appelé à chaque frame du jeu.
+        """
         # === Gestion des HP ===
         player_hp = max(0, min(4, self.player.hp))  # clamp entre 0 et 4
         animate(self, self.life_sprites[player_hp], loop=True, assign_to_image=False)
@@ -89,4 +128,10 @@ class Ath(pygame.sprite.Sprite):
             self.image.blit(mana_sprite, rect_mana)
 
     def draw(self, screen):
+        """
+        Dessine l'ATH sur l'écran.
+
+        Args:
+            screen (pygame.Surface): Surface sur laquelle dessiner l'ATH.
+        """
         screen.blit(self.image, self.rect)
