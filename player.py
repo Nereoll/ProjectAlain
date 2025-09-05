@@ -91,6 +91,13 @@ class Player(pygame.sprite.Sprite):
             "assets/sounds/sound_effects/footstep_stone_3.ogg"
         ]) #sons pas lvl 1
 
+        # Initialisation manette si dispo
+        self.joystick = None
+        if pygame.joystick.get_count() > 0:
+            self.joystick = pygame.joystick.Joystick(0)
+            self.joystick.init()
+            print("Manette détectée :", self.joystick.get_name())
+
         # Direction face
         self.faceRorL = "R"
 
@@ -98,6 +105,9 @@ class Player(pygame.sprite.Sprite):
             keys = pygame.key.get_pressed()
             moving = False
 
+            # ============================================
+            # Controle Clavier
+            # ============================================
             if keys[pygame.K_LEFT] or keys[pygame.K_q]:
                 self.rect.x -= self.speed
                 moving = True
@@ -126,7 +136,7 @@ class Player(pygame.sprite.Sprite):
             # === Déclenchement invisibilité ===
             if keys[pygame.K_LSHIFT] and not self.invisible and self.mana >= 4:
                 self.state = "invisible"
-                self.invisible = True
+                self.invisible = True 
                 self.invisible_start_time = time.time()
                 self.mana -=4
 
@@ -148,6 +158,58 @@ class Player(pygame.sprite.Sprite):
                     self.frame_timer = 0
                     self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
 
+            # ============================================
+            # Controle Manette
+            # ============================================
+
+            if self.joystick :
+                # Stick gauche
+                axis_x = self.joystick.get_axis(0)  # -1 = gauche, +1 = droite
+                axis_y = self.joystick.get_axis(1)  # -1 = haut,   +1 = bas
+                axis_rt= self.joystick.get_axis(5)  # gachette gauche
+
+                if (self.joystick.get_button(0) or axis_rt > 0.5 ) and not self.attacking and not self.invisible and self.faceRorL == "L":
+                    current_time = time.time()
+                    if current_time - self.last_attack_time >= self.attack_cooldown:  # Vérifie le cooldown
+                        self.state = "attackL"
+                        self.attacking = True
+                        self.current_frame = 0
+                        self.frame_timer = 0
+                        self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
+                
+                if (self.joystick.get_button(0) or axis_rt > 0.5) and not self.attacking and not self.invisible and self.faceRorL == "R":
+                    current_time = time.time()
+                    if current_time - self.last_attack_time >= self.attack_cooldown:  # Vérifie le cooldown
+                        self.state = "attackR"
+                        self.attacking = True
+                        self.current_frame = 0
+                        self.frame_timer = 0
+                        self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
+
+                if ( self.joystick.get_button(4) or self.joystick.get_button(2) )  and not self.invisible and self.mana >= 4:
+                    self.state = "invisible"
+                    self.invisible = True 
+                    self.invisible_start_time = time.time()
+                    self.mana -=4
+
+                # Deadzone (évite les petits tremblements du stick)
+                # Droite
+                if axis_x > 0.5 :
+                    self.rect.x += self.speed
+                    moving = True
+                    self.faceRorL = "R"
+                # Gauche
+                if axis_x < -0.5 :
+                    self.rect.x -= self.speed
+                    moving = True
+                    self.faceRorL = "L" 
+                # Haut / Bas
+                if abs(axis_y) > 0.2:
+                    self.rect.y += int(axis_y * self.speed)
+                    moving = True
+
+
+            
             if not moving and not self.attacking and not self.invisible and self.faceRorL == "L":
                 self.state = "idleL"
             elif not moving and not self.attacking and not self.invisible and self.faceRorL == "R":
@@ -195,6 +257,7 @@ class Player(pygame.sprite.Sprite):
 
         # Gérer les iframes
         if self.is_invulnerable:
+
             current_time = time.time()
             # Clignotement visuel
             self.blink_timer += self.animation_speed
