@@ -18,7 +18,7 @@ class Credits:
         font_subtitle (pygame.font.Font): Police des sous-titres.
         font_text (pygame.font.Font): Police du texte classique.
         back (pygame.Surface): Image du bouton retour.
-        running (bool): Indique si l’écran est actif.
+        running (bool): Indique si l'écran est actif.
         retour (bool): Indique si on doit retourner au menu précédent.
         pixel_ratio (float): Facteur de pixelisation appliqué aux textes.
     """
@@ -31,7 +31,7 @@ class Credits:
 
     def __init__(self, screen):
         """
-        Initialise l’écran des crédits.
+        Initialise l'écran des crédits.
 
         Args:
             screen (pygame.Surface): La surface principale du jeu.
@@ -54,8 +54,8 @@ class Credits:
 
     def run(self):
         """
-        Boucle principale de l’écran des crédits.
-        Gère les événements, le dessin, et met à jour l’affichage.
+        Boucle principale de l'écran des crédits.
+        Gère les événements, le dessin, et met à jour l'affichage.
         """
         while self.running:
             self._handle_events()
@@ -79,7 +79,7 @@ class Credits:
 
     def _draw(self):
         """
-        Dessine tous les éléments de l’écran des crédits :
+        Dessine tous les éléments de l'écran des crédits :
         - Fond
         - Bouton retour
         - Titre
@@ -134,7 +134,7 @@ class Credits:
 
     def _draw_title(self, text: str):
         """
-        Affiche le titre principal centré en haut de l’écran.
+        Affiche le titre principal centré en haut de l'écran.
 
         Args:
             text (str): Texte du titre.

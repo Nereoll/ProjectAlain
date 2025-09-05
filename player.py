@@ -13,7 +13,6 @@ et interagir avec son environnement. La classe gère :
 import pygame
 import time
 from settings import WIDTH, HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
-from PIL import Image , ImageOps
 from utilitaire import load_sprites, animate, SoundEffects
 
 class Player(pygame.sprite.Sprite):
@@ -26,10 +25,10 @@ class Player(pygame.sprite.Sprite):
         rect (pygame.Rect): Zone de collision du joueur.
         mask (pygame.Mask): Masque pour collisions pixel-perfect.
         hp (int): Points de vie du joueur.
-        mana (int): Ressource consommée pour l’invisibilité.
+        mana (int): Ressource consommée pour l'invisibilité.
         score (int): Score du joueur.
         state (str): État actuel ("idleR", "walkL", "attackR", "invisible", "dead", ...).
-        attacking (bool): Indique si le joueur est en train d’attaquer.
+        attacking (bool): Indique si le joueur est en train d'attaquer.
         invisible (bool): Indique si le joueur est invisible.
         is_invulnerable (bool): Indique si le joueur est temporairement invulnérable.
         joystick (pygame.joystick.Joystick | None): Manette détectée (si disponible).
@@ -39,24 +38,18 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         self.game = game
 
-        # Miror srite
-        imageLwalk = ImageOps.mirror(Image.open("assets/images/player/Warrior_Run.png"))
-        imageLattack = ImageOps.mirror(Image.open("assets/images/player/Warrior_Attack2.png"))
-        imageLidle = ImageOps.mirror(Image.open("assets/images/player/Warrior_Idle.png"))
-
-
         # === Sprites ===
         self.walkRSprites = load_sprites("assets/images/player/Warrior_Run.png", 6) # 6 frames d'animation
         self.idleRSprites = load_sprites("assets/images/player/Warrior_Idle.png",8)
-        self.walkLSprites = load_sprites(imagestring= imageLwalk,num_frames=6, nopath =True)
+        self.walkLSprites = load_sprites("assets/images/player/Warrior_RunL.png", 6)
         self.attackRSprites = load_sprites("assets/images/player/Warrior_Attack2.png", 4)
-        self.attackLSprites = load_sprites(imagestring= imageLattack, num_frames= 4, nopath =True)
-        self.idleLSprites = load_sprites(imagestring= imageLidle, num_frames= 8, nopath =True)
+        self.attackLSprites = load_sprites("assets/images/player/Warrior_Attack2L.png", 4)
+        self.idleLSprites = load_sprites("assets/images/player/Warrior_IdleL.png", 8)
         self.invisibleSprite = load_sprites("assets/images/items/Foam.png", 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
-        self.image = self.walkLSprites[self.current_frame] #Image actuelle du sprite affichée à l’écran.
+        self.image = self.walkLSprites[self.current_frame] #Image actuelle du sprite affichée à l'écran.
         self.rect = self.image.get_rect(center=(WIDTH // 2, HEIGHT // 2)) #Rectangle qui définit la position et la taille du sprite.
         self.original_rect = self.rect.copy()
 
@@ -102,7 +95,7 @@ class Player(pygame.sprite.Sprite):
         #initialisation sons
         self.sound = SoundEffects()
 
-        self.sound.load_sound_group("sword_swings", [ 
+        self.sound.load_sound_group("sword_swings", [
             "assets/sounds/sound_effects/sword_swing_1.ogg",
             "assets/sounds/sound_effects/sword_swing_2.ogg",
             "assets/sounds/sound_effects/sword_swing_3.ogg",
@@ -205,7 +198,7 @@ class Player(pygame.sprite.Sprite):
                         self.current_frame = 0
                         self.frame_timer = 0
                         self.last_attack_time = current_time  # Met à jour le temps de la dernière attaque
-                
+
                 if (self.joystick.get_button(0) or axis_rt > 0.5) and not self.attacking and not self.invisible and self.faceRorL == "R":
                     current_time = time.time()
                     if current_time - self.last_attack_time >= self.attack_cooldown:  # Vérifie le cooldown
@@ -230,14 +223,13 @@ class Player(pygame.sprite.Sprite):
                 if axis_x < -0.5 :
                     self.rect.x -= self.speed
                     moving = True
-                    self.faceRorL = "L" 
+                    self.faceRorL = "L"
                 # Haut / Bas
                 if abs(axis_y) > 0.2:
                     self.rect.y += int(axis_y * self.speed)
                     moving = True
 
 
-            
             if not moving and not self.attacking and not self.invisible and self.faceRorL == "L":
                 self.state = "idleL"
             elif not moving and not self.attacking and not self.invisible and self.faceRorL == "R":
@@ -261,8 +253,8 @@ class Player(pygame.sprite.Sprite):
         """
 
         # print((str)(self.invisibilityDurationLeft) + " | " + (str)(self.state))
-        
-        # Vérifie si l’invisibilité est terminée
+
+        # Vérifie si l'invisibilité est terminée
         self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
         if self.invisibilityDurationLeft < 0 :
             self.invisible = False
@@ -307,7 +299,7 @@ class Player(pygame.sprite.Sprite):
         else :
             self.image.set_alpha(255)
 
-        # Animation selon l’état
+        # Animation selon l'état
         if self.invisible :
             animate(self, self.invisibleSprite, loop=True)
             # Rendre translucide

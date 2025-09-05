@@ -14,32 +14,32 @@ from utilitaire import SoundEffects
 
 class Game:
     """
-    Représente la boucle principale du jeu et gère l’ensemble de son état.
+    Représente la boucle principale du jeu et gère l'ensemble de son état.
 
     Cette classe orchestre tous les éléments :
-    - Initialisation de Pygame, de l’écran et des ressources.
+    - Initialisation de Pygame, de l'écran et des ressources.
     - Gestion des sprites (joueur, ennemis, bonus, interface…).
     - Boucle principale (événements, mise à jour, rendu).
     - Progression des stages et déclenchement des cutscenes.
-    - Gestion de la mort du joueur et de l’écran de fin.
+    - Gestion de la mort du joueur et de l'écran de fin.
 
     Args:
         isDungeon (bool, optional): Active un mode donjon spécial.
             Par défaut False.
 
     Attributs principaux:
-        screen (pygame.Surface): Surface d’affichage principale.
+        screen (pygame.Surface): Surface d'affichage principale.
         clock (pygame.time.Clock): Gestion du temps et des FPS.
-        running (bool): Indique si le jeu est en cours d’exécution.
+        running (bool): Indique si le jeu est en cours d'exécution.
         isDungeon (bool): Indique si le jeu est en mode donjon.
         all_sprites (pygame.sprite.LayeredUpdates): Tous les sprites du jeu.
         enemies (pygame.sprite.Group): Groupe des ennemis actifs.
         power_ups (pygame.sprite.Group): Groupe des bonus actifs.
         player (Player): Instance du joueur.
-        ath (Ath): Interface de l’ATH (affichage de la vie, score, mana…).
+        ath (Ath): Interface de l'ATH (affichage de la vie, score, mana…).
         end_screen (End | None): Écran de fin affiché si le joueur meurt.
         stage (int): Numéro du stage actuel.
-        stage_backgrounds (dict[int, pygame.Surface]): Fonds d’écran par stage.
+        stage_backgrounds (dict[int, pygame.Surface]): Fonds d'écran par stage.
         stage_thresholds (dict[int, int]): Score requis pour atteindre chaque stage.
         stage_spawns (dict[int, tuple[int, int]]): Positions de spawn du joueur par stage.
         boss (Enemy | None): Référence au boss si présent.
@@ -48,9 +48,9 @@ class Game:
         in_cutscene (bool): True si une cinématique est en cours.
         door (bool): Indique si la porte du stage est ouverte.
         score (int): Score du joueur.
-        spawn_delay (float): Temps entre chaque apparition d’ennemi.
+        spawn_delay (float): Temps entre chaque apparition d'ennemi.
         spawnable (bool): Indique si les ennemis peuvent apparaître.
-        shadow_sprite (Shadow): Sprite représentant l’ombre du joueur selon ses HP.
+        shadow_sprite (Shadow): Sprite représentant l'ombre du joueur selon ses HP.
         sound (SoundEffects): Gestionnaire des effets sonores.
     """
     def __init__(self, isDungeon=False):
@@ -340,7 +340,22 @@ class Game:
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
-        enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+        if(self.stage == 1):
+            if self.isDungeon :
+                enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+            else :
+                enemy_type = random.choice(["pawn", "lancier", "archer"])
+        if(self.stage == 2):
+            enemy_type = random.choice(["pawn", "lancier", "archer"])
+        if(self.stage == 3):
+            enemy_type = random.choice(["goblin", "scout", "tnt"])
+        if(self.stage == 4):
+            enemy_type = random.choice(["goblin", "scout", "tnt"])
+        if(self.stage == 5):
+            enemy_type = random.choice(["goblin", "scout", "tnt"])
+        if(self.stage == 6):
+            enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+        
         #enemy_type = random.choice(["archer"])
 
         # Spawn autour de la zone de jeu (hors écran)

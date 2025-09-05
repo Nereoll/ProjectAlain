@@ -1,7 +1,7 @@
 """
 main.py
 
-Point d'entrée du jeu. 
+Point d'entrée du jeu.
 Gère la boucle principale entre le menu, les crédits et le lancement du jeu.
 """
 
@@ -17,9 +17,9 @@ def main():
 
     - Initialise Pygame et la fenêtre.
     - Affiche le menu principal.
-    - Permet d’accéder aux crédits.
+    - Permet d'accéder aux crédits.
     - Lance une partie si le joueur choisit de jouer.
-    - Termine l’application si le joueur quitte depuis le menu ou les crédits.
+    - Termine l'application si le joueur quitte depuis le menu ou les crédits.
     """
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))

@@ -63,10 +63,10 @@ def animate(entity, sprites, loop=True, assign_to_image=True, animation_speed=No
 
     Args:
         entity: Objet à animer (Player, AnimatedEntity, etc.).
-        sprites (list[pygame.Surface]): Frames de l’animation.
-        loop (bool): Si True, l’animation boucle, sinon elle s’arrête à la dernière frame.
+        sprites (list[pygame.Surface]): Frames de l'animation.
+        loop (bool): Si True, l'animation boucle, sinon elle s'arrête à la dernière frame.
         assign_to_image (bool): Si True, assigne directement la frame à `entity.image`.
-        animation_speed (float|None): Vitesse d’animation (frames par tick). 
+        animation_speed (float|None): Vitesse d'animation (frames par tick). 
                                        Si None, utilise `entity.animation_speed`.
     """
     # Utiliser la vitesse passée en paramètre ou celle de l'entité
@@ -123,7 +123,7 @@ def scale_sprites(sprites, scale_factor):
 
     Args:
         sprites (list[pygame.Surface]): Liste des images.
-        scale_factor (float): Facteur d’échelle (ex: 2 = double la taille).
+        scale_factor (float): Facteur d'échelle (ex: 2 = double la taille).
 
     Returns:
         list[pygame.Surface]: Liste des sprites redimensionnés.
@@ -136,12 +136,12 @@ class AnimatedEntity:
     Représente une entité animée simple (utile pour le menu ou le décor).
 
     Attributes:
-        sprites (list[pygame.Surface]): Frames de l’animation.
-        pos (tuple): Position (x, y) où afficher l’entité.
-        animation_speed (float): Vitesse d’animation.
-        loop (bool): Si True, l’animation boucle.
+        sprites (list[pygame.Surface]): Frames de l'animation.
+        pos (tuple): Position (x, y) où afficher l'entité.
+        animation_speed (float): Vitesse d'animation.
+        loop (bool): Si True, l'animation boucle.
         current_frame (int): Frame actuelle.
-        frame_timer (float): Timer pour l’animation.
+        frame_timer (float): Timer pour l'animation.
         image (pygame.Surface): Frame courante affichée.
     """
     def __init__(self, sprites, pos, animation_speed=0.15, loop=True):
