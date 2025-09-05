@@ -2,7 +2,7 @@
 import pygame
 import random
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, WHITE
 from player import Player
 from enemy import Enemy
 from ath import Ath
@@ -155,7 +155,20 @@ class Game:
 
         self.font_text = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 32)
 
+        # Initialisation du son
         self.sound = SoundEffects()
+        self.ambient_music = {
+            1: "assets/sounds/music/lvl_1.ogg",
+            2: "assets/sounds/music/lvl_2.ogg",
+            3: "assets/sounds/music/lvl_3.ogg",
+            4: "assets/sounds/music/lvl_3.ogg",
+            5: "assets/sounds/music/lvl_boss.ogg",
+            6: "assets/sounds/music/lvl_boss.ogg",
+        }
+        self.ambient_music_bridge = {
+            2: "assets/sounds/music/lvl_2.ogg",
+            3: "assets/sounds/music/lvl_3_bridge.ogg"
+        }
 
     def new(self):
         """Nouvelle partie"""
@@ -185,6 +198,7 @@ class Game:
                         self.dialogue_active = False
                         self.in_cutscene = False
                         self.sound.stop_music()
+                        self.sound.play_one(self.ambient_music[self.stage], 0.2)
 
                         # Si le boss est mort et encore présent, on le supprime
                         if self.boss and self.boss.is_dead:
@@ -277,10 +291,14 @@ class Game:
                     self.stage_cleared = True
                 if self.door and self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
+                    if self.stage < 4:
+                        self.sound.stop_music()
+                        self.sound.play_one(self.ambient_music_bridge[self.stage], 0.2)
                     self.door = False
                     if not self.stage > 4:
                         self.spawnable = True
                     if self.stage >= 6:
+                        self.sound.stop_music()
                         self.running = False
                         self.game_over = True
                     self.stage_cleared = False
@@ -301,6 +319,9 @@ class Game:
                 self.end_screen = End(self.screen, self.player, self)
             self.end_screen.update()
             return
+        
+        if not self.sound.is_playing() and not self.in_cutscene:
+            self.sound.play_one(self.ambient_music[self.stage], 0.2)
 
 
 
