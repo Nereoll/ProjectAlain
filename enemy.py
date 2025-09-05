@@ -142,13 +142,13 @@ class Enemy(pygame.sprite.Sprite):
             self.idleLSprites = load_sprites("assets/images/enemy/archer/archerIdleR.png", 6)
             self.animation_speed = 0.15
         elif self.enemy_type=="boss":
-            self.walkRSprites = scale_sprites(load_sprites("assets/images/Boss_Run.png", 8), 5)
-            self.attackRSprites = scale_sprites(load_sprites("assets/images/Boss_Attack.png", 6), 5)
-            self.walkLSprites = scale_sprites(load_sprites("assets/images/Boss_Run_reversed.png", 8), 5)
-            self.attackLSprites = scale_sprites(load_sprites("assets/images/Boss_Attack_reversed.png", 6), 5)
-            self.idleRSprites = scale_sprites(load_sprites("assets/images/Boss_IdleR.png", 12), 5)
-            self.idleLSprites = scale_sprites(load_sprites("assets/images/Boss_IdleL.png", 12), 5)
-            self.deathSprites = scale_sprites(load_sprites("assets/images/Boss_Death.png", 10), 5)
+            self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Run.png", 8), 5)
+            self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Attack.png", 6), 5)
+            self.walkLSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Run_reversed.png", 8), 5)
+            self.attackLSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Attack_reversed.png", 6), 5)
+            self.idleRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_IdleR.png", 12), 5)
+            self.idleLSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_IdleL.png", 12), 5)
+            self.deathSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Death.png", 10), 5)
             self.animation_speed = 0.05
         else:
             # fallback : un carré rouge
