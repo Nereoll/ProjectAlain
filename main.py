@@ -1,7 +1,7 @@
 """
 main.py
 
-Point d'entrée du jeu. 
+Point d'entrée du jeu.
 Gère la boucle principale entre le menu, les crédits et le lancement du jeu.
 """
 

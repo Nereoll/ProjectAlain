@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         # === Sprites ===
         self.walkRSprites = load_sprites("assets/images/player/Warrior_Run.png", 6) # 6 frames d'animation
         self.idleRSprites = load_sprites("assets/images/player/Warrior_Idle.png",8)
-        self.walkLSprites = load_sprites("ssets/images/player/Warrior_RunL.png", 6)
+        self.walkLSprites = load_sprites("assets/images/player/Warrior_RunL.png", 6)
         self.attackRSprites = load_sprites("assets/images/player/Warrior_Attack2.png", 4)
         self.attackLSprites = load_sprites("assets/images/player/Warrior_Attack2L.png", 4)
         self.idleLSprites = load_sprites("assets/images/player/Warrior_IdleL.png", 8)
