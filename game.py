@@ -301,7 +301,22 @@ class Game:
 
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
-        enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+        if(self.stage == 1):
+            if self.isDungeon :
+                enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+            else :
+                enemy_type = random.choice(["pawn", "lancier", "archer"])
+        if(self.stage == 2):
+            enemy_type = random.choice(["pawn", "lancier", "archer"])
+        if(self.stage == 3):
+            enemy_type = random.choice(["goblin", "scout", "tnt"])
+        if(self.stage == 4):
+            enemy_type = random.choice(["goblin", "scout", "tnt"])
+        if(self.stage == 5):
+            enemy_type = random.choice(["goblin", "scout", "tnt"])
+        if(self.stage == 6):
+            enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
+        
         #enemy_type = random.choice(["archer"])
 
         # Spawn autour de la zone de jeu (hors écran)
