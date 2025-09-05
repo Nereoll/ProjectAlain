@@ -1,5 +1,8 @@
+import random
 import pygame
 import os
+
+pygame.mixer.init()
 
 def load_sprites(path="", num_frames=1, nopath=False, imagestring=None):
     """Charge un spritesheet horizontal découpé en plusieurs frames."""
@@ -35,15 +38,27 @@ def load_sprites_from_folder(folder):
     return sprites
 
 
-def animate(entity, sprites, loop=True, assign_to_image=True):
+def animate(entity, sprites, loop=True, assign_to_image=True, animation_speed=None):
     """
-    Anime un spritesheet générique pour un sprite-like (entité ayant
-    current_frame, frame_timer, animation_speed).
+    Anime un sprite-like (entité avec current_frame, frame_timer).
+
+    Args:
+        entity: L'objet à animer (doit avoir `current_frame`, `frame_timer`, `image`).
+        sprites: Liste des frames.
+        loop: Si True, l'animation boucle.
+        assign_to_image: Si True, met à jour `entity.image`.
+        animation_speed: Vitesse spécifique pour cet appel. Si None, prend `entity.animation_speed`.
     """
-    if entity.current_frame >= len(sprites):
+    # Utiliser la vitesse passée en paramètre ou celle de l'entité
+    speed = animation_speed if animation_speed is not None else getattr(entity, 'animation_speed', 0.15)
+
+    # Incrément du timer
+    if not hasattr(entity, 'frame_timer'):
+        entity.frame_timer = 0
+    if not hasattr(entity, 'current_frame'):
         entity.current_frame = 0
 
-    entity.frame_timer += entity.animation_speed
+    entity.frame_timer += speed
     if entity.frame_timer >= 1:
         entity.frame_timer = 0
         entity.current_frame += 1
@@ -52,6 +67,12 @@ def animate(entity, sprites, loop=True, assign_to_image=True):
                 entity.current_frame = 0
             else:
                 entity.current_frame = len(sprites) - 1
+
+    # Ensure current_frame is within bounds
+    if entity.current_frame >= len(sprites):
+        entity.current_frame = len(sprites) - 1
+    elif entity.current_frame < 0:
+        entity.current_frame = 0
 
     frame = sprites[entity.current_frame]
     if assign_to_image:
@@ -94,3 +115,40 @@ class AnimatedEntity:
     def draw(self, screen):
         """Affiche l'entité sur l'écran."""
         screen.blit(self.image, self.pos)
+
+class SoundEffects:
+    def __init__(self):
+        self.sound_groups = {}
+        self.last_played = {}
+    
+    def load_sound_group(self, group_name, sound_files):
+        sounds = []
+        for sound_file in sound_files:
+            if os.path.exists(sound_file):
+                sound = pygame.mixer.Sound(sound_file)
+                sounds.append(sound)
+        
+        self.sound_groups[group_name] = sounds
+    
+    def play_group(self, group_name, volume=1.0, cooldown=0.5):
+        current_time = pygame.time.get_ticks() / 1000.0
+        if group_name in self.last_played:
+            time_since_last = current_time - self.last_played[group_name]
+            if time_since_last < cooldown:
+                return False
+        sound = random.choice(self.sound_groups[group_name])
+        sound.set_volume(volume)
+        sound.play()
+        self.last_played[group_name] = current_time
+
+    def play_one(self, music_file, volume=0.2):
+        if os.path.exists(music_file):
+            pygame.mixer.music.load(music_file)
+            pygame.mixer.music.set_volume(volume)
+            pygame.mixer.music.play()
+
+    def stop_music(self):
+        pygame.mixer.music.stop()
+
+    def is_playing(self):
+        return pygame.mixer.music.get_busy()

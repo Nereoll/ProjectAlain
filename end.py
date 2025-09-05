@@ -1,7 +1,7 @@
 # end.py
 import pygame
 from settings import TITLE, WHITE, WIDTH, HEIGHT
-from utilitaire import load_sprites, animate
+from utilitaire import load_sprites, animate, SoundEffects
 from audio import get_max_db
 
 class End:
@@ -26,6 +26,8 @@ class End:
         # Boutons
         self.retry_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
         self.menu_button = pygame.Rect(WIDTH // 2 + 10, HEIGHT // 4, 300, 200)
+
+        self.sound = SoundEffects()
         
         
     def handle_event(self, event):
@@ -33,20 +35,22 @@ class End:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.retry_button.collidepoint(event.pos):
                 # Vérifie le cri pour ressusciter
-                max_value = get_max_db(5)
+                max_value = get_max_db(3)
                 print("Max DB:", max_value)
-                if max_value >= 130:
+                if max_value >= 100:
                     self.respawn_player()
             elif self.menu_button.collidepoint(event.pos):
                 # Retour menu = arrêter la game loop
+                self.sound.stop_music()
                 self.game.running = False
                 self.game.game_over = True
 
     def respawn_player(self):
         """Ramène le joueur à la vie"""
-        self.game.spawnable = True
-        self.game.spawn_delay = 3
-        self.game.last_spawn = 0
+        if self.game.stage != 5 : 
+            self.game.spawnable = True
+        else :
+            self.game.spawnable = False
         self.player.hp = 4
         self.player.state = "idleR"
         

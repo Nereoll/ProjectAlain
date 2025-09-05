@@ -31,10 +31,14 @@ if __name__ == "__main__":
         if not menu.start_game:  # si le joueur a fermé la fenêtre
             running = False
             break
-
-        # Lancer le jeu
-        g = Game()
-        g.new()
+        
+        if menu.start_game_infinite:
+            g = Game(isDungeon=True)
+            g.new()
+        else:
+            # Lancer le jeu en mode normal
+            g = Game()
+            g.new()
 
         # Si le joueur est mort -> retour menu
         if g.game_over:

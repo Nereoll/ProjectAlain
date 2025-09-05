@@ -2,7 +2,7 @@
 import pygame
 from player import Player
 from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE, BLUE
-from utilitaire import load_sprites, AnimatedEntity, pixelate
+from utilitaire import load_sprites, AnimatedEntity, pixelate, SoundEffects
 
 class Menu:
     def __init__(self, screen):
@@ -25,8 +25,8 @@ class Menu:
 
         # Bouton crédit
         self.credit_text = self.font_credits.render("Crédits", True, WHITE)
-        self.credit_x = WIDTH - 415
-        self.credit_y = HEIGHT - 297
+        self.credit_x = WIDTH - 270
+        self.credit_y = HEIGHT - 296
         self.credit_rect = self.credit_text.get_rect(topleft=(self.credit_x, self.credit_y))
         self.padding = 10
         self.box_rect = pygame.Rect(
@@ -35,9 +35,24 @@ class Menu:
             self.credit_rect.width + 5 * self.padding,
             self.credit_rect.height + 7 * self.padding
         )
+        
+        # Bouton start infinite
+        self.infinite_text = self.font_credits.render("Dungeon", True, WHITE)
+        self.infinite_x = 50
+        self.infinite_y = 50
+        self.infinite_rect = self.infinite_text.get_rect(topleft=(self.infinite_x, self.infinite_y))
+        self.infinite_padding = 10
+        self.infinite_box_rect = pygame.Rect(
+            self.infinite_rect.left - self.infinite_padding,
+            self.infinite_rect.top - self.infinite_padding,
+            self.infinite_rect.width + 3 * self.infinite_padding,
+            self.infinite_rect.height + 15 * self.infinite_padding
+        )
+
 
         self.running = True
         self.start_game = False
+        self.start_game_infinite = False
         self.show_credits = False
 
         # === Ribbon ===
@@ -72,6 +87,10 @@ class Menu:
         self.player.rect.center = self.playerSpawn
         self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
+        self.sound = SoundEffects()
+        if not self.sound.is_playing():
+            self.sound.play_one("assets/sounds/music/menu_music.ogg", volume=0.2)
+
 
     def run(self):
         """Boucle du menu"""
@@ -83,10 +102,16 @@ class Menu:
             if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.start_game = True
                 self.running = False
+                self.sound.stop_music()
                 
             # Vérifie si le joueur collide sur le bouton Crédit
             if self.box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.show_credits = True
+                self.running = False
+                
+            if self.infinite_box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
+                self.start_game = True
+                self.start_game_infinite = True
                 self.running = False
             
             # --- Dessin ---
@@ -110,13 +135,14 @@ class Menu:
             start_text = self.font_button.render("", True, WHITE)
             self.screen.blit(start_text, (self.start_button.centerx - start_text.get_width() // 2,
                                           self.start_button.centery - start_text.get_height() - 0.5 // 2))
-            
             # Bouton Crédit
             self.screen.blit(self.credit_text, (self.credit_x + 20, self.credit_y + 80))
             # pygame.draw.rect(self.screen, BLUE, self.box_rect, 4)
 
-            
-            
+            # Bouton Start Infinite
+            self.screen.blit(self.infinite_text, (self.infinite_x + 5, self.infinite_y + 65))
+            # pygame.draw.rect(self.screen, BLUE, self.infinite_box_rect, 4)
+
             # === Chevalier animé ===
             #self.knight.update()
             #self.knight.draw(self.screen)

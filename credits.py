@@ -19,7 +19,7 @@ class Credits:
         self.running = True
         self.retour = False
 
-        self.pixel_ratio = 0.8  # Ratio de pixelisation
+        self.pixel_ratio = 0.8
 
     def run(self):
         while self.running:
@@ -28,8 +28,9 @@ class Credits:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.retour = True
                         self.running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:   # moved inside the loop
+                elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     back_rect = self.back.get_rect(topleft=(10, 10))
                     if back_rect.collidepoint(mouse_pos):

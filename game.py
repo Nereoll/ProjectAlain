@@ -8,25 +8,22 @@ from enemy import Enemy
 from ath import Ath
 from end import End
 from shadow import Shadow
-from menu import Menu 
 from audio import get_max_db 
 from powerup import PowerUp
+from utilitaire import SoundEffects
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, isDungeon=False):
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.running = True
+        self.isDungeon = isDungeon
 
         # Game Over
         self.end_screen = None
-
-        # Buttons Game over
-        self.retrie_button = pygame.Rect(WIDTH // 2 - 310, HEIGHT // 4, 300, 200)
-        self.menu_button = pygame.Rect(WIDTH // 2 - 110, HEIGHT // 4, 300, 200)
 
         # Groupes de sprites
         # Groupes de sprites avec gestion de layers
@@ -35,7 +32,7 @@ class Game:
         self.power_ups = pygame.sprite.Group()
 
         # Joueur
-        self.player = Player()
+        self.player = Player(self)
         self.player.game = self
         self.player.mana=0
         self.playerSpawn = (WIDTH // 2, HEIGHT // 2)
@@ -88,13 +85,16 @@ class Game:
             2: self.secondStage,
             3: self.thirdStage,
             4: self.fourthStage,
-            5: self.fifthStage
+            5: self.fifthStage,
+            6: self.fifthStage
         }
         self.stage_thresholds = {
-            2: 100,   # score requis pour passer au stage 2
-            3: 400,   # score requis pour passer au stage 3
-            4: 800,   # score requis pour passer au stage 4
-            5: 800,   # score requis pour passer au stage 5
+            2: 1000,   # score requis pour passer au stage 2
+            3: 2000,   # score requis pour passer au stage 3
+            4: 4000,   # score requis pour passer au stage 4
+            5: 4000,   # score requis pour passer au stage 5
+            6: 9000,   # score requis pour passer au stage 6, doit être différent des deux précédents
+            7: 9000
         }
 
         self.stage_spawns = {
@@ -102,22 +102,22 @@ class Game:
             2: (WIDTH // 2, HEIGHT // 2),
             3: (WIDTH // 2, HEIGHT // 2),
             4: (100, HEIGHT // 2),
-            5: (100, HEIGHT // 2)
+            5: (100, HEIGHT // 2),
+            6: (WIDTH // 2, HEIGHT // 2)
         }
 
-
-        self.stage_changed = False  # évite de répéter clear_stage
-
         #door
-        self.door_rect = pygame.Rect(WIDTH // 2 - 30, (HEIGHT - 650), 60, 60)
+        self.door_rect = pygame.Rect(WIDTH // 2 - 30, (HEIGHT - 650), 60, 15)
         self.door_image1 = pygame.image.load("assets/images/Door.png").convert_alpha()
         self.door_image2 = pygame.image.load("assets/images/Door2.png").convert_alpha()
         self.door_image3 = pygame.image.load("assets/images/Door3.png").convert_alpha()
+        self.door_image4 = pygame.image.load("assets/images/Phara.png").convert_alpha()
         self.door=False
 
 
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
 
+        self.sound = SoundEffects()
 
     def new(self):
         """Nouvelle partie"""
@@ -137,27 +137,24 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if self.retrie_button.collidepoint(event.pos) and self.player.hp < 0:
-                    max_value = get_max_db(5)
-                    print(max_value)
-                    if max_value >= 130 :
-                        self.spawnable = True
-                        self.spawn_delay = 3
-                        self.last_spawn = 0
-                        self.player.hp = 4
-                        self.player.state = "idleR"
-                elif self.menu_button.collidepoint(event.pos) and self.player.hp < 0:
-                    self.running = False
-                    self.game_over = True
-                elif self.player.hp <= 0:
+                if self.player.hp <= 0:
                     self.end_screen.handle_event(event)
             elif event.type == pygame.KEYDOWN:
-                if self.dialogue_active and event.key == pygame.K_n:
+                if self.dialogue_active and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.current_line += 1
+                    self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
                     if self.current_line >= len(self.dialogue_lines):
-                        # Fin du dialogue -> début combat
                         self.dialogue_active = False
                         self.in_cutscene = False
+                        self.sound.stop_music()
+
+                        # Si le boss est mort et encore présent, on le supprime
+                        if self.boss and self.boss.is_dead:
+                            self.stage = 6
+                            self.boss.kill()
+                            self.boss = None
+                            self.spawnable = False
+                            self.player.mana = 40000
 
 
 
@@ -171,6 +168,8 @@ class Game:
             if self.spawn_delay > 0.8:
                 self.spawn_delay -= 0.1
         oldLength = self.enemies.__len__()
+
+
         self.all_sprites.update()
 
         if self.player.state == "invisible" and len(self.power_ups) == 0 and (time.time() - self.lastPowerUp >= 2) :
@@ -187,43 +186,54 @@ class Game:
             self.all_sprites.add(power_up, layer=3)
 
         #change la porte en fonction du stage
-        if self.stage == 1:
+        if self.stage == 1 and not self.isDungeon:
             self.door_image = self.door_image1
-        elif self.stage == 2:
+        elif self.stage == 2 and not self.isDungeon:
             self.door_image = self.door_image2
-        elif self.stage == 3:
+        elif self.stage == 3 and not self.isDungeon:
             self.door_image = self.door_image3
-            self.door_rect = pygame.Rect(WIDTH - 80, HEIGHT // 2 , 60, 60)
-        elif self.stage == 4:
-            self.door_rect = pygame.Rect(WIDTH - 80, HEIGHT // 2 , 60, 60)
+            self.door_rect = pygame.Rect(WIDTH - 80, HEIGHT // 2 , 60, 100)
+        elif self.stage == 4 and not self.isDungeon:
+            self.door_rect = pygame.Rect(WIDTH - 80, HEIGHT // 2 - 20 , 60, 120)
+        elif self.stage == 5:
+            self.door=False
+        elif self.stage == 6:
+            self.door_image = self.door_image4
+            self.door_rect = pygame.Rect(WIDTH -100, HEIGHT // 2 -50, 86, 121)
+            if self.player.invisible:
+                self.door=True
+            else:
+                self.door=False
 
 
         #Actions spécifiques à la fin du jeu
         if self.stage > 3:
-            self.spawnable = False #empeche le spawn de nouceaux ennemis
-            self.enemies.empty()
             self.playerSpawn = (WIDTH // 2, 80) #deplaces le joueur au bon endroit
         if self.stage == 5 and not self.boss:
             self.start_boss_cutscene()
 
 
-
         # Changes de stage si on touches la porte
         for next_stage, threshold in self.stage_thresholds.items():
-            if self.player.score >= threshold and self.stage < next_stage:
+            if self.player.score >= threshold and self.stage < next_stage and not self.isDungeon:
                 if not self.stage_cleared :
                     self.clear_stage()
                     self.stage_cleared = True
-                if self.door_rect.colliderect(self.player.rect):
+                if self.door and self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
                     self.door = False
-                    self.spawnable = True
+                    if not self.stage > 3:
+                        self.spawnable = True
+                    if self.stage >= 6:
+                        self.running = False
+                        self.game_over = True
                     self.stage_cleared = False
                     for enemy in self.enemies:
                         enemy.kill()
                     # Repositionner le joueur selon le stage
-                    self.player.rect.center = self.stage_spawns[self.stage]
-                    self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
+                    if self.stage in self.stage_spawns:
+                        self.player.rect.center = self.stage_spawns[self.stage]
+                        self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
                 break
 
 
@@ -234,12 +244,15 @@ class Game:
             if not self.end_screen:
                 self.end_screen = End(self.screen, self.player, self)
             self.end_screen.update()
-            return 
+            return
+
+
 
     def start_boss_cutscene(self):
         self.in_cutscene = True
         self.dialogue_active = True
         self.spawnable = False
+        self.enemies.empty()
         for ennemies in self.enemies:
             ennemies.kill()
 
@@ -253,31 +266,22 @@ class Game:
             "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
             "Boss: Je dois te faire disparaitre pour me venger !",
             "Alain: ...",
-            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi ? Hahaha !",
+            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
             "Alain: Feur",
         ]
         self.current_line = 0
 
-
-    def start_boss_cutscene(self):
-        self.in_cutscene = True
+    def start_boss_death_cutscene(self):
         self.dialogue_active = True
         self.spawnable = False
-        for ennemies in self.enemies:
-            ennemies.kill()
 
-        # Spawn du boss mais sans qu'il attaque
-        self.boss = Enemy("boss", self.player, self.screen, (WIDTH-350, HEIGHT//2))
-        self.all_sprites.add(self.boss, layer=1)
+        # Supprime tous les ennemis normaux
+        for enemy in list(self.enemies):
+            enemy.kill()
 
-        # Texte du dialogue
+        # Dialogue de fin
         self.dialogue_lines = [
-            "Boss: Ah enfin tu arrives...",
-            "Boss: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
-            "Boss: Je dois te faire disparaitre pour me venger !",
-            "Alain: ...",
-            "Boss: Et oui j'ai rendu ta princesse invisible tu vas faire quoi ? Hahaha !",
-            "Alain: Feur",
+            "Boss: Hahaha... je meurs mais ta princesse restera invisible...",
         ]
         self.current_line = 0
 
@@ -304,16 +308,17 @@ class Game:
 
     def clear_stage(self):
         self.spawnable = False
-        self.spawn_delay = 3
+        self.spawn_delay = 2
         self.last_spawn = 0
         self.door=True
         if self.player.hp <4:
-            self.player.hp=4
+            self.player.hp+=2
 
     def draw(self):
         """Affichage"""
         # Fond du stage courant
-        self.screen.blit(self.stage_backgrounds[self.stage], (0, 0))
+        if self.stage in self.stage_backgrounds:
+            self.screen.blit(self.stage_backgrounds[self.stage], (0, 0))
 
 
         # Sprites
@@ -342,7 +347,6 @@ class Game:
             self.end_screen.draw()
         else:
             self.shadow_sprite.image = pygame.Surface(self.shadow1.get_size(), pygame.SRCALPHA)
-        
 
         # Dessiner le sprite shadow
         if self.player.hp > 0:

@@ -3,11 +3,12 @@ import pygame
 import time
 from settings import WIDTH, HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
 from PIL import Image , ImageOps
-from utilitaire import load_sprites, animate
+from utilitaire import load_sprites, animate, SoundEffects
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, game=None):
         super().__init__()
+        self.game = game
 
         # Miror srite
         imageLwalk = ImageOps.mirror(Image.open("assets/images/Warrior_Run.png"))
@@ -67,6 +68,28 @@ class Player(pygame.sprite.Sprite):
         self.hp = 4
         self.mana = 40000
         self.score = 0
+
+        #initialisation sons
+        self.sound = SoundEffects()
+
+        self.sound.load_sound_group("sword_swings", [ 
+            "assets/sounds/sound_effects/sword_swing_1.ogg",
+            "assets/sounds/sound_effects/sword_swing_2.ogg",
+            "assets/sounds/sound_effects/sword_swing_3.ogg",
+            "assets/sounds/sound_effects/sword_swoosh_1.ogg"
+        ]) # sons attaque du joueur
+
+        self.sound.load_sound_group("player_hurts", [
+            "assets/sounds/sound_effects/hit_1.ogg",
+            "assets/sounds/sound_effects/hit_2.ogg",
+            "assets/sounds/sound_effects/hit_3.ogg"
+        ]) #sons dégat joueur
+
+        self.sound.load_sound_group("footstep_stone", [
+            "assets/sounds/sound_effects/footstep_stone_1.ogg",
+            "assets/sounds/sound_effects/footstep_stone_2.ogg",
+            "assets/sounds/sound_effects/footstep_stone_3.ogg"
+        ]) #sons pas lvl 1
 
         # Direction face
         self.faceRorL = "R"
@@ -146,6 +169,14 @@ class Player(pygame.sprite.Sprite):
         - Idle : on prend juste la première frame de marche.
         - Invisible : on prend la frame d'invisibilité.
         """
+        # Vérifie si le joueur est dans une cutscene (si game est défini)
+        # Vérifie si le joueur est dans une cutscene et ce n'est pas la mort du boss
+        if self.game and getattr(self.game, "in_cutscene", False):
+            if not (self.game.boss and getattr(self.game.boss, "is_dead", False)):
+                self.state = "idleR"
+                return
+
+
         if self.state == "dead" :
             if self.faceRorL == "R" :
                 animate(self, self.idleRSprites, loop=True)
@@ -182,46 +213,52 @@ class Player(pygame.sprite.Sprite):
         else :
             self.image.set_alpha(255)
 
-        # Animation selon l’état
-        if self.state == "walkR":
-            animate(self, self.walkRSprites, loop=True)
-            self.image.set_alpha(255)  # normal
-        elif self.state == "walkL" :
-            animate(self, self.walkLSprites, loop=True)
-            self.image.set_alpha(255)  # normal
-        elif self.state == "attackR":
+            # Animation selon l’état
+            if self.state == "walkR":
+                animate(self, self.walkRSprites, loop=True)
+                self.sound.play_group("footstep_stone", 0.2, 0.4)
+                self.image.set_alpha(255)  # normal
+            elif self.state == "walkL" :
+                animate(self, self.walkLSprites, loop=True)
+                self.sound.play_group("footstep_stone", 0.2, 0.4)
+                self.image.set_alpha(255)  # normal
+            elif self.state == "attackR":
 
-            animate(self, self.attackRSprites, loop=False)
-            self.image.set_alpha(255)  # normal
-            # Quand l'animation d'attaque est terminée
-            if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
-                self.state = "idleR"
-                self.attacking = False
-                self.current_frame = 0
-        elif self.state == "attackL":
+                animate(self, self.attackRSprites, loop=False)
+                self.sound.play_group("sword_swings", 0.2)
+                self.image.set_alpha(255)  # normal
+                # Quand l'animation d'attaque est terminée
+                if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
+                    self.state = "idleR"
+                    self.attacking = False
+                    self.current_frame = 0
+            elif self.state == "attackL":
 
-            animate(self, self.attackLSprites, loop=False)
-            self.image.set_alpha(255)  # normal
-            # Quand l'animation d'attaque est terminée
-            if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
-                self.state = "idleL"
-                self.attacking = False
-                self.current_frame = 0
-        elif self.state == "invisible":
-            animate(self, self.invisibleSprite, loop=True)
-            # Rendre translucide
-            self.image.set_alpha(10)
+                animate(self, self.attackLSprites, loop=False)
+                self.sound.play_group("sword_swings", 0.2)
+                self.image.set_alpha(255)  # normal
+                # Quand l'animation d'attaque est terminée
+                if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
+                    self.state = "idleL"
+                    self.attacking = False
+                    self.current_frame = 0
+            elif self.state == "invisible":
+                animate(self, self.invisibleSprite, loop=True)
+                # Rendre translucide
+                self.image.set_alpha(10)
 
-        elif self.state == "idleR" :
-            animate(self, self.idleRSprites, loop=True)
-        elif self.state == "idleL" :
-            animate(self, self.idleLSprites, loop=True)
+            elif self.state == "idleR" :
+                animate(self, self.idleRSprites, loop=True)
+            elif self.state == "idleL" :
+                animate(self, self.idleLSprites, loop=True)
 
     def take_damage(self, amount):
-        if not self.is_invulnerable:  # Vérifie si le joueur est invulnérable
+        if not self.is_invulnerable and self.state != "dead":  # Vérifie si le joueur est invulnérable ou mort
             self.hp -= amount
+            self.sound.play_group("player_hurts", 0.2)
             if self.hp <= 0:
                 self.state = "dead"
+                self.sound.play_one("assets/sounds/sound_effects/player_death.ogg", volume=0.4)
             else:
                 # Active les iframes
                 self.is_invulnerable = True
@@ -234,6 +271,7 @@ class Player(pygame.sprite.Sprite):
             return False
 
     def enemy_killed(self, points):
+        #self.sound.play_one("assets/sounds/sound_effects/mob_death.ogg", volume=1)
         self.score += points
         if self.mana < 4:
             self.mana += 1
