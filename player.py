@@ -252,8 +252,6 @@ class Player(pygame.sprite.Sprite):
         - Invisible : on prend la frame d'invisibilité.
         """
 
-        # print((str)(self.invisibilityDurationLeft) + " | " + (str)(self.state))
-
         # Vérifie si l'invisibilité est terminée
         self.invisibilityDurationLeft = 2 - (time.time() - self.invisible_start_time)
         if self.invisibilityDurationLeft < 0 :

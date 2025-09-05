@@ -116,6 +116,7 @@ class Game:
         self.fourthStage = pygame.image.load("assets/images/background/Fourth_Stage.png").convert()
         self.fifthStage = pygame.image.load("assets/images/background/Fifth_Stage.png").convert()
 
+
         # Gestion des stages
         self.stage = 1
         self.stage_backgrounds = {
@@ -132,7 +133,8 @@ class Game:
             4: 4000,   # score requis pour passer au stage 4
             5: 4000,   # score requis pour passer au stage 5
             6: 9000,   # score requis pour passer au stage 6, doit être différent des deux précédents
-            7: 9000
+            7: 9000,    #scoreminimum requis pour accéder à la derniere cutscene
+            8: 9000
         }
 
         self.stage_spawns = {
@@ -151,6 +153,9 @@ class Game:
         self.door_image3 = pygame.image.load("assets/images/ressources/Door3.png").convert_alpha()
         self.door_image4 = pygame.image.load("assets/images/Phara.png").convert_alpha()
         self.door=False
+
+        #player static
+        self.idleRSprites = pygame.image.load("assets/images/player/IdleR.png").convert_alpha()
 
 
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
@@ -182,17 +187,24 @@ class Game:
                     self.current_line += 1
                     self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
                     if self.current_line >= len(self.dialogue_lines):
+                        print("end of dialogue")
+                        print("current stage : " + str(self.stage))
                         self.dialogue_active = False
                         self.in_cutscene = False
                         self.sound.stop_music()
 
-                        # Si le boss est mort et encore présent, on le supprime
-                        if self.boss and self.boss.is_dead:
+                        # Si c’est la cutscene finale avec la princesse → retour menu
+                        if self.stage == 8:
+                            self.running = False
+                            self.game_over = True
+
+                        elif self.boss and self.boss.is_dead:
                             self.stage = 6
                             self.boss.kill()
                             self.boss = None
                             self.spawnable = False
                             self.player.mana = 40000
+
             elif self.player.joystick:
                 if event.type == pygame.JOYBUTTONDOWN:
                     if self.dialogue_active and event.button == 0:  # Bouton A
@@ -276,9 +288,13 @@ class Game:
                     self.door = False
                     if not self.stage > 4:
                         self.spawnable = True
-                    if self.stage >= 6:
-                        self.running = False
-                        self.game_over = True
+                    if self.stage == 6:
+                        pass
+                    if self.stage == 7:
+                        self.player.invisible = False
+                        self.start_princess_rescue_cutscene()
+
+
                     self.stage_cleared = False
                     for enemy in self.enemies:
                         enemy.kill()
@@ -298,8 +314,6 @@ class Game:
             self.end_screen.update()
             return
 
-
-
     def start_boss_cutscene(self):
         self.in_cutscene = True
         self.dialogue_active = True
@@ -315,7 +329,7 @@ class Game:
         # Texte du dialogue
         self.dialogue_lines = [
             "Joris: Ah enfin tu arrives...",
-            "Joris: Mehdi Sparu a tué mon père en faisant disparaitre son jeu",
+            "Joris: Mehdi Sparu a supprimé mon prédecesseur des fichiers du jeu en le faisant disparaitre.",
             "Joris: Je dois te faire disparaitre pour me venger !",
             "Alain: ...",
             "Joris: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
@@ -338,6 +352,30 @@ class Game:
         self.current_line = 0
 
 
+    def start_princess_rescue_cutscene(self):
+        """Dernière cutscene avec la princesse après avoir sauvé le royaume"""
+        self.spawnable = False
+        self.in_cutscene = True
+        self.dialogue_active = True
+
+        for enemy in list(self.enemies):
+            enemy.kill()
+        for powerup in list(self.power_ups):
+            powerup.kill()
+        for sprite in list(self.all_sprites):
+            sprite.kill()
+
+        # Place le joueur et le rend VISIBLE + idle
+        self.screen.blit(self.idleRSprites, (WIDTH//2 - 96, HEIGHT//2 -96))
+
+        self.dialogue_lines = [
+            "Pharah: Merci Alain, tu m'as enfin libérée...",
+            "Alain: Kouisine !?",
+            "Pharah: Kouisine",
+        ]
+        self.current_line = 0
+
+
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
         if(self.stage == 1):
@@ -355,8 +393,6 @@ class Game:
             enemy_type = random.choice(["goblin", "scout", "tnt"])
         if(self.stage == 6):
             enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
-        
-        #enemy_type = random.choice(["archer"])
 
         # Spawn autour de la zone de jeu (hors écran)
         side = random.choice(["top", "bottom", "left", "right"])
@@ -386,8 +422,6 @@ class Game:
         # Fond du stage courant
         if self.stage in self.stage_backgrounds:
             self.screen.blit(self.stage_backgrounds[self.stage], (0, 0))
-
-
         # Sprites
         if self.player.invisible :
             for enemy in self.enemies:
