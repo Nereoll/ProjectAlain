@@ -91,7 +91,7 @@ class End:
             event (pygame.event.Event): Événement pygame.
         """
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if self.retry_button.collidepoint(event.pos):
+            if self.retry_button.collidepoint(event.pos) and (self.player.nb_rea < 3):
                 # Lancer l'écoute micro dans un thread
                 self.timer_active = True
                 self.timer = 0
@@ -100,12 +100,13 @@ class End:
             elif self.menu_button.collidepoint(event.pos):
                 self._go_to_menu()
         elif event.type == pygame.JOYBUTTONDOWN:
-            if event.button == 4:
-                print("rea")
+            if event.button == 4 and (self.player.nb_rea < 3):
                 # Lancer l'écoute micro dans un thread
+                self.timer_active = True
+                self.timer = 0
+                self.last_tick = pygame.time.get_ticks()
                 threading.Thread(target=self._try_respawn).start()
             elif event.button == 5:
-                print("menu")
                 self._go_to_menu()
 
     def _try_respawn(self):
