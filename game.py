@@ -10,6 +10,7 @@ from end import End
 from shadow import Shadow
 from audio import get_max_db 
 from powerup import PowerUp
+from utilitaire import SoundEffects
 
 
 class Game:
@@ -116,6 +117,8 @@ class Game:
 
         self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
 
+        self.sound = SoundEffects()
+
     def new(self):
         """Nouvelle partie"""
         self.run()
@@ -137,11 +140,13 @@ class Game:
                 if self.player.hp <= 0:
                     self.end_screen.handle_event(event)
             elif event.type == pygame.KEYDOWN:
-                if self.dialogue_active and event.key == pygame.K_SPACE:
+                if self.dialogue_active and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.current_line += 1
+                    self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
                     if self.current_line >= len(self.dialogue_lines):
                         self.dialogue_active = False
                         self.in_cutscene = False
+                        self.sound.stop_music()
 
                         # Si le boss est mort et encore présent, on le supprime
                         if self.boss and self.boss.is_dead:

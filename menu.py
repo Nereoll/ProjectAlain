@@ -87,9 +87,9 @@ class Menu:
         self.player.rect.center = self.playerSpawn
         self.player.mask = pygame.mask.from_surface(self.player.image)  # recalcule la mask collision
 
-        self.music = SoundEffects()
-        if not self.music.is_playing():
-            self.music.play_music("assets/sounds/music/menu_music.ogg", volume=0.2)
+        self.sound = SoundEffects()
+        if not self.sound.is_playing():
+            self.sound.play_one("assets/sounds/music/menu_music.ogg", volume=0.2)
 
 
     def run(self):
@@ -102,7 +102,7 @@ class Menu:
             if self.start_button.collidepoint(self.playerSprites.sprites()[0].rect.center):
                 self.start_game = True
                 self.running = False
-                self.music.stop_music()
+                self.sound.stop_music()
                 
             # Vérifie si le joueur collide sur le bouton Crédit
             if self.box_rect.collidepoint(self.playerSprites.sprites()[0].rect.center):
