@@ -9,6 +9,7 @@ import pygame
 from game import Game
 from menu import Menu
 from credits import Credits
+from lore import Lore
 from settings import WIDTH, HEIGHT, TITLE
 
 def main():
@@ -45,6 +46,16 @@ def main():
             credits = Credits(screen, fullscreen)
             credits.run()
             if credits.retour:  # Si on retourne au menu, continuer
+                continue
+            else:  # Si on ne retourne pas au menu, quitter le programme
+                running = False
+                break
+        
+        # Lancer le lore si nécessaire
+        if menu.show_lore:
+            lore = Lore(screen, fullscreen)
+            lore.run()
+            if lore.retour:  # Si on retourne au menu, continuer
                 continue
             else:  # Si on ne retourne pas au menu, quitter le programme
                 running = False
