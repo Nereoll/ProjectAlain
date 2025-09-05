@@ -13,7 +13,6 @@ ENEMY_STATS = {
         "stagger_timer": 0.3,
         "knockback_distance": 50,
         "knockback_speed": 5,
-        "color": (200, 200, 200),
     },
     "goblin": {
         "hp": 2,
@@ -22,7 +21,6 @@ ENEMY_STATS = {
         "stagger_timer": 0.5,
         "knockback_distance": 100,
         "knockback_speed": 5,
-        "color": (0, 200, 0),
     },
     "scout": {
         "hp": 1,
@@ -55,7 +53,6 @@ ENEMY_STATS = {
         "stagger_timer": 0.2,
         "knockback_distance": 40,
         "knockback_speed": 5,
-        "color": (150, 150, 255),
     },
     "boss": {
         "hp": 50,
@@ -174,7 +171,6 @@ class Enemy(pygame.sprite.Sprite):
             self.stagger_timer = stats["stagger_timer"]
             self.knockback_distance = stats["knockback_distance"]
             self.knockback_speed = stats["knockback_speed"]
-            self.color = stats.get("color", (255, 0, 0))
         else:
             raise ValueError("Type d'ennemi inconnu")
 
@@ -388,7 +384,7 @@ class Enemy(pygame.sprite.Sprite):
         self.player.take_damage(self.attack_points)
 
     def take_damage(self, amount):
-        """Le joueur ou d'autres entités peuvent attaquer l'ennemi"""
+        """Le joueur peut attaquer l'ennemi"""
         if self.enemy_type != "boss":
             self.state = "staggered"
             self.speed = 0
