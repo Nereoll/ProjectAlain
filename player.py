@@ -13,7 +13,7 @@ et interagir avec son environnement. La classe gère :
 import pygame
 import time
 from settings import WIDTH, HEIGHT, GAME_ZONE_BOTTOM, GAME_ZONE_LEFT, GAME_ZONE_RIGHT, GAME_ZONE_TOP
-from utilitaire import load_sprites, animate, SoundEffects
+from utilitaire import load_sprites, animate, SoundEffects, chemin_relatif
 
 class Player(pygame.sprite.Sprite):
     """
@@ -39,13 +39,13 @@ class Player(pygame.sprite.Sprite):
         self.game = game
 
         # === Sprites ===
-        self.walkRSprites = load_sprites("assets/images/player/Warrior_Run.png", 6) # 6 frames d'animation
-        self.idleRSprites = load_sprites("assets/images/player/Warrior_Idle.png",8)
-        self.walkLSprites = load_sprites("assets/images/player/Warrior_RunL.png", 6)
-        self.attackRSprites = load_sprites("assets/images/player/Warrior_Attack2.png", 4)
-        self.attackLSprites = load_sprites("assets/images/player/Warrior_Attack2L.png", 4)
-        self.idleLSprites = load_sprites("assets/images/player/Warrior_IdleL.png", 8)
-        self.invisibleSprite = load_sprites("assets/images/items/Foam.png", 8)
+        self.walkRSprites = load_sprites(chemin_relatif("assets/images/player/Warrior_Run.png"), 6) # 6 frames d'animation
+        self.idleRSprites = load_sprites(chemin_relatif("assets/images/player/Warrior_Idle.png"),8)
+        self.walkLSprites = load_sprites(chemin_relatif("assets/images/player/Warrior_RunL.png"), 6)
+        self.attackRSprites = load_sprites(chemin_relatif("assets/images/player/Warrior_Attack2.png"), 4)
+        self.attackLSprites = load_sprites(chemin_relatif("assets/images/player/Warrior_Attack2L.png"), 4)
+        self.idleLSprites = load_sprites(chemin_relatif("assets/images/player/Warrior_IdleL.png"), 8)
+        self.invisibleSprite = load_sprites(chemin_relatif("assets/images/items/Foam.png"), 8)
 
         # Animation courante
         self.current_frame = 0 #Index de la frame actuelle dans la liste de sprites.
@@ -96,22 +96,22 @@ class Player(pygame.sprite.Sprite):
         self.sound = SoundEffects()
 
         self.sound.load_sound_group("sword_swings", [
-            "assets/sounds/sound_effects/sword_swing_1.ogg",
-            "assets/sounds/sound_effects/sword_swing_2.ogg",
-            "assets/sounds/sound_effects/sword_swing_3.ogg",
-            "assets/sounds/sound_effects/sword_swoosh_1.ogg"
+            chemin_relatif("assets/sounds/sound_effects/sword_swing_1.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/sword_swing_2.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/sword_swing_3.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/sword_swoosh_1.ogg")
         ]) # sons attaque du joueur
 
         self.sound.load_sound_group("player_hurts", [
-            "assets/sounds/sound_effects/hit_1.ogg",
-            "assets/sounds/sound_effects/hit_2.ogg",
-            "assets/sounds/sound_effects/hit_3.ogg"
+            chemin_relatif("assets/sounds/sound_effects/hit_1.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/hit_2.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/hit_3.ogg")
         ]) #sons dégat joueur
 
         self.sound.load_sound_group("footstep_stone", [
-            "assets/sounds/sound_effects/footstep_stone_1.ogg",
-            "assets/sounds/sound_effects/footstep_stone_2.ogg",
-            "assets/sounds/sound_effects/footstep_stone_3.ogg"
+            chemin_relatif("assets/sounds/sound_effects/footstep_stone_1.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/footstep_stone_2.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/footstep_stone_3.ogg")
         ]) #sons pas lvl 1
 
         # Initialisation manette si dispo
@@ -266,11 +266,10 @@ class Player(pygame.sprite.Sprite):
 
 
         if self.state == "dead" :
-            if self.faceRorL == "R" :
-                animate(self, self.idleRSprites, loop=True)
-            elif self.faceRorL == "L" :
-                animate(self, self.idleLSprites, loop=True)
+            self.image.set_alpha(0)
+            return
         else:
+            self.image.set_alpha(255)
             self.handle_keys()
 
         if time.time() - self.damageAmpStart >= 2 :
@@ -304,11 +303,11 @@ class Player(pygame.sprite.Sprite):
             self.image.set_alpha(10)
         elif self.state == "walkR":
             animate(self, self.walkRSprites, loop=True)
-            self.sound.play_group("footstep_stone", 0.2, 0.4)
+            self.sound.play_group("footstep_stone", 0.3, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "walkL" :
             animate(self, self.walkLSprites, loop=True)
-            self.sound.play_group("footstep_stone", 0.2, 0.4)
+            self.sound.play_group("footstep_stone", 0.3, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "attackR":
             animate(self, self.attackRSprites, loop=False)
@@ -339,7 +338,7 @@ class Player(pygame.sprite.Sprite):
             self.sound.play_group("player_hurts", 0.2)
             if self.hp <= 0:
                 self.state = "dead"
-                self.sound.play_one("assets/sounds/sound_effects/player_death.ogg", volume=0.4)
+                self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/player_death.ogg"), volume=0.4)
             else:
                 # Active les iframes
                 self.is_invulnerable = True

@@ -1,7 +1,7 @@
 #powerup.py
 import pygame
 import time
-from utilitaire import load_sprites
+from utilitaire import load_sprites, chemin_relatif
 
 class PowerUp(pygame.sprite.Sprite):
     """
@@ -28,17 +28,17 @@ class PowerUp(pygame.sprite.Sprite):
         if self.bonus_type == "damageAmp":
             self.sprites = [
                 pygame.transform.scale(frame, (self.size, self.size))
-                for frame in load_sprites("assets/images/items/damageAmp.png", 8)
+                for frame in load_sprites(chemin_relatif("assets/images/items/damageAmp.png"), 8)
             ]
         elif self.bonus_type == "invulnerability":
             self.sprites = [
                 pygame.transform.scale(frame, (self.size, self.size))
-                for frame in load_sprites("assets/images/items/invulnerability.png", 8)
+                for frame in load_sprites(chemin_relatif("assets/images/items/invulnerability.png"), 8)
             ]
         elif self.bonus_type == "heart":
             self.sprites = [
                 pygame.transform.scale(frame, (self.size, self.size))
-                for frame in load_sprites("assets/images/items/heart.png", 6)
+                for frame in load_sprites(chemin_relatif("assets/images/items/heart.png"), 6)
             ]
         else:
             # Fallback : un carré rouge

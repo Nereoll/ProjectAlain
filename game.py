@@ -2,14 +2,14 @@
 import pygame
 import random
 import time
-from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, TITLE, WHITE
+from settings import WIDTH, HEIGHT, ATH_HEIGHT, FPS, WHITE
 from player import Player
 from enemy import Enemy
 from ath import Ath
 from end import End
 from shadow import Shadow
 from powerup import PowerUp
-from utilitaire import SoundEffects
+from utilitaire import SoundEffects, chemin_relatif
 
 
 class Game:
@@ -53,13 +53,13 @@ class Game:
         shadow_sprite (Shadow): Sprite représentant l'ombre du joueur selon ses HP.
         sound (SoundEffects): Gestionnaire des effets sonores.
     """
-    def __init__(self, isDungeon=False):
-        pygame.init()
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption(TITLE)
-        self.clock = pygame.time.Clock()
-        self.running = True
+    def __init__(self, screen, fullscreen, isDungeon=False):
+        self.screen = screen
+        self.fullscreen = fullscreen
         self.isDungeon = isDungeon
+        self.running = True
+
+        self.clock = pygame.time.Clock()
 
         # Game Over
         self.end_screen = None
@@ -100,22 +100,21 @@ class Game:
         self.dialogue_active = False
 
         # Ressources à charger à l'initialisation
-        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
-        self.shadow1 = pygame.image.load("assets/images/shadow/Shadow1.png").convert_alpha()
-        self.shadow2 = pygame.image.load("assets/images/shadow/Shadow2.png").convert_alpha()
-        self.shadow3 = pygame.image.load("assets/images/shadow/Shadow3.png").convert_alpha()
+        self.font_title = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 64)
+        self.shadow1 = pygame.image.load(chemin_relatif("assets/images/shadow/Shadow1.png")).convert_alpha()
+        self.shadow2 = pygame.image.load(chemin_relatif("assets/images/shadow/Shadow2.png")).convert_alpha()
+        self.shadow3 = pygame.image.load(chemin_relatif("assets/images/shadow/Shadow3.png")).convert_alpha()
 
         # On garde un seul sprite shadow et on change son image selon le HP
         self.shadow_sprite = Shadow(self.shadow1, (0, 80))
         self.shadow_sprites = pygame.sprite.LayeredUpdates()
         self.shadow_sprites.add(self.shadow_sprite, layer=4)
 
-        self.firstStage = pygame.image.load("assets/images/background/Base_Stage.png").convert()
-        self.secondStage = pygame.image.load("assets/images/background/Second_Stage.png").convert()
-        self.thirdStage = pygame.image.load("assets/images/background/Third_Stage.png").convert()
-        self.fourthStage = pygame.image.load("assets/images/background/Fourth_Stage.png").convert()
-        self.fifthStage = pygame.image.load("assets/images/background/Fifth_Stage.png").convert()
-
+        self.firstStage = pygame.image.load(chemin_relatif("assets/images/background/Base_Stage.png")).convert()
+        self.secondStage = pygame.image.load(chemin_relatif("assets/images/background/Second_Stage.png")).convert()
+        self.thirdStage = pygame.image.load(chemin_relatif("assets/images/background/Third_Stage.png")).convert()
+        self.fourthStage = pygame.image.load(chemin_relatif("assets/images/background/Fourth_Stage.png")).convert()
+        self.fifthStage = pygame.image.load(chemin_relatif("assets/images/background/Fifth_Stage.png")).convert()
 
         # Gestion des stages
         self.stage = 1
@@ -148,19 +147,32 @@ class Game:
 
         #door
         self.door_rect = pygame.Rect(WIDTH // 2 - 30, (HEIGHT - 650), 60, 15)
-        self.door_image1 = pygame.image.load("assets/images/ressources/Door.png").convert_alpha()
-        self.door_image2 = pygame.image.load("assets/images/ressources/Door2.png").convert_alpha()
-        self.door_image3 = pygame.image.load("assets/images/ressources/Door3.png").convert_alpha()
-        self.door_image4 = pygame.image.load("assets/images/Phara.png").convert_alpha()
+        self.door_image1 = pygame.image.load(chemin_relatif("assets/images/ressources/Door.png")).convert_alpha()
+        self.door_image2 = pygame.image.load(chemin_relatif("assets/images/ressources/Door2.png")).convert_alpha()
+        self.door_image3 = pygame.image.load(chemin_relatif("assets/images/ressources/Door3.png")).convert_alpha()
+        self.door_image4 = pygame.image.load(chemin_relatif("assets/images/Phara.png")).convert_alpha()
         self.door=False
 
         #player static
         self.idleRSprites = pygame.image.load("assets/images/player/IdleR.png").convert_alpha()
 
 
-        self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
+        self.font_text = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 32)
 
+        # Initialisation du son
         self.sound = SoundEffects()
+        self.ambient_music = {
+            1: chemin_relatif("assets/sounds/music/lvl_1.ogg"),
+            2: chemin_relatif("assets/sounds/music/lvl_2.ogg"),
+            3: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
+            4: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
+            5: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
+            6: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
+        }
+        self.ambient_music_bridge = {
+            2: chemin_relatif("assets/sounds/music/lvl_2.ogg"),
+            3: chemin_relatif("assets/sounds/music/lvl_3_bridge.ogg")
+        }
 
     def new(self):
         """Nouvelle partie"""
@@ -185,13 +197,15 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if self.dialogue_active and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.current_line += 1
-                    self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
+                    self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                     if self.current_line >= len(self.dialogue_lines):
                         print("end of dialogue")
                         print("current stage : " + str(self.stage))
                         self.dialogue_active = False
                         self.in_cutscene = False
                         self.sound.stop_music()
+                        self.sound.play_one(self.ambient_music[self.stage], 0.2)
+
 
                         # Si c’est la cutscene finale avec la princesse → retour menu
                         if self.stage == 8:
@@ -204,16 +218,20 @@ class Game:
                             self.boss = None
                             self.spawnable = False
                             self.player.mana = 40000
-
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
             elif self.player.joystick:
                 if event.type == pygame.JOYBUTTONDOWN:
+                    if self.player.hp <= 0:
+                        self.end_screen.handle_event(event)
                     if self.dialogue_active and event.button == 0:  # Bouton A
                         self.current_line += 1
-                        self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
+                        self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                         if self.current_line >= len(self.dialogue_lines):
                             self.dialogue_active = False
                             self.in_cutscene = False
                             self.sound.stop_music()
+                            self.sound.play_one(self.ambient_music[self.stage], 0.2)
                             if self.boss and self.boss.is_dead:
                                 self.stage = 6
                                 self.boss.kill()
@@ -285,11 +303,14 @@ class Game:
                     self.stage_cleared = True
                 if self.door and self.door_rect.colliderect(self.player.rect):
                     self.stage = next_stage
+                    if self.stage < 4:
+                        self.sound.stop_music()
+                        self.sound.play_one(self.ambient_music_bridge[self.stage], 0.2)
                     self.door = False
                     if not self.stage > 4:
                         self.spawnable = True
                     if self.stage == 6:
-                        pass
+                        self.sound.stop_music()
                     if self.stage == 7:
                         self.player.invisible = False
                         self.start_princess_rescue_cutscene()
@@ -315,6 +336,8 @@ class Game:
             return
 
     def start_boss_cutscene(self):
+        self.sound.stop_music()
+        self.sound.play_one("assets/sounds/sound_effects/boss_talk.ogg", 0.1)
         self.in_cutscene = True
         self.dialogue_active = True
         self.spawnable = False

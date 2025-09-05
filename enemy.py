@@ -1,8 +1,7 @@
 import pygame
 import math
 import time
-from PIL import Image, ImageOps
-from utilitaire import load_sprites, animate, scale_sprites
+from utilitaire import load_sprites, animate, scale_sprites, chemin_relatif
 
 # Dictionnaire contenant les statistiques des différents types d'ennemis
 ENEMY_STATS = {
@@ -66,67 +65,67 @@ ENEMY_STATS = {
 
 ENEMY_SPRITES = {
     "pawn": {
-        "walkR": ("assets/images/enemy/pawn/Pawn_Run.png", 6, False, 1),
-        "attackR": ("assets/images/enemy/pawn/Pawn_Attack.png", 6, False, 1),
-        "walkL": ("assets/images/enemy/pawn/Pawn_Run.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/pawn/Pawn_Attack_reversed.png", 6, False, 1),
-        "idleR": ("assets/images/enemy/pawn/Pawn_IdleR.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/pawn/Pawn_IdleL.png", 6, False, 1),
+        "walkR": (chemin_relatif("assets/images/enemy/pawn/Pawn_Run.png"), 6, 1),
+        "attackR": (chemin_relatif("assets/images/enemy/pawn/Pawn_Attack.png"), 6, 1),
+        "walkL": (chemin_relatif("assets/images/enemy/pawn/Pawn_RunL.png"), 6, 1),
+        "attackL": (chemin_relatif("assets/images/enemy/pawn/Pawn_Attack_reversed.png"), 6, 1),
+        "idleR": (chemin_relatif("assets/images/enemy/pawn/Pawn_IdleR.png"), 6, 1),
+        "idleL": (chemin_relatif("assets/images/enemy/pawn/Pawn_IdleL.png"), 6, 1),
         "animation_speed": 0.15
     },
     "goblin": {
-        "walkR": ("assets/images/enemy/goblin/Goblin_Run.png", 6, False, 1),
-        "attackR": ("assets/images/enemy/goblin/Goblin_Attack.png", 6, False, 1),
-        "walkL": ("assets/images/enemy/goblin/Goblin_Run.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/goblin/Goblin_Attack_reversed.png", 6, False, 1),
-        "idleR": ("assets/images/enemy/goblin/Goblin_IdleR.png", 7, False, 1),
-        "idleL": ("assets/images/enemy/goblin/Goblin_IdleL.png", 7, False, 1),
+        "walkR": (chemin_relatif("assets/images/enemy/goblin/Goblin_Run.png"), 6, 1),
+        "attackR": (chemin_relatif("assets/images/enemy/goblin/Goblin_Attack.png"), 6, 1),
+        "walkL": (chemin_relatif("assets/images/enemy/goblin/Goblin_Run.png"), 6, 1),
+        "attackL": (chemin_relatif("assets/images/enemy/goblin/Goblin_Attack_reversed.png"), 6, 1),
+        "idleR": (chemin_relatif("assets/images/enemy/goblin/Goblin_IdleR.png"), 7, 1),
+        "idleL": (chemin_relatif("assets/images/enemy/goblin/Goblin_IdleL.png"), 7, 1),
         "animation_speed": 0.15
     },
     "scout": {
-        "walkR": ("assets/images/enemy/scout/scoutRun.png", 8, False, 3),
-        "attackR": ("assets/images/enemy/scout/scoutAttack.png", 3, False, 3),
-        "walkL": ("assets/images/enemy/scout/scoutRunL.png", 8, True, 3),
-        "attackL": ("assets/images/enemy/scout/scoutAttackL.png", 3, False, 3),
-        "idleR": ("assets/images/enemy/scout/scoutIdle.png", 8, False, 3),
-        "idleL": ("assets/images/enemy/scout/scoutIdleL.png", 8, False, 3),
+        "walkR": (chemin_relatif("assets/images/enemy/scout/scoutRun.png"), 8, 3),
+        "attackR": (chemin_relatif("assets/images/enemy/scout/scoutAttack.png"), 3, 3),
+        "walkL": (chemin_relatif("assets/images/enemy/scout/scoutRunL.png"), 8, 3),
+        "attackL": (chemin_relatif("assets/images/enemy/scout/scoutAttackL.png"), 3, 3),
+        "idleR": (chemin_relatif("assets/images/enemy/scout/scoutIdle.png"), 8, 3),
+        "idleL": (chemin_relatif("assets/images/enemy/scout/scoutIdleL.png"), 8, 3),
         "animation_speed": 0.15
     },
     "tnt": {
-        "walkR": ("assets/images/enemy/tnt/tntRun.png", 6, False, 1),
-        "attackR": ("assets/images/enemy/tnt/tntAttack.png", 7, False, 1),
-        "walkL": ("assets/images/enemy/tnt/tntRunL.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/tnt/tntAttackL.png", 7, False, 1),
-        "idleR": ("assets/images/enemy/tnt/tntIdle.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/tnt/tntIdleL.png", 6, False, 1),
+        "walkR": (chemin_relatif("assets/images/enemy/tnt/tntRun.png"), 6, 1),
+        "attackR": (chemin_relatif("assets/images/enemy/tnt/tntAttack.png"), 7, 1),
+        "walkL": (chemin_relatif("assets/images/enemy/tnt/tntRunL.png"), 6, 1),
+        "attackL": (chemin_relatif("assets/images/enemy/tnt/tntAttackL.png"), 7, 1),
+        "idleR": (chemin_relatif("assets/images/enemy/tnt/tntIdle.png"), 6, 1),
+        "idleL": (chemin_relatif("assets/images/enemy/tnt/tntIdleL.png"), 6, 1),
         "animation_speed": 0.15
     },
     "lancier": {
-        "walkR": ("assets/images/enemy/lancier/Lancier_Run.png", 6, False, 1),
-        "attackR": ("assets/images/enemy/lancier/Lancier_Attack.png", 3, False, 1),
-        "walkL": ("assets/images/enemy/lancier/Lancier_Run.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/lancier/Lancier_Attack_reversed.png", 3, False, 1),
-        "idleR": ("assets/images/enemy/lancier/Lancier_IdleR.png", 12, False, 1),
-        "idleL": ("assets/images/enemy/lancier/Lancier_IdleL.png", 12, False, 1),
+        "walkR": (chemin_relatif("assets/images/enemy/lancier/Lancier_Run.png"), 6, 1),
+        "attackR": (chemin_relatif("assets/images/enemy/lancier/Lancier_Attack.png"), 3, 1),
+        "walkL": (chemin_relatif("assets/images/enemy/lancier/Lancier_RunL.png"), 6, 1),
+        "attackL": (chemin_relatif("assets/images/enemy/lancier/Lancier_Attack_reversed.png"), 3, 1),
+        "idleR": (chemin_relatif("assets/images/enemy/lancier/Lancier_IdleR.png"), 12, 1),
+        "idleL": (chemin_relatif("assets/images/enemy/lancier/Lancier_IdleL.png"), 12, 1),
         "animation_speed": 0.15
     },
     "archer": {
-        "walkR": ("assets/images/enemy/archer/archerWalkR.png", 6, False, 1),
-        "attackR": ("assets/images/enemy/archer/archerAttackR.png", 8, False, 1),
-        "walkL": ("assets/images/enemy/archer/archerWalkL.png", 6, True, 1),
-        "attackL": ("assets/images/enemy/archer/archerAttackL.png", 8, False, 1),
-        "idleR": ("assets/images/enemy/archer/archerIdleR.png", 6, False, 1),
-        "idleL": ("assets/images/enemy/archer/archerIdleL.png", 6, False, 1),
+        "walkR": (chemin_relatif("assets/images/enemy/archer/archerWalkR.png"), 6, 1),
+        "attackR": (chemin_relatif("assets/images/enemy/archer/archerAttackR.png"), 8, 1),
+        "walkL": (chemin_relatif("assets/images/enemy/archer/archerWalkL.png"), 6, 1),
+        "attackL": (chemin_relatif("assets/images/enemy/archer/archerAttackL.png"), 8, 1),
+        "idleR": (chemin_relatif("assets/images/enemy/archer/archerIdleR.png"), 6, 1),
+        "idleL": (chemin_relatif("assets/images/enemy/archer/archerIdleL.png"), 6, 1),
         "animation_speed": 0.15
     },
     "boss": {
-        "walkR": ("assets/images/enemy/boss/Boss_Run.png", 8, False, 5),
-        "attackR": ("assets/images/enemy/boss/Boss_Attack.png", 6, False, 5),
-        "walkL": ("assets/images/enemy/boss/Boss_Run_reversed.png", 8, False, 5),
-        "attackL": ("assets/images/enemy/boss/Boss_Attack_reversed.png", 6, False, 5),
-        "idleR": ("assets/images/enemy/boss/Boss_IdleR.png", 12, False, 5),
-        "idleL": ("assets/images/enemy/boss/Boss_IdleL.png", 12, False, 5),
-        "death": ("assets/images/enemy/boss/Boss_Death.png", 10, False, 5),
+        "walkR": (chemin_relatif("assets/images/enemy/boss/Boss_Run.png"), 8, 5),
+        "attackR": (chemin_relatif("assets/images/enemy/boss/Boss_Attack.png"), 6, 5),
+        "walkL": (chemin_relatif("assets/images/enemy/boss/Boss_Run_reversed.png"), 8, 5),
+        "attackL": (chemin_relatif("assets/images/enemy/boss/Boss_Attack_reversed.png"), 6, 5),
+        "idleR": (chemin_relatif("assets/images/enemy/boss/Boss_IdleR.png"), 12, 5),
+        "idleL": (chemin_relatif("assets/images/enemy/boss/Boss_IdleL.png"), 12, 5),
+        "death": (chemin_relatif("assets/images/enemy/boss/Boss_Death.png"), 10, 5),
         "animation_speed": 0.05
     }
 }
@@ -174,7 +173,7 @@ class Enemy(pygame.sprite.Sprite):
         self.explosion_frame_index = 0
         self.explosionFrames = [
             pygame.transform.scale(frame, (100, 100))
-            for frame in load_sprites("assets/images/items/explosion.png", 11)
+            for frame in load_sprites(chemin_relatif("assets/images/items/explosion.png"), 11)
         ]
 
         self.current_frame = 0
@@ -204,7 +203,7 @@ class Enemy(pygame.sprite.Sprite):
         self.default_speed = self.speed
 
     def load_common_assets(self):
-        self.question_mark = pygame.image.load("assets/images/ressources/question_mark.png").convert_alpha()
+        self.question_mark = pygame.image.load(chemin_relatif("assets/images/ressources/question_mark.png")).convert_alpha()
         self.question_mark = pygame.transform.scale(self.question_mark, (30, 30))
         self.question_mark_rect = self.question_mark.get_rect()
 
@@ -217,13 +216,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.animation_speed = sprite_info
                 continue
 
-            path, frames, mirror, scale_factor = sprite_info
-            if mirror:
-                image = Image.open(path)
-                mirrored_image = ImageOps.mirror(image)
-                sprites = load_sprites(imagestring=mirrored_image, num_frames=frames, nopath=True)
-            else:
-                sprites = load_sprites(path, frames)
+            path, frames, scale_factor = sprite_info
+            sprites = load_sprites(path, frames)
 
             if scale_factor is not None and scale_factor != 1:
                 sprites = scale_sprites(sprites, scale_factor)

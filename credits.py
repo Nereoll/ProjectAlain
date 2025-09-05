@@ -1,6 +1,6 @@
 import pygame
-from settings import TITLE, BLACK, HEIGHT
-from utilitaire import pixelate
+from settings import BLACK, HEIGHT
+from utilitaire import pixelate, chemin_relatif
 
 
 class Credits:
@@ -22,14 +22,14 @@ class Credits:
         retour (bool): Indique si on doit retourner au menu précédent.
         pixel_ratio (float): Facteur de pixelisation appliqué aux textes.
     """
-    FONT_TITLE = ("assets/fonts/Chomsky.otf", 52)
-    FONT_SUBTITLE = ("assets/fonts/Chomsky.otf", 34)
-    FONT_TEXT = ("assets/fonts/GenAR102.TTF", 18)
+    FONT_TITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 52)
+    FONT_SUBTITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 34)
+    FONT_TEXT = (chemin_relatif("assets/fonts/GenAR102.TTF"), 18)
 
-    BACK_IMG = "assets/images/ressources/Pressed_01.png"
-    BG_IMG = "assets/images/background/Credit_Page.png"
+    BACK_IMG = chemin_relatif("assets/images/ressources/Pressed_01.png")
+    BG_IMG = chemin_relatif("assets/images/background/Credit_Page.png")
 
-    def __init__(self, screen):
+    def __init__(self, screen, fullscreen):
         """
         Initialise l'écran des crédits.
 
@@ -37,7 +37,7 @@ class Credits:
             screen (pygame.Surface): La surface principale du jeu.
         """
         self.screen = screen
-        pygame.display.set_caption(TITLE)
+        self.fullscreen = fullscreen
 
         # Fonts
         self.font_title = pygame.font.Font(*self.FONT_TITLE)
@@ -71,10 +71,15 @@ class Credits:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                self.retour, self.running = True, False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.retour, self.running = True, False
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.back.get_rect(topleft=(10, 10)).collidepoint(pygame.mouse.get_pos()):
+                    self.retour, self.running = True, False
+            elif event.type == pygame.JOYBUTTONDOWN and event.button == 1:
                     self.retour, self.running = True, False
 
     def _draw(self):

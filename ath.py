@@ -1,13 +1,13 @@
 import pygame
 from settings import WIDTH, ATH_HEIGHT, BLACK, WHITE
-from utilitaire import load_sprites, load_sprites_from_folder, animate
+from utilitaire import load_sprites, load_sprites_from_folder, animate, chemin_relatif
 
 
 class Ath(pygame.sprite.Sprite):
     """
     Classe représentant l'ATH (Affichage Tête Haute) du jeu.
 
-    Affiche les informations principales du joueur : 
+    Affiche les informations principales du joueur :
     - Points de vie (HP)
     - Mana
     - Score
@@ -24,28 +24,28 @@ class Ath(pygame.sprite.Sprite):
         animation_speed (float): Vitesse de l'animation.
         frame_timer (float): Timer interne pour gérer l'animation.
     """
-    
+
     SCALE_FACTOR = 2
-    FONT_PATH = "assets/fonts/GenAR102.TTF"
+    FONT_PATH = chemin_relatif("assets/fonts/GenAR102.TTF")
     FONT_SIZE = 40
 
     LIFE_PATHS = {
-        4: "assets/images/ath/fulllife",
-        3: "assets/images/ath/almosthalflife",
-        2: "assets/images/ath/halflife",
-        1: "assets/images/ath/onelife",
-        0: "assets/images/ath/death",
+        4: chemin_relatif("assets/images/ath/fulllife"),
+        3: chemin_relatif("assets/images/ath/almosthalflife"),
+        2: chemin_relatif("assets/images/ath/halflife"),
+        1: chemin_relatif("assets/images/ath/onelife"),
+        0: chemin_relatif("assets/images/ath/death"),
     }
 
     MANA_PATHS = {
-        0: "assets/images/ath/noMana.png",
-        1: "assets/images/ath/oneMana.png",
-        2: "assets/images/ath/halfMana.png",
-        3: "assets/images/ath/almostHalfMana.png",
-        4: "assets/images/ath/fullMana.png",
+        0: chemin_relatif("assets/images/ath/noMana.png"),
+        1: chemin_relatif("assets/images/ath/oneMana.png"),
+        2: chemin_relatif("assets/images/ath/halfMana.png"),
+        3: chemin_relatif("assets/images/ath/almostHalfMana.png"),
+        4: chemin_relatif("assets/images/ath/fullMana.png"),
     }
 
-    def __init__(self, player): 
+    def __init__(self, player):
         """
         Initialise l'ATH avec les sprites et la police.
 
