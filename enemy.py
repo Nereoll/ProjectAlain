@@ -21,7 +21,7 @@ class Enemy(pygame.sprite.Sprite):
             self.speed = 2
             self.attack_points = 1
             self.stagger_timer = 0.3
-            self.knockback_distance = 50  # Distance du knockback
+            self.knockback_distance = 50
             self.knockback_speed = 5
             color = (200, 200, 200)
         elif enemy_type == "goblin":
@@ -29,7 +29,7 @@ class Enemy(pygame.sprite.Sprite):
             self.speed = 4
             self.attack_points = 1
             self.stagger_timer = 0.5
-            self.knockback_distance = 100  # Distance du knockback
+            self.knockback_distance = 100
             self.knockback_speed = 5
             color = (0, 200, 0)
         elif enemy_type == "scout" :
@@ -39,12 +39,26 @@ class Enemy(pygame.sprite.Sprite):
             self.stagger_timer = 0.5
             self.knockback_distance = 250
             self.knockback_speed = 100
+        elif enemy_type == "tnt" :
+            self.hp = 3
+            self.speed = 2.5
+            self.attack_points = 2
+            self.stagger_timer = 0.4
+            self.knockback_distance = 60
+            self.knockback_speed = 10
+        elif enemy_type == "archer" :
+            self.hp = 2
+            self.speed = 2
+            self.attack_points = 2
+            self.stagger_timer = 0.5
+            self.knockback_distance = 50
+            self.knockback_speed = 10
         elif enemy_type == "lancier":
             self.hp = 3
             self.speed = 1.5
             self.attack_points = 1
             self.stagger_timer = 0.2
-            self.knockback_distance = 40  # Distance du knockback
+            self.knockback_distance = 40
             self.knockback_speed = 5
             color = (150, 150, 255)
         elif enemy_type=="boss":
@@ -52,7 +66,7 @@ class Enemy(pygame.sprite.Sprite):
             self.speed = 4
             self.attack_points = 2
             self.stagger_timer = 0.5
-            self.knockback_distance = 10  # Distance du knockback
+            self.knockback_distance = 10
             self.knockback_speed = 3
         else:
             raise ValueError("Type d'ennemi inconnu")
@@ -73,6 +87,10 @@ class Enemy(pygame.sprite.Sprite):
         imageLwalklancier = ImageOps.mirror(Image.open("assets/images/enemy/Lancier_Run.png"))
         # Miror sprite scout
         imageLwalkscout = ImageOps.mirror(Image.open("assets/images/enemy/scoutRun.png"))
+        # Miror sprite tnt
+        imageLwalktnt = ImageOps.mirror(Image.open("assets/images/tntRun.png"))
+        # Miror sprite tnt
+        imageLwalkarcher = ImageOps.mirror(Image.open("assets/images/archerWalkR.png"))
 
         if self.enemy_type == "pawn":
             self.walkRSprites = load_sprites("assets/images/enemy/Pawn_Run.png", 6)
@@ -99,6 +117,22 @@ class Enemy(pygame.sprite.Sprite):
             self.idleRSprites = scale_sprites(load_sprites("assets/images/enemy/scoutIdle.png", 8), scale_factor)
             self.idleLSprites = scale_sprites(load_sprites("assets/images/enemy/scoutIdle.png", 8), scale_factor)
             self.animation_speed = 0.15 
+        elif self.enemy_type == "tnt":
+            self.walkRSprites = load_sprites("assets/images/tntRun.png", 6)
+            self.attackRSprites = load_sprites("assets/images/tntAttack.png", 7)
+            self.walkLSprites = load_sprites(imagestring= imageLwalktnt, num_frames=6, nopath =True)
+            self.attackLSprites = load_sprites("assets/images/tntAttack.png", 7)
+            self.idleRSprites = load_sprites("assets/images/tntIdle.png", 6)
+            self.idleLSprites = load_sprites("assets/images/tntIdle.png", 6)
+            self.animation_speed = 0.15 
+        elif self.enemy_type == "tnt":
+            self.walkRSprites = load_sprites("assets/images/tntRun.png", 6)
+            self.attackRSprites = load_sprites("assets/images/tntAttack.png", 7)
+            self.walkLSprites = load_sprites(imagestring= imageLwalktnt, num_frames=6, nopath =True)
+            self.attackLSprites = load_sprites("assets/images/tntAttack.png", 7)
+            self.idleRSprites = load_sprites("assets/images/tntIdle.png", 6)
+            self.idleLSprites = load_sprites("assets/images/tntIdle.png", 6)
+            self.animation_speed = 0.15 
         elif self.enemy_type == "lancier":
             self.walkRSprites = load_sprites("assets/images/enemy/Lancier_Run.png", 6)
             self.attackRSprites = load_sprites("assets/images/enemy/Lancier_Attack.png", 3)
@@ -107,6 +141,14 @@ class Enemy(pygame.sprite.Sprite):
             self.idleRSprites = load_sprites("assets/images/enemy/Lancier_IdleR.png", 12)
             self.idleLSprites = load_sprites("assets/images/enemy/Lancier_IdleL.png", 12)
             self.animation_speed = 0.15
+        elif self.enemy_type == "archer":
+            self.walkRSprites = load_sprites("assets/images/archerWalkR.png", 6)
+            self.attackRSprites = load_sprites("assets/images/archerAttackR.png", 8)
+            self.walkLSprites = load_sprites(imagestring=imageLwalkarcher, num_frames=6, nopath=True)
+            self.attackLSprites = load_sprites("assets/images/archerAttackR.png", 8)
+            self.idleRSprites = load_sprites("assets/images/archerIdleR.png", 6)
+            self.idleLSprites = load_sprites("assets/images/archerIdleR.png", 6)
+            self.animation_speed = 0.15 
         elif self.enemy_type=="boss":
             self.walkRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Run.png", 6), 5)
             self.attackRSprites = scale_sprites(load_sprites("assets/images/enemy/boss/Boss_Attack.png", 13), 5)
@@ -351,6 +393,10 @@ class Enemy(pygame.sprite.Sprite):
                     self.player.enemy_killed(150)
                 elif self.enemy_type == "scout":
                     self.player.enemy_killed(100)
+                elif self.enemy_type == "tnt" :
+                    self.player.enemy_killed(150)
+                elif self.enemy_type == "archer":
+                    self.player.enemy_killed(150)
                 elif self.enemy_type == "lancier":
                     self.player.enemy_killed(200)
 
