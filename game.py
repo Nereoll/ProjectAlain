@@ -9,7 +9,7 @@ from ath import Ath
 from end import End
 from shadow import Shadow
 from powerup import PowerUp
-from utilitaire import SoundEffects
+from utilitaire import SoundEffects, chemin_relatif
 
 
 class Game:
@@ -100,21 +100,21 @@ class Game:
         self.dialogue_active = False
 
         # Ressources à charger à l'initialisation
-        self.font_title = pygame.font.Font("assets/fonts/Chomsky.otf", 64)
-        self.shadow1 = pygame.image.load("assets/images/shadow/Shadow1.png").convert_alpha()
-        self.shadow2 = pygame.image.load("assets/images/shadow/Shadow2.png").convert_alpha()
-        self.shadow3 = pygame.image.load("assets/images/shadow/Shadow3.png").convert_alpha()
+        self.font_title = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 64)
+        self.shadow1 = pygame.image.load(chemin_relatif("assets/images/shadow/Shadow1.png")).convert_alpha()
+        self.shadow2 = pygame.image.load(chemin_relatif("assets/images/shadow/Shadow2.png")).convert_alpha()
+        self.shadow3 = pygame.image.load(chemin_relatif("assets/images/shadow/Shadow3.png")).convert_alpha()
 
         # On garde un seul sprite shadow et on change son image selon le HP
         self.shadow_sprite = Shadow(self.shadow1, (0, 80))
         self.shadow_sprites = pygame.sprite.LayeredUpdates()
         self.shadow_sprites.add(self.shadow_sprite, layer=4)
 
-        self.firstStage = pygame.image.load("assets/images/background/Base_Stage.png").convert()
-        self.secondStage = pygame.image.load("assets/images/background/Second_Stage.png").convert()
-        self.thirdStage = pygame.image.load("assets/images/background/Third_Stage.png").convert()
-        self.fourthStage = pygame.image.load("assets/images/background/Fourth_Stage.png").convert()
-        self.fifthStage = pygame.image.load("assets/images/background/Fifth_Stage.png").convert()
+        self.firstStage = pygame.image.load(chemin_relatif("assets/images/background/Base_Stage.png")).convert()
+        self.secondStage = pygame.image.load(chemin_relatif("assets/images/background/Second_Stage.png")).convert()
+        self.thirdStage = pygame.image.load(chemin_relatif("assets/images/background/Third_Stage.png")).convert()
+        self.fourthStage = pygame.image.load(chemin_relatif("assets/images/background/Fourth_Stage.png")).convert()
+        self.fifthStage = pygame.image.load(chemin_relatif("assets/images/background/Fifth_Stage.png")).convert()
 
         # Gestion des stages
         self.stage = 1
@@ -146,14 +146,14 @@ class Game:
 
         #door
         self.door_rect = pygame.Rect(WIDTH // 2 - 30, (HEIGHT - 650), 60, 15)
-        self.door_image1 = pygame.image.load("assets/images/ressources/Door.png").convert_alpha()
-        self.door_image2 = pygame.image.load("assets/images/ressources/Door2.png").convert_alpha()
-        self.door_image3 = pygame.image.load("assets/images/ressources/Door3.png").convert_alpha()
-        self.door_image4 = pygame.image.load("assets/images/Phara.png").convert_alpha()
+        self.door_image1 = pygame.image.load(chemin_relatif("assets/images/ressources/Door.png")).convert_alpha()
+        self.door_image2 = pygame.image.load(chemin_relatif("assets/images/ressources/Door2.png")).convert_alpha()
+        self.door_image3 = pygame.image.load(chemin_relatif("assets/images/ressources/Door3.png")).convert_alpha()
+        self.door_image4 = pygame.image.load(chemin_relatif("assets/images/Phara.png")).convert_alpha()
         self.door=False
 
 
-        self.font_text = pygame.font.Font("assets/fonts/Chomsky.otf", 32)
+        self.font_text = pygame.font.Font(chemin_relatif("assets/fonts/Chomsky.otf"), 32)
 
         self.sound = SoundEffects()
 
@@ -180,7 +180,7 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if self.dialogue_active and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.current_line += 1
-                    self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
+                    self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                     if self.current_line >= len(self.dialogue_lines):
                         self.dialogue_active = False
                         self.in_cutscene = False
@@ -201,7 +201,7 @@ class Game:
                         self.end_screen.handle_event(event)
                     if self.dialogue_active and event.button == 0:  # Bouton A
                         self.current_line += 1
-                        self.sound.play_one("assets/sounds/sound_effects/dialogue_box.ogg", 0.4)
+                        self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                         if self.current_line >= len(self.dialogue_lines):
                             self.dialogue_active = False
                             self.in_cutscene = False
@@ -359,7 +359,7 @@ class Game:
             enemy_type = random.choice(["goblin", "scout", "tnt"])
         if(self.stage == 6):
             enemy_type = random.choice(["pawn", "goblin", "lancier", "scout", "archer", "tnt"])
-        
+
         #enemy_type = random.choice(["archer"])
 
         # Spawn autour de la zone de jeu (hors écran)

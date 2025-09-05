@@ -1,8 +1,19 @@
 import random
 import pygame
-import os
+import os, sys
 
 pygame.mixer.init()
+
+def chemin_relatif(fichier: str) -> str:
+    """
+    Retourne le chemin correct vers une ressource,
+    que ce soit en mode développement ou packagé avec PyInstaller.
+    """
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS  # Dossier temporaire utilisé par PyInstaller
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, fichier)
 
 def load_sprites(path="", num_frames=1, nopath=False, imagestring=None):
     """

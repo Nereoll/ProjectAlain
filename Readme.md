@@ -71,10 +71,15 @@ python main.py
 ## 📦 Dépendances
 
 - [Python 3.x](https://www.python.org/)
+- [Altgraph](https://pypi.org/project/altgraph/)
 - [Cffi](https://pypi.org/project/cffi/)
 - [Numpy](https://pypi.org/project/numpy/)
+- [Packaging](https://pypi.org/project/packaging/)
 - [Pycparser](https://pypi.org/project/pycparser/)
 - [Pygame](https://www.pygame.org/)
+- [PyInstaller](https://pypi.org/project/pyinstaller/)
+- [PyInstallerHooksContrib](https://pypi.org/project/pyinstaller-hooks-contrib/)
+- [SetupTools](https://pypi.org/project/setuptools/)
 - [SoundDevice](https://pypi.org/project/sounddevice/)
 
 ---
@@ -92,4 +97,13 @@ python main.py
   ```bash
   pip install ma_librairie
   pip freeze > requirements.txt
+  ```
+
+- Pour créer un executable
+
+  ```bash
+  pyinstaller --onefile --windowed \
+  --add-data "assets:assets" \
+  --icon=assets/images/icon.ico \
+  main.py
   ```
