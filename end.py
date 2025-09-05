@@ -30,9 +30,9 @@ class End:
         sound (SoundEffects): Gestionnaire des sons et musiques.
         meters (SoundMeter): Microphone pour mesurer le volume du joueur.
     """
-    FONT_TITLE = ("assets/fonts/Chomsky.otf", 64)
-    FONT_BUTTON = ("assets/fonts/GenAR102.TTF", 32)
-    DEATH_SPRITE_PATH = "assets/images/player/Dead.png"
+    FONT_TITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 64)
+    FONT_BUTTON = (chemin_relatif("assets/fonts/GenAR102.TTF"), 32)
+    DEATH_SPRITE_PATH = chemin_relatif("assets/images/player/Dead.png")
     DEATH_FRAMES = 14
 
     def __init__(self, screen, player, game):

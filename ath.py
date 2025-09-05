@@ -7,7 +7,7 @@ class Ath(pygame.sprite.Sprite):
     """
     Classe représentant l'ATH (Affichage Tête Haute) du jeu.
 
-    Affiche les informations principales du joueur : 
+    Affiche les informations principales du joueur :
     - Points de vie (HP)
     - Mana
     - Score

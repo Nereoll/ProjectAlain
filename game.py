@@ -158,16 +158,16 @@ class Game:
         # Initialisation du son
         self.sound = SoundEffects()
         self.ambient_music = {
-            1: "assets/sounds/music/lvl_1.ogg",
-            2: "assets/sounds/music/lvl_2.ogg",
-            3: "assets/sounds/music/lvl_3.ogg",
-            4: "assets/sounds/music/lvl_3.ogg",
-            5: "assets/sounds/music/lvl_boss.ogg",
-            6: "assets/sounds/music/lvl_boss.ogg",
+            1: chemin_relatif("assets/sounds/music/lvl_1.ogg"),
+            2: chemin_relatif("assets/sounds/music/lvl_2.ogg"),
+            3: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
+            4: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
+            5: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
+            6: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
         }
         self.ambient_music_bridge = {
-            2: "assets/sounds/music/lvl_2.ogg",
-            3: "assets/sounds/music/lvl_3_bridge.ogg"
+            2: chemin_relatif("assets/sounds/music/lvl_2.ogg"),
+            3: chemin_relatif("assets/sounds/music/lvl_3_bridge.ogg")
         }
 
     def new(self):
@@ -319,7 +319,7 @@ class Game:
                 self.end_screen = End(self.screen, self.player, self)
             self.end_screen.update()
             return
-        
+
         if not self.sound.is_playing() and not self.in_cutscene:
             self.sound.play_one(self.ambient_music[self.stage], 0.2)
 
