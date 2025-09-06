@@ -67,7 +67,7 @@ class Player(pygame.sprite.Sprite):
         self.blink_timer = 0
 
         # Variables de déplacement
-        self.speed = 15
+        self.speed = 5
 
         # Animation
         self.animation_speed = 0.15   # vitesse de défilement des frames de mouvement
@@ -88,7 +88,7 @@ class Player(pygame.sprite.Sprite):
         self.invisibilityDurationLeft = 0
 
         # Stats
-        self.hp = 40000000
+        self.hp = 4
         self.mana = 40000
         self.score = 0
 
