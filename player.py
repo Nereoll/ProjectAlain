@@ -88,9 +88,9 @@ class Player(pygame.sprite.Sprite):
         self.invisibilityDurationLeft = 0
 
         # Stats
-        self.hp = 4
+        self.hp = 40000000
         self.mana = 40000
-        self.score = 4000
+        self.score = 0
 
         #initialisation sons
         self.sound = SoundEffects()
@@ -112,7 +112,13 @@ class Player(pygame.sprite.Sprite):
             chemin_relatif("assets/sounds/sound_effects/footstep_stone_1.ogg"),
             chemin_relatif("assets/sounds/sound_effects/footstep_stone_2.ogg"),
             chemin_relatif("assets/sounds/sound_effects/footstep_stone_3.ogg")
-        ]) #sons pas lvl 1
+        ]) #sons pas lvl 1, 2 et donjon
+
+        self.sound.load_sound_group("footstep_grass", [
+            chemin_relatif("assets/sounds/sound_effects/footstep_grass_1.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/footstep_grass_2.ogg"),
+            chemin_relatif("assets/sounds/sound_effects/footstep_grass_3.ogg")
+        ]) #sons pas lvl 3, 4 et boss
 
         # Initialisation manette si dispo
         self.joystick = None
@@ -303,15 +309,15 @@ class Player(pygame.sprite.Sprite):
             self.image.set_alpha(10)
         elif self.state == "walkR":
             animate(self, self.walkRSprites, loop=True)
-            self.sound.play_group("footstep_stone", 0.3, 0.4)
+            self.sound.play_sound_group("footstep_stone", 0.3, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "walkL" :
             animate(self, self.walkLSprites, loop=True)
-            self.sound.play_group("footstep_stone", 0.3, 0.4)
+            self.sound.play_sound_group("footstep_stone", 0.3, 0.4)
             self.image.set_alpha(255)  # normal
         elif self.state == "attackR":
             animate(self, self.attackRSprites, loop=False)
-            self.sound.play_group("sword_swings", 0.2)
+            self.sound.play_sound_group("sword_swings", 0.2)
             self.image.set_alpha(255)  # normal
             # Quand l'animation d'attaque est terminée
             if self.current_frame == len(self.attackRSprites) - 1 and self.frame_timer == 0:
@@ -320,7 +326,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_frame = 0
         elif self.state == "attackL":
             animate(self, self.attackLSprites, loop=False)
-            self.sound.play_group("sword_swings", 0.2)
+            self.sound.play_sound_group("sword_swings", 0.2)
             self.image.set_alpha(255)  # normal
             # Quand l'animation d'attaque est terminée
             if self.current_frame == len(self.attackLSprites) - 1 and self.frame_timer == 0:
@@ -335,17 +341,17 @@ class Player(pygame.sprite.Sprite):
     def take_damage(self, amount):
         if not self.is_invulnerable and self.state != "dead":  # Vérifie si le joueur est invulnérable ou mort
             self.hp -= amount
-            self.sound.play_group("player_hurts", 0.2)
+            self.sound.play_sound_group("player_hurts", 0.3)
             if self.hp <= 0:
                 self.state = "dead"
-                self.sound.play_one(chemin_relatif("assets/sounds/music/death_music.ogg"), volume=0.3)
+                self.sound.play_music(chemin_relatif("assets/sounds/music/death_music.ogg"), volume=0.3)
             else:
                 # Active les iframes
                 self.is_invulnerable = True
                 self.iframe_start_time = time.time()  # Enregistre le début des iframes
 
     def enemy_killed(self, points):
-        #self.sound.play_one("assets/sounds/sound_effects/mob_death.ogg", volume=1)
+        self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/mob_death.ogg"), volume=0.4)
         self.score += points
         if self.mana < 4:
             self.mana += 1

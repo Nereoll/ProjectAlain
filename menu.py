@@ -88,7 +88,7 @@ class Menu:
         # Charger les effets sonores
         self.sound = SoundEffects()
         if not self.sound.is_playing():
-            self.sound.play_one(chemin_relatif("assets/sounds/music/menu_music.ogg"), volume=0.2)
+            self.sound.play_music(chemin_relatif("assets/sounds/music/menu_music.ogg"), volume=0.2)
 
     def run(self):
         """Boucle du menu"""
@@ -112,7 +112,7 @@ class Menu:
             self.start_game = True
             self.running = False
             self.sound.stop_music()
-            self.sound.play_one(chemin_relatif("assets/sounds/music/lvl_1_bridge.ogg"), volume=0.2)
+            self.sound.play_music(chemin_relatif("assets/sounds/music/lvl_1_bridge.ogg"), volume=0.2)
 
         # Vérifie si le joueur collide sur le bouton Crédit
         if self.credit_button.collidepoint(player_rect_center):
@@ -129,8 +129,11 @@ class Menu:
             self.start_game = True
             self.start_game_infinite = True
             self.running = False
-            self.sound.stop_music()
-            self.sound.play_one(chemin_relatif("assets/sounds/music/lvl_dungeon_bridge.ogg"), volume=0.2)
+            self.sound.play_music(chemin_relatif("assets/sounds/music/lvl_dungeon_bridge.ogg"), volume=0.2)
+
+        #verifie si la musique du menu est e, cours
+        if not self.sound.is_playing():
+            self.sound.play_music(chemin_relatif("assets/sounds/music/menu_music.ogg"), volume=0.2)
 
     def draw(self):
         # Fond du menu

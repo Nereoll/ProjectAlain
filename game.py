@@ -167,9 +167,8 @@ class Game:
             3: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
             4: chemin_relatif("assets/sounds/music/lvl_3.ogg"),
             5: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
-            6: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
-            7: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
-            8: chemin_relatif("assets/sounds/music/lvl_boss.ogg"),
+            6:"",
+            8: chemin_relatif("assets/sounds/music/menu_music.ogg")
         }
         self.ambient_music_bridge = {
             2: chemin_relatif("assets/sounds/music/lvl_2.ogg"),
@@ -199,15 +198,16 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if self.dialogue_active and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.current_line += 1
-                    self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
+                    self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                     if self.current_line >= len(self.dialogue_lines):
                         self.dialogue_active = False
                         self.in_cutscene = False
                         self.sound.stop_music()
-                        self.sound.play_one(self.ambient_music[self.stage], 0.2)
+                        self.sound.play_music(self.ambient_music[self.stage], 0.2)
 
                         # Si c’est la cutscene finale avec la princesse → retour menu
                         if self.stage == 8:
+                            self.sound.stop_music()
                             self.running = False
                             self.game_over = True
 
@@ -225,12 +225,12 @@ class Game:
                         self.end_screen.handle_event(event)
                     if self.dialogue_active and event.button == 0:  # Bouton A
                         self.current_line += 1
-                        self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
+                        self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
                         if self.current_line >= len(self.dialogue_lines):
                             self.dialogue_active = False
                             self.in_cutscene = False
                             self.sound.stop_music()
-                            self.sound.play_one(self.ambient_music[self.stage], 0.2)
+                            self.sound.play_music(self.ambient_music[self.stage], 0.2)
                             if self.boss and self.boss.is_dead:
                                 self.stage = 6
                                 self.boss.kill()
@@ -304,7 +304,7 @@ class Game:
                     self.stage = next_stage
                     if self.stage < 4:
                         self.sound.stop_music()
-                        self.sound.play_one(self.ambient_music_bridge[self.stage], 0.2)
+                        self.sound.play_music(self.ambient_music_bridge[self.stage], 0.2)
                     self.door = False
                     if not self.stage > 4:
                         self.spawnable = True
@@ -334,15 +334,15 @@ class Game:
             self.end_screen.update()
             return
         if self.isDungeon and not self.sound.is_playing():
-            self.sound.play_one(chemin_relatif("assets/sounds/music/lvl_dungeon.ogg"), 0.2)
+            self.sound.play_music(chemin_relatif("assets/sounds/music/lvl_dungeon.ogg"), 0.2)
         elif not self.sound.is_playing() and not self.in_cutscene:
-            self.sound.play_one(self.ambient_music[self.stage], 0.2)
+            self.sound.play_music(self.ambient_music[self.stage], 0.2)
 
 
 
     def start_boss_cutscene(self):
         self.sound.stop_music()
-        self.sound.play_one(chemin_relatif("assets/sounds/sound_effects/boss_talk.ogg"), 0.1)
+        self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/boss_talk.ogg"), 0.1)
         self.in_cutscene = True
         self.dialogue_active = True
         self.spawnable = False

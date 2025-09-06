@@ -1,7 +1,7 @@
 #powerup.py
 import pygame
 import time
-from utilitaire import load_sprites, chemin_relatif
+from utilitaire import load_sprites, chemin_relatif, SoundEffects
 
 class PowerUp(pygame.sprite.Sprite):
     """
@@ -50,6 +50,8 @@ class PowerUp(pygame.sprite.Sprite):
         self.frame_timer = 0  # Timer pour l'animation
         self.animationSpeed = 0.1
 
+        self.sound = SoundEffects()
+
     def update(self):
         """Met à jour l'animation du power-up et vérifie la collision avec le joueur."""
         # Anime le sprite
@@ -68,6 +70,7 @@ class PowerUp(pygame.sprite.Sprite):
         # EQUILIBRAGE DES POWER UPS ICI
         # =============================
         if self.rect.colliderect(self.player.rect):
+            self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/powerup.ogg"), volume=0.3)
             if self.bonus_type == "damageAmp":
                 self.player.damageAmpValue = 1
                 self.player.damageAmpDuration = 2 + self.player.invisibilityDurationLeft

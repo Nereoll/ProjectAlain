@@ -24,7 +24,7 @@ class Lore:
     """
     FONT_TITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 52)
     FONT_SUBTITLE = (chemin_relatif("assets/fonts/Chomsky.otf"), 34)
-    FONT_TEXT = chemin_relatif(("assets/fonts/GenAR102.TTF"), 18)
+    FONT_TEXT = (chemin_relatif("assets/fonts/GenAR102.TTF"), 18)
 
     BACK_IMG = chemin_relatif("assets/images/ressources/Pressed_01.png")
     BG_IMG = chemin_relatif("assets/images/background/Credit_Page.png")

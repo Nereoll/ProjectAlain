@@ -134,6 +134,7 @@ class End:
         - Change son état
         - Autorise respawn si pas au stage final
         """
+        self.sound.stop_music()
         self.game.spawnable = (self.game.stage != 5)
         self.player.hp = 4
         self.player.nb_rea += 1
