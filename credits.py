@@ -104,25 +104,30 @@ class Credits:
         self._draw_section(
             "Assets",
             ["Tiny Sword Pack by Pixel Frog on itch.io"],
-            pos=(240, 180),
+            pos=(240, 160),
             align="left"
         )
 
         self._draw_section(
-            "Sounds",
+            "Sons",
             [
-                "Medieval Battle by SoundBible.com",
-                "Sword Clash by SoundBible.com",
-                "Magic Spell by SoundBible.com",
-                "Monster Roar by SoundBible.com",
-                "Footsteps on Grass by SoundBible.com",
-                "Player Hurt by SoundBible.com",
-                "Enemy Hurt by SoundBible.com",
-                "Player Death by SoundBible.com",
-                "Enemy Death by SoundBible.com",
-                "Door Open by SoundBible.com"
+                "musiques, de pixabay.com:",
+                "musique menu :",
+                "level IV, moodmode",
+                "musique niveau 1 :",
+                "8-bit Arcade Mode, moodmode",
+                "musique niveau 2 :",
+                "retro arcade game music, HitsLab",
+                "musique niveau 3 et 4 :",
+                "Dark game beat, Osynthw",
+                "musique boss :",
+                "chiptune grooving, auteur inconnu",
+                "musique mode donjon infini :",
+                "Kim Lightyear, Lightyeartraxx",
+                "musique écran de mort :",
+                "KL peach game over II, Lightyeartraxx",
             ],
-            pos=(self.screen.get_width() - 300, 280),
+            pos=(self.screen.get_width() - 340, 160),
             align="right"
         )
 
