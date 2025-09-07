@@ -178,43 +178,57 @@ class SoundEffects:
     def __init__(self):
         self.sound_groups = {}
         self.last_played = {}
+        self.master_volume = 0.1  # Volume global (0.0 à 1.0)
         pygame.mixer.init(frequency=44100)
+
+    def set_master_volume(self, volume: float):
+        """Change le volume global (0.0 - 1.0)."""
+        self.master_volume = max(0.0, min(1.0, volume))  # clamp entre 0 et 1
+        pygame.mixer.music.set_volume(self.master_volume)
+        for group in self.sound_groups.values():
+            for sound in group:
+                sound.set_volume(self.master_volume)
 
     def load_sound_group(self, group_name, sound_files):
         sounds = []
         for sound_file in sound_files:
             if os.path.exists(sound_file):
                 sound = pygame.mixer.Sound(sound_file)
+                sound.set_volume(self.master_volume)  # applique le volume global
                 sounds.append(sound)
-
         self.sound_groups[group_name] = sounds
 
-    def play_sound_group(self, group_name, volume, cooldown=0.5):
+    def play_sound_group(self, group_name, volume=1.0, cooldown=0.5):
+        """volume est relatif au master (ex: 0.5 -> 50% du master)"""
         current_time = pygame.time.get_ticks() / 1000.0
         if group_name in self.last_played and (current_time - self.last_played[group_name]) < cooldown:
             return False
+        if group_name not in self.sound_groups:
+            return False
+
         sound = random.choice(self.sound_groups[group_name])
-        sound.set_volume(volume)
+        sound.set_volume(volume * self.master_volume)
         sound.play()
         self.last_played[group_name] = current_time
 
-    def play_sound_one(self, sound_file, volume):
+    def play_sound_one(self, sound_file, volume=1.0):
         if os.path.exists(sound_file):
             sound = pygame.mixer.Sound(sound_file)
-            sound.set_volume(volume)
+            sound.set_volume(volume * self.master_volume)
             sound.play()
 
     def play_music(self, music_file, volume=0.2):
         if os.path.exists(music_file):
             pygame.mixer.music.load(music_file)
-            pygame.mixer.music.set_volume(volume)
-            pygame.mixer.music.play()
+            pygame.mixer.music.set_volume(volume * self.master_volume)
+            pygame.mixer.music.play(-1)  # -1 = boucle
 
     def stop_music(self):
         pygame.mixer.music.stop()
 
     def is_playing(self):
         return pygame.mixer.music.get_busy()
+
 
 def render_multiline(text, font, color, max_width):
     """Découpe et rend un texte multi-lignes selon une largeur max."""

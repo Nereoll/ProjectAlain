@@ -192,6 +192,11 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type==pygame.KEYDOWN and event.key == pygame.K_m: # touche de mute/demute de la musique
+                if self.sound.master_volume == 0:
+                    self.sound.set_master_volume(0.1)
+                else:
+                    self.sound.set_master_volume(0)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.player.hp <= 0:
                     self.end_screen.handle_event(event)

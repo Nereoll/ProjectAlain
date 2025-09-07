@@ -104,6 +104,11 @@ class Menu:
                 if event.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
                     self.fullscreen = not self.fullscreen
+                if event.key==pygame.K_m: # touche de mute/demute de la musique
+                    if self.sound.master_volume == 0:
+                        self.sound.set_master_volume(0.1)
+                    else:
+                        self.sound.set_master_volume(0)
 
         # Vérifie si le joueur collide avec le bouton Start avec son sprite
         player_rect_center = self.playerSprites.sprites()[0].rect.center

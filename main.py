@@ -39,6 +39,7 @@ def main():
         menu.run()
         fullscreen = menu.fullscreen
 
+
         if fullscreen:
             screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
         else:
