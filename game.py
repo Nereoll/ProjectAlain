@@ -192,17 +192,15 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type==pygame.KEYDOWN and event.key == pygame.K_m: # touche de mute/demute de la musique
+                if self.sound.master_volume == 0:
+                    self.sound.set_master_volume(0.1)
+                else:
+                    self.sound.set_master_volume(0)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.player.hp <= 0:
                     self.end_screen.handle_event(event)
             elif event.type == pygame.KEYDOWN:
-
-                if event.key==pygame.K_m:
-                    if self.sound.master_volume == 0:
-                        self.sound.set_master_volume(0.1)
-                    else:
-                        self.sound.set_master_volume(0)
-
                 if self.dialogue_active and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                     self.current_line += 1
                     self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/dialogue_box.ogg"), 0.4)
