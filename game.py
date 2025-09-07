@@ -9,7 +9,7 @@ from ath import Ath
 from end import End
 from shadow import Shadow
 from powerup import PowerUp
-from utilitaire import SoundEffects, chemin_relatif
+from utilitaire import SoundEffects, chemin_relatif, render_multiline
 
 
 class Game:
@@ -280,7 +280,7 @@ class Game:
             self.door=False
         elif self.stage == 6:
             self.door_image = self.door_image4
-            self.door_rect = pygame.Rect(WIDTH -100, HEIGHT // 2 -50, 86, 121)
+            self.door_rect = pygame.Rect(WIDTH -150, HEIGHT // 2 -96, 86, 121)
             if self.player.invisible:
                 self.door=True
             else:
@@ -356,11 +356,11 @@ class Game:
 
         # Texte du dialogue
         self.dialogue_lines = [
-            "Joris: Ah enfin tu arrives...",
-            "Joris: Mehdi Sparu a supprimé mon prédecesseur des fichiers du jeu en le faisant disparaitre.",
-            "Joris: Je dois te faire disparaitre pour me venger !",
+            "Gaêtan jible: Ah enfin tu arrives...",
+            "Gaêtan jible: Mehdi Sparu a supprimé mon prédecesseur des fichiers du jeu en le faisant disparaitre.",
+            "Gaêtan jible: Je dois te faire disparaitre pour me venger !",
             "Alain: ...",
-            "Joris: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
+            "Gaêtan jible: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
             "Alain: Feur",
         ]
         self.current_line = 0
@@ -375,7 +375,7 @@ class Game:
 
         # Dialogue de fin
         self.dialogue_lines = [
-            "Joris (mort): Hahaha... je meurs mais ta princesse restera invisible...",
+            "Gaêtan jible (mort): Hahaha... je meurs mais ta princesse restera invisible...",
         ]
         self.current_line = 0
 
@@ -489,8 +489,20 @@ class Game:
             pygame.draw.rect(box, (255, 255, 255), box.get_rect(), 3)
             self.screen.blit(box, (50, HEIGHT - 200))
 
-            text = self.font_text.render(self.dialogue_lines[self.current_line], True, WHITE)
-            self.screen.blit(text, (70, HEIGHT - 180))
+            # Découper et rendre le texte avec retour à la ligne
+            rendered_lines = render_multiline(
+                self.dialogue_lines[self.current_line],
+                self.font_text,
+                WHITE,
+                WIDTH - 140  # largeur disponible dans la boîte
+            )
+
+            # Blit ligne par ligne avec espacement vertical
+            y_offset = HEIGHT - 180
+            for line_surface in rendered_lines:
+                self.screen.blit(line_surface, (70, y_offset))
+                y_offset += self.font_text.get_height() + 5  # 5px d'espacement
+
 
 
 

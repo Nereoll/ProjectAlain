@@ -215,3 +215,25 @@ class SoundEffects:
 
     def is_playing(self):
         return pygame.mixer.music.get_busy()
+
+def render_multiline(text, font, color, max_width):
+    """Découpe et rend un texte multi-lignes selon une largeur max."""
+    words = text.split(" ")
+    lines = []
+    current_line = ""
+
+    for word in words:
+        test_line = current_line + word + " "
+        # Largeur temporaire
+        if font.size(test_line)[0] <= max_width:
+            current_line = test_line
+        else:
+            # Sauvegarde la ligne complète et recommence une nouvelle
+            lines.append(current_line)
+            current_line = word + " "
+
+    # Ajoute la dernière ligne
+    if current_line:
+        lines.append(current_line)
+
+    return [font.render(line, True, color) for line in lines]
