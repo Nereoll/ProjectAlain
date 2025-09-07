@@ -76,7 +76,7 @@ ENEMY_SPRITES = {
     "goblin": {
         "walkR": (chemin_relatif("assets/images/enemy/goblin/Goblin_Run.png"), 6, 1),
         "attackR": (chemin_relatif("assets/images/enemy/goblin/Goblin_Attack.png"), 6, 1),
-        "walkL": (chemin_relatif("assets/images/enemy/goblin/Goblin_Run.png"), 6, 1),
+        "walkL": (chemin_relatif("assets/images/enemy/goblin/Goblin_Run_reversed.png"), 6, 1),
         "attackL": (chemin_relatif("assets/images/enemy/goblin/Goblin_Attack_reversed.png"), 6, 1),
         "idleR": (chemin_relatif("assets/images/enemy/goblin/Goblin_IdleR.png"), 7, 1),
         "idleL": (chemin_relatif("assets/images/enemy/goblin/Goblin_IdleL.png"), 7, 1),
