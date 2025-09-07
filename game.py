@@ -150,7 +150,7 @@ class Game:
         self.door_image1 = pygame.image.load(chemin_relatif("assets/images/ressources/Door.png")).convert_alpha()
         self.door_image2 = pygame.image.load(chemin_relatif("assets/images/ressources/Door2.png")).convert_alpha()
         self.door_image3 = pygame.image.load(chemin_relatif("assets/images/ressources/Door3.png")).convert_alpha()
-        self.door_image4 = pygame.image.load(chemin_relatif("assets/images/Phara.png")).convert_alpha()
+        self.door_image4 = pygame.image.load(chemin_relatif("assets/images/Pharah.png")).convert_alpha()
         self.door=False
 
         #player static
