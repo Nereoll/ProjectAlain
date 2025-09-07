@@ -11,6 +11,7 @@ from menu import Menu
 from credits import Credits
 from lore import Lore
 from settings import WIDTH, HEIGHT, TITLE
+from utilitaire import chemin_relatif
 
 def main():
     """
@@ -26,6 +27,8 @@ def main():
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption(TITLE)
+    icon = pygame.image.load(chemin_relatif("assets/images/icon.ico"))
+    pygame.display.set_icon(icon)
 
     fullscreen = False
     running = True
