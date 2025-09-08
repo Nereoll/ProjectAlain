@@ -1,7 +1,5 @@
 # 🎮 The InvisiBlade Knight 2 - Ultimate Legendary Game of the Year Edition
 
-Description à faire
-
 ---
 
 ## 📂 Arborescence du projet

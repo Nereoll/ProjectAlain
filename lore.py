@@ -80,7 +80,7 @@ class Lore:
                 if self.back.get_rect(topleft=(10, 10)).collidepoint(pygame.mouse.get_pos()):
                     self.retour, self.running = True, False
             elif event.type == pygame.JOYBUTTONDOWN and event.button == 1:
-                    self.retour, self.running = True, False               
+                    self.retour, self.running = True, False
 
     def _draw(self):
         """
@@ -103,7 +103,7 @@ class Lore:
         # Sections
         self._draw_section(
             "Archive",
-            [   
+            [
                 "Jadis, le légendaire Méhdi Sparu maniait le pouvoir de",
                 "l'invisibilité avec tant de puissance qu’il fit disparaître",
                 "son ennemi juré… en même temps que son jeu tout entier !",
