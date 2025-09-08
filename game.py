@@ -361,11 +361,11 @@ class Game:
 
         # Texte du dialogue
         self.dialogue_lines = [
-            "Gaêtan jible: Ah enfin tu arrives...",
-            "Gaêtan jible: Mehdi Sparu a supprimé mon prédecesseur des fichiers du jeu en le faisant disparaitre.",
-            "Gaêtan jible: Je dois te faire disparaitre pour me venger !",
+            "Gaêtan Gible: Ah enfin tu arrives...",
+            "Gaêtan Gible: Mehdi Sparu a supprimé mon prédecesseur des fichiers du jeu en le faisant disparaitre.",
+            "Gaêtan Gible: Je dois te faire disparaitre pour me venger !",
             "Alain: ...",
-            "Gaêtan jible: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
+            "Gaêtan Gible: Et oui j'ai rendu ta princesse invisible tu vas faire quoi !?",
             "Alain: Feur",
         ]
         self.current_line = 0
