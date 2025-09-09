@@ -9,7 +9,7 @@ from ath import Ath
 from end import End
 from shadow import Shadow
 from powerup import PowerUp
-from utilitaire import SoundEffects, chemin_relatif, render_multiline
+from utilitaire import SoundEffects, chemin_relatif, render_multiline, read_score
 
 
 class Game:
@@ -88,7 +88,6 @@ class Game:
         self.spawn_delay = 3  # premier ennemi toutes les 3 sec
         self.spawnable = True
         # Score
-        self.score = 0
 
         self.lastPowerUp = 0
 
@@ -243,8 +242,6 @@ class Game:
                                 self.spawnable = False
                                 self.player.mana = 40000
 
-
-
     def update(self):
         """Mise à jour des objets"""
         current_time = time.time() - self.start_time
@@ -343,8 +340,6 @@ class Game:
         elif not self.sound.is_playing() and not self.in_cutscene:
             self.sound.play_music(self.ambient_music[self.stage], 0.2)
 
-
-
     def start_boss_cutscene(self):
         self.sound.stop_music()
         self.sound.play_sound_one(chemin_relatif("assets/sounds/sound_effects/boss_talk.ogg"), 0.1)
@@ -369,7 +364,6 @@ class Game:
             "Alain: Feur",
         ]
         self.current_line = 0
-
     def start_boss_death_cutscene(self):
         self.dialogue_active = True
         self.spawnable = False
@@ -383,8 +377,6 @@ class Game:
             "Gaêtan jible (mort): Hahaha... je meurs mais ta princesse restera invisible...",
         ]
         self.current_line = 0
-
-
     def start_princess_rescue_cutscene(self):
         """Dernière cutscene avec la princesse après avoir sauvé le royaume"""
         self.spawnable = False
@@ -408,8 +400,6 @@ class Game:
             "Pharah : mmmmmh, la délicieuse soupe !"
         ]
         self.current_line = 0
-
-
     def spawn_enemy(self):
         """Crée un ennemi aléatoire et l'ajoute au jeu"""
         if(self.stage == 1):
@@ -442,7 +432,6 @@ class Game:
         enemy = Enemy(enemy_type, self.player, self.screen, pos)
         self.all_sprites.add(enemy, layer=1)
         self.enemies.add(enemy)
-
     def clear_stage(self):
         self.spawnable = False
         self.spawn_delay = 2
@@ -450,7 +439,6 @@ class Game:
         self.door=True
         if self.player.hp <4:
             self.player.hp+=2
-
     def draw(self):
         """Affichage"""
         # Fond du stage courant

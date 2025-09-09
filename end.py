@@ -1,7 +1,7 @@
 # end.py
 import pygame
 from settings import TITLE, WHITE, WIDTH, HEIGHT
-from utilitaire import load_sprites, animate, SoundEffects, chemin_relatif
+from utilitaire import load_sprites, animate, SoundEffects, chemin_relatif, write_score
 from audio import SoundMeter
 
 import threading
@@ -124,6 +124,7 @@ class End:
         Stoppe la musique et modifie l'état du jeu.
         """
         self.sound.stop_music()
+        write_score(str(self.player.score))
         self.game.running = False
         self.game.game_over = True
 

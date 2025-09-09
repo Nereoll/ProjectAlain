@@ -11,7 +11,7 @@ Le menu contient aussi des animations, une musique de fond et un rendu graphique
 import pygame
 from player import Player
 from settings import WIDTH, HEIGHT, TITLE, WHITE, SUBTITLE
-from utilitaire import load_sprites, pixelate, SoundEffects, chemin_relatif
+from utilitaire import load_sprites, pixelate, SoundEffects, chemin_relatif, read_score
 from components.button import Button
 from components.animatedElement import AnimatedElement
 
@@ -78,7 +78,7 @@ class Menu:
         self.running = True
         self.start_game = False
         self.start_game_infinite = False
-        self.show_credits = False   
+        self.show_credits = False
         self.show_lore = False
 
         # Repositionner le joueur sur le spawn défini
@@ -89,6 +89,9 @@ class Menu:
         self.sound = SoundEffects()
         if not self.sound.is_playing():
             self.sound.play_music(chemin_relatif("assets/sounds/music/menu_music.ogg"), volume=0.2)
+
+        # Lire le score
+        self.score = read_score()
 
     def run(self):
         """Boucle du menu"""
@@ -150,6 +153,12 @@ class Menu:
         title_x = WIDTH // 2 - title_text.get_width() // 2
         title_y = 15
 
+        #score
+        max_score_text = self.font_text.render(f"Max score", True, WHITE)
+        score_text = self.font_text.render(f"{self.score}", True, WHITE)
+        self.screen.blit(max_score_text, (WIDTH //2 - max_score_text.get_width() - 100, HEIGHT // 3))
+        self.screen.blit(score_text, (WIDTH //2 - score_text.get_width() - 100, HEIGHT // 3 + 20))
+
         # Ruban
         ribbon_height = self.ribbon.get_height()
         scaled_ribbon = pygame.transform.scale(self.ribbon, (title_text.get_width() * 1.7, ribbon_height + 40))
@@ -159,11 +168,8 @@ class Menu:
 
         # Dessiner les boutons
         self.credit_button.draw(self.screen)
-        # pygame.draw.rect(self.screen, BLUE, self.credit_button.box_rect, 4) # Debug box
         self.infinite_button.draw(self.screen)
-        # pygame.draw.rect(self.screen, BLUE, self.infinite_button.box_rect, 4) # Debug box
         self.lore_button.draw(self.screen)
-        #pygame.draw.rect(self.screen, BLUE, self.lore_button.box_rect, 4) # Debug box
 
         # Mise à jour et rendu des éléments animés
         self.sheep.update()

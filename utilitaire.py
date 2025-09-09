@@ -251,3 +251,26 @@ def render_multiline(text, font, color, max_width):
         lines.append(current_line)
 
     return [font.render(line, True, color) for line in lines]
+
+def write_score(text: str):
+    """Écrit le score dans le fichier score.txt."""
+    with open("score.txt", "r+") as f:
+        f.seek(0)
+        first_line = f.readline().strip()
+        if first_line and first_line.isdigit():
+            if int(first_line) >= int(text):
+                return
+        f.seek(0)
+        f.truncate()
+        f.write(text)
+
+def read_score() -> str:
+    """Lit le score depuis le fichier score.txt."""
+    if not os.path.exists("score.txt"):
+        return "0"
+    with open("score.txt", "r") as f:
+        first_line = f.readline().strip()
+        if first_line.isdigit():
+            return first_line
+    return "0"
+
