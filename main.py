@@ -80,7 +80,7 @@ def main():
 def start_game(screen, fullscreen, is_dungeon=False):
     g = Game(screen, fullscreen, isDungeon=is_dungeon)
     g.new()
-    return g.game_over  # Retourne True pour continuer (game over), False pour quitter
+    return True  # Retourne True pour continuer (game over), False pour quitter
 
 if __name__ == "__main__":
     main()
